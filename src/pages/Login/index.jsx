@@ -1,10 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
+import Cookies from "js-cookie";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const handleSuccess = (response) => {
-    console.log("Login ", response);
-    response?.credential &&
-      localStorage.setItem("pmoUser", JSON.stringify(response.credential));
+    if (response?.credential) {
+      Cookies.set("pmoUser", response.credential, { expires: 0.5 });
+      navigate("/home");
+    }
   };
 
   const handleError = () => {

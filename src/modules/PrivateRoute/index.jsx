@@ -1,7 +1,8 @@
 import { Navigate, Outlet } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const PrivateRoute = () => {
-  const value = localStorage.getItem("pmoUser");
+  const value = Cookies.get("pmoUser");
 
   if (!value) {
     return <Navigate to="/login" replace />;
