@@ -66,3 +66,17 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+
+.fullWidth {
+  flex: 1;
+}
+
+
+.css-ffucps-MuiButtonBase-root-MuiTab-root.Mui-selected, .css-iykztn-MuiTabs-indicator {
+  color: black !important;
+  font-weight: bold;
+}
+
+.css-iykztn-MuiTabs-indicator {
+  background-color: #000000 !important;
+}
