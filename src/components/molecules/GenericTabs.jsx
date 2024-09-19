@@ -25,7 +25,7 @@ CustomTabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function GenericTabs({ tabs }) {
+export function GenericTabs({ tabs }) {
   console.log(tabs);
   const [value, setValue] = React.useState(0);
 
