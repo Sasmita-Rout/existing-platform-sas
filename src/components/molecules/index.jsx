@@ -3,5 +3,6 @@
 // // // Headers.tsx
 // // // GenericTabs.jsx
 import GenericTabs  from './GenericTabs';
+import Filter from './Filters';
 
-export {GenericTabs};
+export {GenericTabs, Filter};
