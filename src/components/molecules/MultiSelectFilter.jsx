@@ -5,23 +5,7 @@ import Box from '@mui/material/Box';
 import FilterListIcon from '@mui/icons-material/FilterList'
 import InputAdornment from '@mui/material/InputAdornment';;
 
-export default function MultiSelectFilter({ languages, selectedValues, setSelectedValues }) {
-
-    const [filterLabel, setFilterlabel] = React.useState("Select Options")
-
-    const handleChange = (event, newValue) => {
-        // Iterate over newValue and add it to selectedValues if it doesn't exist already based on title
-        const uniqueValues = [...selectedValues];
-
-        newValue.forEach((newItem) => {
-            // Check if the item is already in selectedValues based on title
-            if (!uniqueValues.some(item => item.title === newItem.title)) {
-                uniqueValues.push(newItem);
-            }
-        });
-
-        setSelectedValues(uniqueValues);
-    };
+export default function MultiSelectFilter({ languages, handleOnSelect }) {
 
     return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -31,7 +15,7 @@ export default function MultiSelectFilter({ languages, selectedValues, setSelect
                     disableCloseOnSelect
                     options={languages}
                     getOptionLabel={(option) => option.title}
-                    onChange={(event, newValue) => handleChange(event, newValue)}
+                    onChange={(event, newValue) => handleOnSelect(event, newValue)}
                     sx={{
                         width: 300,
                         marginRight: 2,
@@ -39,9 +23,9 @@ export default function MultiSelectFilter({ languages, selectedValues, setSelect
                     renderInput={(params) => (
                         <TextField
                             {...params}
-                            placeholder={filterLabel}
-                            onFocus={() => setFilterlabel("Select")}
-                            onBlur={() => setFilterlabel('Select Options')}
+                            placeholder="Select Options"
+                            onFocus={(event) => event.target.placeholder = "Select"}
+                            onBlur={(event) => event.target.placeholder = "Select Options"}
                             InputProps={{
                                 ...params.InputProps,
                                 startAdornment: (
