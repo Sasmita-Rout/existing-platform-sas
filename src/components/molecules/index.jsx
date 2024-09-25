@@ -3,5 +3,5 @@
 // // // Headers.tsx
 // // // GenericTabs.jsx
 import GenericTabs from './GenericTabs';
-import MultiSelectFilter from './MultiSelectFilter'
-export { GenericTabs, MultiSelectFilter };
+import Filter from './Filter'
+export { GenericTabs, Filter };
