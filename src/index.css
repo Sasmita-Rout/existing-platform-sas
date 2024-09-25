@@ -173,4 +173,5 @@ button:focus-visible {
 .secondaryBtn {
   background-color: #626E73 !important;
   text-transform: unset !important;
+  color: #fff !important;
 }

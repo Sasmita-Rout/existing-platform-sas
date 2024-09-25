@@ -1,9 +1,79 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import {GenericTabs } from '../../components/molecules/GenericTabs';
+import { Boxes, PrimaryButton, SecondaryBtn } from "../../components/atoms";
 
 const PlatformProject = () => {
+
+
+  const tabs = [
+    {
+      label: "Results",
+      Component: <div>Hello, I am tab 1</div>
+    },
+    {
+      label: "Domain & Application Class",
+      Component: <div>Hello, I am tab 2</div>
+    },
+    {
+      label: "Environment, Infrastructure, System Related Info",
+      Component: (
+        <div>
+          <h1>Tab with heading</h1>
+          <p>Hello I am a tab with a heading</p>
+        </div>
+      )
+    },
+    {
+      label: "Development",
+      Component: <div>Hello, I am tab 4</div> 
+    },
+    {
+      label: "QA & DevOps",
+      Component: <div>Hello, I am tab 5</div> 
+    },
+    {
+      label: "BI & Marketing",
+      Component: <div>Hello, I am tab 6</div> 
+    },
+
+  ];
+
+  const boxes = [{
+    id: 0,
+    title: 'Total Accounts',
+    titleNum: '28',
+    percent: '',
+    color: '#0FAF62'
+  },
+  {
+    id: 1,
+    title: 'Total Projects',
+    titleNum: '105',
+    percent: '',
+    color: '#FF9500'
+  },
+  {
+    id: 2,
+    title: 'Domains',
+    titleNum: '23',
+    percent: '',
+    color: '#01A4C9'
+  },
+  {
+    id: 3,
+    title: 'Applications Class',
+    titleNum: '23',
+    percent: '',
+    color: '#BA3838'
+  },
+]
+  
   return (
     <Box>
-      <Typography>Platform project data</Typography>
+      <Boxes boxes={boxes} />
+      <GenericTabs tabs={tabs} />
+      <PrimaryButton label={'23r32552352'}/>
+      <SecondaryBtn label={'345453'} />
     </Box>
   );
 };
