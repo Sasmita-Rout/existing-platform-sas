@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import CancelIcon from "@mui/icons-material/Cancel";
 import { styled } from "@mui/material";
 
 const StyledBtn = styled("button")(({ theme }) => ({
