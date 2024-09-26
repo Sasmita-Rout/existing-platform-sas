@@ -117,17 +117,17 @@ button:focus-visible {
 .box-main {
   display: flex;
   flex-grow: 1;
-  margin: auto 15px;
+  /* margin: auto 15px; */
 }
 
 .box-parent {
   height: 118px;
-  margin: 10px 0px 10px 10px; 
+  margin: 10px 0px 10px 10px;
   padding: 16px;
   min-width: 260px;
   border: 1.5px solid black;
   position: relative;
-  color: #626E73;
+  color: #626e73;
 }
 
 .box-parent:first-child {
@@ -136,7 +136,7 @@ button:focus-visible {
 }
 
 .box-parent:last-child {
-  border-radius:  0 5px 5px 0;
+  border-radius: 0 5px 5px 0;
 }
 
 .box-parent h4 {
@@ -146,7 +146,7 @@ button:focus-visible {
   font-weight: normal;
 }
 
-.box-parent p{
+.box-parent p {
   margin: 0;
   font-size: 24px;
   line-height: 20px;
@@ -161,17 +161,16 @@ button:focus-visible {
   right: 15px;
 }
 
-
 /* Buttons */
 
 .primaryBtn {
-  background-color: #0E5FD9 !important;
+  background-color: #0e5fd9 !important;
   text-align: left;
   text-transform: unset !important;
 }
 
 .secondaryBtn {
-  background-color: #626E73 !important;
+  background-color: #626e73 !important;
   text-transform: unset !important;
   color: #fff !important;
 }

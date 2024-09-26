@@ -6,12 +6,13 @@ const StyledBtn = styled("button")(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
 }));
 
-function PrimaryButton({ label }) {
+function PrimaryButton({ label, icon, sx }) {
   return (
     <>
       <Button
+        sx={sx}
         variant="contained"
-        startIcon={<CancelIcon />}
+        startIcon={icon}
         className="primaryBtn"
       >
         {label}
@@ -20,7 +21,7 @@ function PrimaryButton({ label }) {
   );
 }
 
- function SecondaryBtn({ label }) {
+function SecondaryBtn({ label }) {
   return (
     <>
       <Button variant="outlined" className="secondaryBtn">
@@ -29,5 +30,4 @@ function PrimaryButton({ label }) {
     </>
   );
 }
-export  { PrimaryButton, SecondaryBtn };
-
+export { PrimaryButton, SecondaryBtn };
