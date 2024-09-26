@@ -7,26 +7,22 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Filter } from "../components/molecules/index";
 
-export default function FilterComponent({ technologies }) {
+export default function FilterComponent({ technologyInput, languageInput }) {
     const [selectedValues, setSelectedValues] = React.useState([]);  // For multi-select
     const [selectedValue, setSelectedValue] = React.useState(null);  // For single select
-    const [languageDropdown, setLanguageDropdown] = React.useState([]); // To get Language dropdown dynamically
+    const [languageDropdown, setLanguageDropdown] = React.useState([]); // Language dropdown dynamically
 
-    const languages = {
-        frontendTechnology: [{ title: 'Express' }, { title: 'NestJS' }],
-        domain: [{ title: 'Redux' }, { title: 'Next.js' }],
-        cloudTechnology: [{ title: 'RxJS' }, { title: 'NgRx' }],
-        dataEngineering: [{ title: 'Grid' }, { title: 'Utilities' }],
-    };
-
-    // Get Multi select Filter dropdown based on Technology Filter
+    // Get multi-select filter dropdown based on the selected technology filter
     const getLanguageDropdownValues = (selectedValue) => {
         if (!selectedValue) return;
+
+        // Process the selected technology and set the appropriate language dropdown
         const technologyFilterValue = selectedValue.split(' ')
             .map((word, index) => index === 0 ? word.toLowerCase() : word[0].toUpperCase() + word.slice(1).toLowerCase())
             .join('');
-        setLanguageDropdown(languages[technologyFilterValue] || []);
-    }
+
+        setLanguageDropdown(languageInput[technologyFilterValue] || []);
+    };
 
     // Clear all multi-selected values
     const handleClearAll = () => {
@@ -38,17 +34,15 @@ export default function FilterComponent({ technologies }) {
         setSelectedValues((prev) => prev.filter((item) => item !== valueToRemove));
     };
 
-    // Updating the State for single auto-complete
+    // Handler for single select autocomplete
     const onChangeSingleFilter = (event, newValue) => {
-        console.log(newValue)
         setSelectedValue(newValue);
-        setSelectedValues([]);  // Reset multi-select when single is selected
+        setSelectedValues([]);  // Reset multi-select when a new single select is chosen
         getLanguageDropdownValues(newValue?.title);
     };
 
-    // Updating the State for multi select auto-complete
+    // Handler for multi-select autocomplete
     const handleOnSelect = (event, newValue) => {
-        // console.log(newValue)
         const uniqueValues = [...selectedValues];
         newValue.forEach((newItem) => {
             if (!uniqueValues.some(item => item.title === newItem.title)) {
@@ -77,10 +71,7 @@ export default function FilterComponent({ technologies }) {
             }}
         >
             <Typography sx={{ fontSize: '0.75rem', paddingRight: '8px' }}>{selectedItem.title}</Typography>
-            <IconButton
-                onClick={onRemove}
-                size="small"
-            >
+            <IconButton onClick={onRemove} size="small">
                 <ClearIcon fontSize="inherit" />
             </IconButton>
         </Box>
@@ -93,24 +84,26 @@ export default function FilterComponent({ technologies }) {
 
                 {/* Single-select Autocomplete */}
                 <Filter
-                    input={technologies}
+                    input={technologyInput}
                     handleOnSelect={onChangeSingleFilter}
                     selectedValues={selectedValue}
                     isMultiSelect={false}
                     placeholder='Filter By Technologies'
                     onFocus='Select...'
                     onBlur='Filter By Technologies'
+                    showIcon={true}  // Show icon for this filter
                 />
 
                 {/* Multi-select Autocomplete */}
                 <Filter
                     input={languageDropdown}
                     handleOnSelect={handleOnSelect}
-                    selectedValues={selectedValues}
+                    selectedValues={[]}
                     isMultiSelect={true}
                     placeholder='Select Options'
                     onFocus='Select...'
                     onBlur='Select Options'
+                    showIcon={true}
                 />
 
                 <Button variant="contained">Apply</Button>
