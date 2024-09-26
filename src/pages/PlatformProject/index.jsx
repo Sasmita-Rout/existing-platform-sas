@@ -1,14 +1,14 @@
 import { Box, Typography, Container } from "@mui/material";
-import FilterBar from "../../components/organisms/FilterBar";
-import ProjectTable from "../../components/organisms/ProjectTable";
-import useFetch from "../../hooks/useFetch";
+// import FilterBar from "../../components/organisms/FilterBar";
+// import ProjectTable from "../../components/organisms/ProjectTable";
+// import useFetch from "../../hooks/useFetch";
 import { GenericTabs } from '../../components/molecules/GenericTabs';
 import { Boxes, PrimaryButton, SecondaryBtn } from "../../components/atoms";
 import FilterComponent from "../../modules/FilterComponent"
 import FilterOptions from "../../modules/FilterOptions";
 
 const PlatformProject = () => {
-  useFetch();
+  // useFetch();
   const technologies = [
     { title: 'Frontend Technology' },
     { title: 'Domain' },
@@ -104,10 +104,10 @@ const PlatformProject = () => {
         </Typography>
 
         <Box mb={2}>
-          <FilterBar />
+          {/* <FilterBar /> */}
         </Box>
 
-        <ProjectTable />
+        {/* <ProjectTable /> */}
       </Container>
       <Box>
       <Typography>Platform project data</Typography>
