@@ -1,27 +1,28 @@
-import { Box, Typography, Container } from "@mui/material";
-import FilterBar from "../../components/organisms/FilterBar";
-import ProjectTable from "../../components/organisms/ProjectTable";
-import useFetch from "../../hooks/useFetch";
+import { Box, Typography } from "@mui/material";
+import FilterComponent from "../../modules/FilterComponent"
+import FilterOptions from "../../modules/FilterOptions";
 
 const PlatformProject = () => {
-  useFetch();
+  const technologies = [
+    { title: 'Frontend Technology' },
+    { title: 'Domain' },
+    { title: 'Cloud Technology' },
+    { title: 'Data Engineering' },
+  ];
+  const languages = {
+    frontendTechnology: [{ title: 'Express' }, { title: 'NestJS' }],
+    domain: [{ title: 'Redux' }, { title: 'Next.js' }],
+    cloudTechnology: [{ title: 'RxJS' }, { title: 'NgRx' }],
+    dataEngineering: [{ title: 'Grid' }, { title: 'Utilities' }],
+};
   return (
-    <Container maxWidth="lg">
-      <Typography
-        sx={{ fontWeight: "bold" }}
-        variant="h6"
-        component="h1"
-        gutterBottom
-      >
-        Platform Project Data
-      </Typography>
-
-      <Box mb={2}>
-        <FilterBar />
-      </Box>
-
-      <ProjectTable />
-    </Container>
+    <Box>
+      <Typography>Platform project data</Typography>
+      <FilterOptions
+        buhInput={technologies} accountInput={technologies} projectInput={technologies}
+        ddInput={technologies} />
+      <FilterComponent technologyInput ={technologies} languageInput={languages} />
+    </Box>
   );
 };
 

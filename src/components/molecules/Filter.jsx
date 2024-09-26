@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import InputAdornment from '@mui/material/InputAdornment';
 
-export default function Filter({ input, handleOnSelect, selectedValues = [], isMultiSelect, placeholder, onFocus, onBlur }) {
+export default function Filter({ input, handleOnSelect, selectedValues = [], isMultiSelect, placeholder, onFocus, onBlur, showIcon = false }) {
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -16,7 +16,7 @@ export default function Filter({ input, handleOnSelect, selectedValues = [], isM
                 getOptionLabel={(option) => option.title}
                 onChange={handleOnSelect}
                 value={selectedValues} // Pass selected values dynamically
-                sx={{ width: 300, marginRight: 2 }}
+                sx={{ width: 270, marginRight: 2 }}
                 renderInput={(params) => (
                     <TextField
                         {...params}
@@ -26,9 +26,13 @@ export default function Filter({ input, handleOnSelect, selectedValues = [], isM
                         InputProps={{
                             ...params.InputProps,
                             startAdornment: (
-                                <InputAdornment position="start">
-                                    <FilterListIcon />
-                                </InputAdornment>
+                                <>
+                                    {showIcon && (
+                                        <InputAdornment position="start">
+                                            <FilterListIcon />
+                                        </InputAdornment>
+                                    )}
+                                </>
                             ),
                         }}
                     />
