@@ -6,7 +6,7 @@ const StyledBtn = styled("button")(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
 }));
 
-function PrimaryButton({ label, icon, sx }) {
+function PrimaryButton({ label, icon, sx, onClick }) {
   return (
     <>
       <Button
@@ -14,6 +14,7 @@ function PrimaryButton({ label, icon, sx }) {
         variant="contained"
         startIcon={icon}
         className="primaryBtn"
+        onClick={onClick}
       >
         {label}
       </Button>

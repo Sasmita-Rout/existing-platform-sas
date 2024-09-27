@@ -1,8 +1,5 @@
 import { Box, Typography, Container, IconButton, Stack } from "@mui/material";
-// import FilterBar from "../../components/organisms/FilterBar";
-// import ProjectTable from "../../components/organisms/ProjectTable";
-// import useFetch from "../../hooks/useFetch";
-import { GenericTabs } from "../../components/molecules/GenericTabs";
+import { useNavigate } from 'react-router-dom';
 import { Boxes, PrimaryButton, SecondaryBtn } from "../../components/atoms";
 import FilterComponent from "../../modules/FilterComponent";
 import FilterOptions from "../../modules/FilterOptions";
@@ -10,7 +7,11 @@ import { DataGrid } from "../../components/molecules";
 import { Add, Edit, PieChart } from "@mui/icons-material";
 
 const PlatformProject = () => {
-  // useFetch();
+  const navigate = useNavigate();
+
+  const goToNewProjectPage=()=>{
+    navigate("/NewProject");
+  }
   const technologies = [
     { title: "Frontend Technology" },
     { title: "Domain" },
@@ -223,7 +224,7 @@ const PlatformProject = () => {
         <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
           Platform Project Data
         </Typography>
-        <PrimaryButton label="Add New Project" icon={<Add />} />
+        <PrimaryButton label="Add New Project" icon={<Add />} onClick={() => goToNewProjectPage()} />
       </Stack>
       <Box p={2}>
         <FilterOptions

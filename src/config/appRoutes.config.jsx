@@ -1,5 +1,5 @@
 import PrivateRoute from "../modules/PrivateRoute";
-import { HomePage, LoginPage, PlatformProject, PageNotFound } from "../pages";
+import { HomePage, LoginPage, PlatformProject, PageNotFound, NewProject } from "../pages";
 
 export const appRoutes = [
   {
@@ -18,6 +18,10 @@ export const appRoutes = [
         path: "/PlatformProject",
         element: <PlatformProject />,
       },
+      {
+        path: "/NewProject",
+        element: <NewProject />
+      }
     ],
   },
   {
