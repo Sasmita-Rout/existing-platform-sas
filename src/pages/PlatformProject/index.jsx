@@ -10,7 +10,7 @@ const PlatformProject = () => {
   const navigate = useNavigate();
 
   const goToNewProjectPage=()=>{
-    navigate("/NewProject");
+    navigate("/PlatformProject/NewProject");
   }
   const technologies = [
     { title: "Frontend Technology" },

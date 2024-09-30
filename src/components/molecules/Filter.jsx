@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import InputAdornment from '@mui/material/InputAdornment';
 
-export default function Filter({ input, handleOnSelect, selectedValues = [], isMultiSelect, placeholder, onFocus, onBlur, showIcon = false }) {
+export function Filter({ input, handleOnSelect, selectedValues = [], isMultiSelect, placeholder, onFocus, onBlur, showIcon = false, ...rest }) {
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -20,6 +20,7 @@ export default function Filter({ input, handleOnSelect, selectedValues = [], isM
                 renderInput={(params) => (
                     <TextField
                         {...params}
+                        {...rest} // Pass react-hook-form properties here
                         placeholder={placeholder}
                         onFocus={(event) => event.target.placeholder = onFocus}
                         onBlur={(event) => event.target.placeholder = onBlur}
@@ -41,3 +42,6 @@ export default function Filter({ input, handleOnSelect, selectedValues = [], isM
         </Box>
     );
 }
+
+
+export default Filter;

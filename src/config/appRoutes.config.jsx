@@ -19,7 +19,7 @@ export const appRoutes = [
         element: <PlatformProject />,
       },
       {
-        path: "/NewProject",
+        path: "/PlatformProject/NewProject",
         element: <NewProject />
       }
     ],
