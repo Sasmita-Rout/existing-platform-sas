@@ -21,8 +21,8 @@ export function Filter({
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Autocomplete
                 multiple={isMultiSelect} // Toggle between multi-select and single-select
-                disableCloseOnSelect={isMultiSelect} // Only disable close for multi-select
-                options={input} // Use input prop here, defaulting to an empty array
+                disableCloseOnSelect={isMultiSelect}
+                options={input}
                 getOptionLabel={(option) => option?.title || ''} // Ensure option has title
                 onChange={handleOnSelect} // Pass the handler function
                 value={selectedValues} // Selected values dynamically passed
@@ -30,7 +30,7 @@ export function Filter({
                 renderInput={(params) => (
                     <TextField
                         {...params}
-                        {...rest} // Spread any extra props (like form validation props)
+                        {...rest} // Pass react-hook-form properties here
                         placeholder={placeholder}
                         onFocus={(event) => event.target.placeholder = onFocus || placeholder}
                         onBlur={(event) => event.target.placeholder = onBlur || placeholder}
