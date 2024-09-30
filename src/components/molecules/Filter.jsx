@@ -5,25 +5,35 @@ import Box from '@mui/material/Box';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import InputAdornment from '@mui/material/InputAdornment';
 
-export function Filter({ input, handleOnSelect, selectedValues = [], isMultiSelect, placeholder, onFocus, onBlur, showIcon = false, ...rest }) {
+export function Filter({
+    input = [], // Ensure default to an empty array if `input` is undefined
+    handleOnSelect,
+    selectedValues = [],
+    isMultiSelect = false, // Default to single-select if not passed
+    placeholder = 'Select...', // Default placeholder
+    onFocus,
+    onBlur,
+    showIcon = false,
+    ...rest
+}) {
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Autocomplete
                 multiple={isMultiSelect} // Toggle between multi-select and single-select
                 disableCloseOnSelect={isMultiSelect} // Only disable close for multi-select
-                options={input}
-                getOptionLabel={(option) => option.title}
-                onChange={handleOnSelect}
-                value={selectedValues} // Pass selected values dynamically
-                sx={{ width: 270, marginRight: 2 }}
+                options={input} // Use input prop here, defaulting to an empty array
+                getOptionLabel={(option) => option?.title || ''} // Ensure option has title
+                onChange={handleOnSelect} // Pass the handler function
+                value={selectedValues} // Selected values dynamically passed
+                sx={{ width: 300, marginRight: 2 }}
                 renderInput={(params) => (
                     <TextField
                         {...params}
-                        {...rest} // Pass react-hook-form properties here
+                        {...rest} // Spread any extra props (like form validation props)
                         placeholder={placeholder}
-                        onFocus={(event) => event.target.placeholder = onFocus}
-                        onBlur={(event) => event.target.placeholder = onBlur}
+                        onFocus={(event) => event.target.placeholder = onFocus || placeholder}
+                        onBlur={(event) => event.target.placeholder = onBlur || placeholder}
                         InputProps={{
                             ...params.InputProps,
                             startAdornment: (
@@ -42,6 +52,5 @@ export function Filter({ input, handleOnSelect, selectedValues = [], isMultiSele
         </Box>
     );
 }
-
 
 export default Filter;
