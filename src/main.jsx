@@ -5,7 +5,7 @@ import App from "./App.jsx";
 import "./index.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { REACT_APP_GOOGLE_CLIENT_ID } from "./config/index.jsx";
-import {DashboardLayoutBasic} from './components/organisms/NavBar.jsx';
+import {DashboardLayoutBasic} from './components/organism/NavBar.jsx';
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

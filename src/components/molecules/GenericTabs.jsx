@@ -25,8 +25,7 @@ CustomTabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-export function GenericTabs({ tabs }) {
-  console.log(tabs);
+export function GenericTabs({ tabs = [] }) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -40,15 +39,14 @@ export function GenericTabs({ tabs }) {
           value={value}
           onChange={handleChange}
           aria-label="pmo-table-panels"
-        
         >
-          {tabs.map(({ label }, i) => (
+          {tabs?.map(({ label }, i) => (
             <Tab label={label} key={i} className="fullWidth"></Tab>
             // <Tab label={label} key={i} className={"fullWidth " + (aria-selected ? 'colorBlack' : 'white')}></Tab>
           ))}
         </Tabs>
       </Box>
-      {tabs.map(({ Component }, i) => (
+      {tabs?.map(({ Component }, i) => (
         <CustomTabPanel value={value} index={i} key={i}>
           {Component}
         </CustomTabPanel>

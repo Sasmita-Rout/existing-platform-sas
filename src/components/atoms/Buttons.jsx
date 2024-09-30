@@ -1,0 +1,32 @@
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material";
+
+const StyledBtn = styled("button")(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+}));
+
+function PrimaryButton({ label, icon, sx }) {
+  return (
+    <>
+      <Button
+        sx={sx}
+        variant="contained"
+        startIcon={icon}
+        className="primaryBtn"
+      >
+        {label}
+      </Button>
+    </>
+  );
+}
+
+function SecondaryBtn({ label }) {
+  return (
+    <>
+      <Button variant="outlined" className="secondaryBtn">
+        {label}
+      </Button>
+    </>
+  );
+}
+export { PrimaryButton, SecondaryBtn };

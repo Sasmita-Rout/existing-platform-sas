@@ -1,5 +1,5 @@
 import PrivateRoute from "../modules/PrivateRoute";
-import { HomePage, LoginPage, PlatformProject } from "../pages";
+import { HomePage, LoginPage, PlatformProject, PageNotFound } from "../pages";
 
 export const appRoutes = [
   {
@@ -22,6 +22,6 @@ export const appRoutes = [
   },
   {
     path: "*",
-    element: <p>Page not found</p>, // Handling invalid routes
+    element: <PageNotFound />, // Handling invalid routes
   },
 ];
