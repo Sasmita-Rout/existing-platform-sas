@@ -1,5 +1,6 @@
 import PrivateRoute from "../modules/PrivateRoute";
-import { HomePage, LoginPage, PlatformProject, PageNotFound } from "../pages";
+import { HomePage, LoginPage,PMODashboard,Reports, PlatformProject,ValueBoard, PageNotFound } from "../pages";
+import NavBar from "../components/organism/NavBar.jsx";
 
 export const appRoutes = [
   {
@@ -8,20 +9,38 @@ export const appRoutes = [
     index: true,
   },
   {
-    element: <PrivateRoute />, // Protected routes
+    element: <PrivateRoute />,
     children: [
       {
-        path: "/home",
-        element: <HomePage />,
-      },
-      {
-        path: "/PlatformProject",
-        element: <PlatformProject />,
+        path: "/",
+        element: <NavBar/>,
+        children: [
+          {
+            path: "home",
+            element: <HomePage />,
+          },
+          {
+            path: "pmo-dashboard",
+            element: <PMODashboard />,
+          },
+          {
+            path: "reports",
+            element: <Reports />,
+          },
+          {
+            path: "PlatformProject",
+            element: <PlatformProject />,
+          },
+          {
+            path: "value-board",
+            element: <ValueBoard />,
+          },
+        ],
       },
     ],
   },
   {
     path: "*",
-    element: <PageNotFound />, // Handling invalid routes
+    element: <PageNotFound />,
   },
 ];
