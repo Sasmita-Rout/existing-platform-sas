@@ -15,14 +15,6 @@ export default function SectionTwo({ domainInput, applicationInput }) {
 
     return (
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
-            <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[500]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
-                <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
-                    <Typography variant="body2" color="white">2</Typography>
-                </Avatar>
-                <Typography variant="subtitle1" gutterBottom>
-                    <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Domains and Application Class
-                </Typography>
-            </Box>
             <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
                 <Box sx={{ marginRight: 2 }}>
                     <Typography variant="subtitle1" gutterBottom>

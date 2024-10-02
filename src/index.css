@@ -174,3 +174,9 @@ button:focus-visible {
   text-transform: unset !important;
   color: #fff !important;
 }
+
+
+.css-yw020d-MuiAccordionSummary-expandIconWrapper {
+  position: absolute;
+  right: 30px;
+}

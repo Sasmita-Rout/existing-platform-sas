@@ -102,14 +102,6 @@ export default function SectionOne({ buhInput, accountInput, ddInput }) {
                 </Box>
             </Box>
 
-            <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[500]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
-                <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
-                    <Typography variant="body2" color="white">1</Typography>
-                </Avatar>
-                <Typography variant="subtitle1" gutterBottom>
-                    <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Upload SOW
-                </Typography>
-            </Box>
 
             {/* Browse Button and Date Pickers Together */}
             <Box sx={{

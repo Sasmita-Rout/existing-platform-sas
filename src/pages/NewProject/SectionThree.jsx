@@ -50,14 +50,6 @@ export default function SectionThree(props) {
 
     return (
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
-            <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[500]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
-                <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
-                    <Typography variant="body2" color="white">3</Typography>
-                </Avatar>
-                <Typography variant="subtitle1" gutterBottom>
-                    <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Environment, Infrastructure, System Related Info
-                </Typography>
-            </Box>
             <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
                 {inputs.map(({ key, labels }) => (
                     <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
