@@ -16,7 +16,7 @@ const SectionFive = () => {
     setSelectedValue(newValue);
   };
   return (
-    <Box sx={{display:"flex"}}>
+    <Box sx={{ display: "flex" }}>
       <Filter
         input={technologies}
         handleOnSelect={onChangeSingleFilter}
@@ -25,7 +25,7 @@ const SectionFive = () => {
         placeholder="Select User Feedback and Analyst"
         onFocus="Select..."
         onBlur="Select User Feedback and Analyst"
-        showIcon={true} // Show icon for this filter
+        showIcon={false} // Show icon for this filter
       />
       <Filter
         input={technologies}
@@ -35,7 +35,7 @@ const SectionFive = () => {
         placeholder="Select Analytics & Reporting"
         onFocus="Select..."
         onBlur="Select Analytics & Reporting"
-        showIcon={true} // Show icon for this filter
+        showIcon={false} // Show icon for this filter
       />
     </Box>
   );

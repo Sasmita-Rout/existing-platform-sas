@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { Filter } from "../../components/molecules/Filter";
 
 const SectionFour = () => {
-    // console.log(register)
+  // console.log(register)
   const [selectedValue, setSelectedValue] = React.useState(null); // For single select
   const technologies = [
     { title: "Frontend Technology" },
@@ -17,7 +17,7 @@ const SectionFour = () => {
     setSelectedValue(newValue);
   };
   return (
-    <Box sx={{display:"flex"}}>
+    <Box sx={{ display: "flex" }}>
       <Filter
         input={technologies}
         handleOnSelect={onChangeSingleFilter}
@@ -26,8 +26,8 @@ const SectionFour = () => {
         placeholder="Select Manual Testing & Mgmt"
         onFocus="Select..."
         onBlur="Select Manual Testing & Mgmt"
-        showIcon={true} // Show icon for this filter
-        // {...register("manualTesting")}
+        showIcon={false} // Show icon for this filter
+      // {...register("manualTesting")}
       />
       <Filter
         input={technologies}
@@ -37,8 +37,8 @@ const SectionFour = () => {
         placeholder="Select Functional & Integration"
         onFocus="Select..."
         onBlur="Select Functional & Integration"
-        showIcon={true} // Show icon for this filter
-        // {...register("functional")}
+        showIcon={false} // Show icon for this filter
+      // {...register("functional")}
       />
       <Filter
         input={technologies}
@@ -48,8 +48,8 @@ const SectionFour = () => {
         placeholder="Select Performance and Load Testing"
         onFocus="Select..."
         onBlur="Select Performance and Load Testing"
-        showIcon={true} // Show icon for this filter
-        // {...register("performance")}
+        showIcon={false} // Show icon for this filter
+      // {...register("performance")}
       />
       <Filter
         input={technologies}
@@ -59,8 +59,8 @@ const SectionFour = () => {
         placeholder="Select Application Security Testing"
         onFocus="Select..."
         onBlur="Select Application Security Testing"
-        showIcon={true} // Show icon for this filter
-        // {...register("securityTesting")}
+        showIcon={false} // Show icon for this filter
+      // {...register("securityTesting")}
       />
     </Box>
   );

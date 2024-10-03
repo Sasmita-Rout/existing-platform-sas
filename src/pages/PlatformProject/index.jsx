@@ -9,7 +9,7 @@ import { Add, Edit, PieChart } from "@mui/icons-material";
 const PlatformProject = () => {
   const navigate = useNavigate();
 
-  const goToNewProjectPage=()=>{
+  const goToNewProjectPage = () => {
     navigate("/PlatformProject/NewProject");
   }
   const technologies = [

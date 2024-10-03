@@ -1,11 +1,8 @@
 import React from 'react';
-import { Filter } from "../../components/molecules/index";
 import { grey } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { Avatar } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import EmergencyIcon from '@mui/icons-material/Emergency';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
@@ -25,84 +22,13 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-export default function SectionOne({ buhInput, accountInput, ddInput }) {
-    const [buhValue, selectBuhValue] = React.useState(null);
-    const [accountValue, selectAccountValue] = React.useState(null);
-    const [ddValue, selectDdValue] = React.useState(null);
-    const [projectName, setProjectName] = React.useState(null);
+export default function SectionOne() {
     const [startDate, setStartDate] = React.useState(null);
     const [endDate, setEndDate] = React.useState(null);
 
-    const buhFilterPlaceholder = 'Select BUH';
-    const accountFilterPlaceholder = 'Select Account';
-    const ddFilterPlaceholder = 'Select DD';
-    const projectFilterPlaceholder = 'Enter project name here';
 
     return (
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
-            <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-                {/* BUH Filter */}
-                <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" gutterBottom>
-                        <EmergencyIcon style={{ fontSize: "small", color: "red" }} />BUH
-                    </Typography>
-                    <Filter
-                        input={buhInput}
-                        onFocus='Select...'
-                        onBlur={buhFilterPlaceholder}
-                        handleOnSelect={(event, newValue) => selectBuhValue(newValue)}
-                        selectedValues={buhValue}
-                        isMultiSelect={false}
-                        placeholder={buhFilterPlaceholder}
-                        showIcon={false}
-                    />
-                </Box>
-
-                {/* Account Filter */}
-                <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" gutterBottom>
-                        <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Account
-                    </Typography>
-                    <Filter
-                        input={accountInput}
-                        onFocus="Select..."
-                        onBlur={accountFilterPlaceholder}
-                        handleOnSelect={(event, newValue) => selectAccountValue(newValue)}
-                        selectedValues={accountValue}
-                        isMultiSelect={false}
-                        placeholder={accountFilterPlaceholder}
-                        showIcon={false}
-                    />
-                </Box>
-
-                {/* DD Filter */}
-                <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" gutterBottom>
-                        <EmergencyIcon style={{ fontSize: "small", color: "red" }} />DD
-                    </Typography>
-                    <Filter
-                        input={ddInput}
-                        onFocus='Select...'
-                        onBlur={ddFilterPlaceholder}
-                        handleOnSelect={(event, newValue) => selectDdValue(newValue)}
-                        selectedValues={ddValue}
-                        isMultiSelect={false}
-                        placeholder={ddFilterPlaceholder}
-                    />
-                </Box>
-
-                {/* Project Name Filter */}
-                <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" gutterBottom>
-                        <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Project Name
-                    </Typography>
-                    <Box component="form" sx={{ '& > :not(style)': { m: 1, width: '360px' } }} noValidate autoComplete="off">
-                        <TextField id="outlined-basic" placeholder={projectFilterPlaceholder} variant="outlined" onChange={(e) => setProjectName(e.target.value)} />
-                    </Box>
-                </Box>
-            </Box>
-
-
             {/* Browse Button and Date Pickers Together */}
             <Box sx={{
                 display: 'flex',

@@ -1,8 +1,6 @@
 import React from 'react';
 import { Filter } from "../../components/molecules/index";
-import { grey } from '@mui/material/colors';
 import Box from '@mui/material/Box';
-import { Avatar } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import EmergencyIcon from '@mui/icons-material/Emergency';
 

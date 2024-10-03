@@ -27,7 +27,7 @@ export default function SectionThree(props) {
                     <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
                         <Filter
                             input={props[key] || []}
-                            onFocus="Select..." 
+                            onFocus="Select..."
                             onBlur={labels}
                             handleOnSelect={(event, newValue) => handleSelect(key, newValue)}
                             selectedValues={selectedValues[key]}
