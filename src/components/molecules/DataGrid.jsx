@@ -2,13 +2,14 @@ import { Box } from "@mui/material";
 import { DataGrid as MUIDataGrid } from "@mui/x-data-grid";
 
 const DataGrid = ({
-  height,
   rows = [],
   hideFooter,
   columns = [],
   pageSize = 10,
   disableAutosize,
+  height = "auto",
   pagination = true,
+  pageSizeOptions,
   checkboxSelection = false,
 }) => {
   return (
@@ -16,6 +17,7 @@ const DataGrid = ({
       <MUIDataGrid
         rows={rows}
         columns={columns}
+        pageSizeOptions={pageSizeOptions}
         disableAutosize={disableAutosize}
         pagination={pagination}
         hideFooter={hideFooter}

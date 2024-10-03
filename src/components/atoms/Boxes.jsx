@@ -1,22 +1,18 @@
 import { Box, Typography, Container, IconButton, Stack } from "@mui/material";
-import { styled } from '@mui/material/styles';
+import { styled } from "@mui/material/styles";
 import theme from "../../modules/styles/theme";
 
-
 export function Boxes({ boxes = [] }) {
-
-  const Div = styled('div')(({ theme }) => ({
+  const Div = styled("div")(({ theme }) => ({
     ...theme.typography.button,
   }));
 
-  const Btn = styled('div')(({ theme }) => ({
+  const Btn = styled("div")(({ theme }) => ({
     ...theme.typography.button,
   }));
-
-
 
   return (
-    <Div sx={{ display: 'flex' }}>
+    <Div sx={{ display: "flex" }}>
       {boxes?.map((label, i) => (
         <Btn
           className="box-parent"
@@ -27,20 +23,12 @@ export function Boxes({ boxes = [] }) {
             minWidth: "260px",
             border: "1.5px solid black",
             position: "relative",
-            color: theme.palette.grey.main
+            color: theme.palette.grey.main,
           }}
           key={i}
           style={{ borderColor: label.color }}
         >
-          <Box
-            sx={{
-              position: "absolute",
-              right: "15px"
-            }}>
-            <down-arrow />
-            2.3
-          </Box>
-          <Typography variant="h4" >{label.titleNum}</Typography>
+          <Typography variant="h4">{label.titleNum}</Typography>
           <Typography>{label.title}</Typography>
         </Btn>
       ))}
