@@ -7,6 +7,7 @@ import {
   Reports,
   PlatformProject,
   ValueBoard,
+  NewProject,
   PageNotFound,
 } from "../pages";
 

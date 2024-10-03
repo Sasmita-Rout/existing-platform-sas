@@ -14,7 +14,6 @@ function PrimaryButton({ label, icon, sx, onClick }) {
         variant="contained"
         startIcon={icon}
         className="primaryBtn"
-        onClick={onClick}
       >
         {label}
       </Button>

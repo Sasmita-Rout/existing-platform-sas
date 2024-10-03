@@ -222,14 +222,14 @@ const PlatformProject = () => {
 
   return (
     <Box p={2}>
+      <Box p={2}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
           Platform Project Data
         </Typography>
         <PrimaryButton label="Add New Project" icon={<Add />} onClick={() => goToNewProjectPage()} />
       </Stack>
-      <Box p={2}>
-        <Stack
+        {/* <Stack
           direction="row"
           justifyContent="space-between"
           alignItems="center"
@@ -238,7 +238,7 @@ const PlatformProject = () => {
             Platform Project Data
           </Typography>
           <PrimaryButton label="Add New Project" icon={<Add />} />
-        </Stack>
+        </Stack> */}
         <Box p={2}>
           <FilterOptions
             buhInput={technologies}
