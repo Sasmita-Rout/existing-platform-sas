@@ -227,14 +227,14 @@ const PlatformProject = () => {
         <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
           Platform Project Data
         </Typography>
-        <PrimaryButton label="Add New Project" icon={<Add />} onClick={() => goToNewProjectPage()} />
+        <PrimaryButton startIcon={<Add />}  onClick={() => goToNewProjectPage()} >Add New Project</PrimaryButton>
       </Stack>
         {/* <Stack
           direction="row"
-          justifyContent="space-between"
           alignItems="center"
+          justifyContent="space-between"
         >
-          <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
+          <Typography variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
             Platform Project Data
           </Typography>
           <PrimaryButton label="Add New Project" icon={<Add />} />
@@ -246,20 +246,22 @@ const PlatformProject = () => {
             projectInput={technologies}
             ddInput={technologies}
           />
-          <Stack direction="row" justifyContent="space-between">
+          <Stack mt={2} direction="row" justifyContent="space-between">
             <Boxes boxes={boxes} />
             <Stack width={200}>
               <PrimaryButton
-                icon={<PieChart />}
+                startIcon={<PieChart />}
                 sx={{ marginBottom: "4px" }}
-                label={"Platform Related Data Reports"}
                 onClick={() => setPlatFormReport(true)}
-              />
+              >
+                Platform Related Data Reports
+              </PrimaryButton>
               <PrimaryButton
-                icon={<PieChart />}
+                startIcon={<PieChart />}
                 onClick={() => setPlatFormReport(true)}
-                label={"Tools and Metrics Data Reports"}
-              />
+              >
+                Tools and Metrics Data Reports
+              </PrimaryButton>
             </Stack>
           </Stack>
           <Box mb={2}>
@@ -275,6 +277,7 @@ const PlatformProject = () => {
             pagination={false}
             hideFooter={false}
             sx={{ border: "none" }}
+            pageSizeOptions={[5, 10, 15, 20]}
           />
         </Box>
       </Box>
@@ -287,7 +290,7 @@ const PlatformProject = () => {
           <iframe
             width="100%"
             height="100%"
-            src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_yo18qdanid"
+            src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_3bucp9nmjd?embedded=true"
             frameborder="0"
             style={{ border: "0" }}
             allowfullscreen

@@ -5,17 +5,12 @@ const StyledBtn = styled("button")(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
 }));
 
-function PrimaryButton({ label, icon, sx, onClick }) {
+function PrimaryButton(props) {
+  const { children = "", ...restProps } = props;
   return (
     <>
-      <Button
-        sx={sx}
-        onClick={onClick}
-        variant="contained"
-        startIcon={icon}
-        className="primaryBtn"
-      >
-        {label}
+      <Button {...restProps} variant="contained" className="primaryBtn">
+        {children}
       </Button>
     </>
   );
