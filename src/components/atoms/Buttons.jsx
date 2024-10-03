@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import CancelIcon from "@mui/icons-material/Cancel";
 import { styled } from "@mui/material";
 
 const StyledBtn = styled("button")(({ theme }) => ({
@@ -11,6 +10,7 @@ function PrimaryButton({ label, icon, sx, onClick }) {
     <>
       <Button
         sx={sx}
+        onClick={onClick}
         variant="contained"
         startIcon={icon}
         className="primaryBtn"
@@ -22,10 +22,16 @@ function PrimaryButton({ label, icon, sx, onClick }) {
   );
 }
 
-function SecondaryBtn({ label }) {
+function SecondaryBtn({ label, icon, sx, onClick }) {
   return (
     <>
-      <Button variant="outlined" className="secondaryBtn">
+      <Button
+        sx={sx}
+        onClick={onClick}
+        startIcon={icon}
+        variant="outlined"
+        className="secondaryBtn"
+      >
         {label}
       </Button>
     </>

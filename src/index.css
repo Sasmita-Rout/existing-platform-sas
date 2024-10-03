@@ -120,16 +120,6 @@ button:focus-visible {
   /* margin: auto 15px; */
 }
 
-.box-parent {
-  height: 118px;
-  margin: 10px 0px 10px 10px;
-  padding: 16px;
-  min-width: 260px;
-  border: 1.5px solid black;
-  position: relative;
-  color: #626e73;
-}
-
 .box-parent:first-child {
   margin-left: 0;
   border-radius: 5px 0 0 5px;
@@ -146,20 +136,6 @@ button:focus-visible {
   font-weight: normal;
 }
 
-.box-parent p {
-  margin: 0;
-  font-size: 24px;
-  line-height: 20px;
-}
-
-.box-parent span {
-  font-size: 16px;
-}
-
-.percent {
-  position: absolute;
-  right: 15px;
-}
 
 /* Buttons */
 
