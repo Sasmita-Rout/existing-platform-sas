@@ -1,16 +1,13 @@
-import { Box, Typography, Container, IconButton, Stack } from "@mui/material";
-// import FilterBar from "../../components/organisms/FilterBar";
-// import ProjectTable from "../../components/organisms/ProjectTable";
-// import useFetch from "../../hooks/useFetch";
-import { GenericTabs } from "../../components/molecules/GenericTabs";
-import { Boxes, PrimaryButton, SecondaryBtn } from "../../components/atoms";
+import { Box, Typography, IconButton, Stack } from "@mui/material";
+import { Boxes, PrimaryButton } from "../../components/atoms";
 import FilterComponent from "../../modules/FilterComponent";
 import FilterOptions from "../../modules/FilterOptions";
-import { DataGrid } from "../../components/molecules";
+import { DataGrid, DialogBox } from "../../components/molecules";
 import { Add, Edit, PieChart } from "@mui/icons-material";
+import { useState } from "react";
 
 const PlatformProject = () => {
-  // useFetch();
+  const [openPlatFormReport, setPlatFormReport] = useState(false);
   const technologies = [
     { title: "Frontend Technology" },
     { title: "Domain" },
@@ -218,50 +215,75 @@ const PlatformProject = () => {
   ];
 
   return (
-    <Box p={2}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-          Platform Project Data
-        </Typography>
-        <PrimaryButton label="Add New Project" icon={<Add />} />
-      </Stack>
+    <>
       <Box p={2}>
-        <FilterOptions
-          buhInput={technologies}
-          accountInput={technologies}
-          projectInput={technologies}
-          ddInput={technologies}
-        />
-        <Stack direction="row" justifyContent="space-between">
-          <Boxes boxes={boxes} />
-          <Stack width={200}>
-            <PrimaryButton
-              sx={{ marginBottom: "4px" }}
-              icon={<PieChart />}
-              label={"Platform Related Data Reports"}
-            />
-            <PrimaryButton
-              label={"Tools and Metrics Data Reports"}
-              icon={<PieChart />}
-            />
-          </Stack>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
+            Platform Project Data
+          </Typography>
+          <PrimaryButton label="Add New Project" icon={<Add />} />
         </Stack>
-        <Box mb={2}>
-          <FilterComponent
-            technologyInput={technologies}
-            languageInput={languages}
+        <Box p={2}>
+          <FilterOptions
+            buhInput={technologies}
+            accountInput={technologies}
+            projectInput={technologies}
+            ddInput={technologies}
+          />
+          <Stack direction="row" justifyContent="space-between">
+            <Boxes boxes={boxes} />
+            <Stack width={200}>
+              <PrimaryButton
+                icon={<PieChart />}
+                sx={{ marginBottom: "4px" }}
+                label={"Platform Related Data Reports"}
+                onClick={() => setPlatFormReport(true)}
+              />
+              <PrimaryButton
+                icon={<PieChart />}
+                onClick={() => setPlatFormReport(true)}
+                label={"Tools and Metrics Data Reports"}
+              />
+            </Stack>
+          </Stack>
+          <Box mb={2}>
+            <FilterComponent
+              technologyInput={technologies}
+              languageInput={languages}
+            />
+          </Box>
+
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pagination={false}
+            hideFooter={false}
+            sx={{ border: "none" }}
           />
         </Box>
-
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          pagination={false}
-          hideFooter={false}
-          sx={{ border: "none" }}
-        />
       </Box>
-    </Box>
+      <DialogBox
+        size="xl"
+        openDialog={openPlatFormReport}
+        closeDialog={() => setPlatFormReport(false)}
+      >
+        <Box height={"60vh"}>
+          <iframe
+            width="100%"
+            height="100%"
+            src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_yo18qdanid"
+            frameborder="0"
+            style={{ border: "0" }}
+            allowfullscreen
+            sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+          ></iframe>
+        </Box>
+      </DialogBox>
+    </>
   );
 };
 

@@ -10,9 +10,9 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import LayersIcon from "@mui/icons-material/Layers";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { Outlet } from "react-router-dom";
-import NavItem from "../molecules/NavItem";
 import logo from "../../assets/images/logo.png";
 import logo_header from "../../assets/images/accionlabs-icon.png";
+import { NavItem } from "../../components/organism";
 
 const NAVIGATION = [
   { title: "Home", icon: <HomeIcon />, path: "/home" },
@@ -49,7 +49,7 @@ const NavBar = () => {
             display: "flex",
             justifyContent: isExpanded ? "flex-end" : "center",
             padding: "10px",
-            backgroundColor: "#fafbfc"
+            backgroundColor: "#fafbfc",
           }}
         >
           <IconButton onClick={toggleDrawer}>

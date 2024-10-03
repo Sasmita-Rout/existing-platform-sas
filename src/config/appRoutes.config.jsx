@@ -1,6 +1,14 @@
+import NavBar from "../modules/NavBar";
 import PrivateRoute from "../modules/PrivateRoute";
-import { HomePage, LoginPage,PMODashboard,Reports, PlatformProject,ValueBoard, PageNotFound } from "../pages";
-import NavBar from "../components/organism/NavBar.jsx";
+import {
+  HomePage,
+  LoginPage,
+  PMODashboard,
+  Reports,
+  PlatformProject,
+  ValueBoard,
+  PageNotFound,
+} from "../pages";
 
 export const appRoutes = [
   {
@@ -13,7 +21,7 @@ export const appRoutes = [
     children: [
       {
         path: "/",
-        element: <NavBar/>,
+        element: <NavBar />,
         children: [
           {
             path: "home",
