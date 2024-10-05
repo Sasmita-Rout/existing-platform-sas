@@ -52,7 +52,7 @@ export default function SectionOne() {
                     <CloudUploadOutlinedIcon style={{ marginBottom: "10px", fontSize: "40px", color: `red` }} />
                     <Typography style={{ marginBottom: "3px", fontSize: "15px" }}>Select your file or drag and drop</Typography>
                     <Typography style={{ marginBottom: "10px", fontSize: "15px" }}>(pdf, jpg, docx accepted)</Typography>
-                    <Button sx={{ padding: '10px' }} component="label" variant="contained">
+                    <Button sx={{ padding: '10px', backgroundColor: "#0E5FD9" }} component="label" variant="contained">
                         Browse
                         <VisuallyHiddenInput type="file" onChange={(event) => console.log(event.target.files)} multiple />
                     </Button>

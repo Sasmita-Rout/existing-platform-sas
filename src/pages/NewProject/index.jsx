@@ -12,15 +12,14 @@ import SectionThree from "./SectionThree";
 import SectionFour from "./SectionFour";
 import SectionFive from "./SectionFive";
 import SectionSix from "./SectionSix";
+import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 
 const NewProject = () => {
-  const newProjectForm = useForm();
   const form = useForm();
-  const register = form;
   const navigate = useNavigate();
 
   const goToPlatformPage = () => {
@@ -78,13 +77,14 @@ const NewProject = () => {
 
             <Button
               variant="contained"
-              sx={{ textTransform: "none" }}
+              sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
             >
               Submit
             </Button>
           </Stack>
         </Stack>
 
+        <Accordion>
         <AccordionDetails>
           <Section buhInput={buhInput}
             accountInput={accountInput}
@@ -105,12 +105,15 @@ const NewProject = () => {
             </Typography>
           </Box>
         </AccordionSummary>
+        
+        
         <AccordionDetails>
-          <SectionOne
-          />
+          <SectionOne />
         </AccordionDetails>
+        </Accordion>
         {/* <Accordion defaultExpanded> */}
         {/* Section Two */}
+        <Accordion defaultExpanded>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1-content"
@@ -133,8 +136,9 @@ const NewProject = () => {
             applicationInput={accountInput}
           />
         </AccordionDetails>
+        </Accordion>
         {/* </Accordion> */}
-        {/* <Accordion defaultExpanded> */}
+        <Accordion defaultExpanded>
         {/* Section Three */}
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -185,8 +189,8 @@ const NewProject = () => {
             tracing={cloudTechnologies}
           />
         </AccordionDetails>
-        {/* </Accordion> */}
-        {/* <Accordion defaultExpanded> */}
+        </Accordion>
+        <Accordion defaultExpanded>
         {/* Section Four */}
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
@@ -206,9 +210,9 @@ const NewProject = () => {
         <AccordionDetails>
           <SectionFour />
         </AccordionDetails>
-        {/* </Accordion> */}
+        </Accordion>
         {/* Section Five */}
-        {/* <Accordion defaultExpanded> */}
+        <Accordion defaultExpanded>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2-content"
@@ -227,9 +231,9 @@ const NewProject = () => {
         <AccordionDetails>
           <SectionFive />
         </AccordionDetails>
-        {/* </Accordion> */}
+        </Accordion>
         {/* Section Six */}
-        {/* <Accordion defaultExpanded> */}
+        <Accordion defaultExpanded>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2-content"
@@ -248,7 +252,7 @@ const NewProject = () => {
         <AccordionDetails>
           <SectionSix inMemoryDbs={cloudTechnologies} />
         </AccordionDetails>
-        {/* </Accordion> */}
+        </Accordion>
       </div>
 
 
