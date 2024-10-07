@@ -16,9 +16,17 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useState } from "react";
+import { DialogBox } from "../../components/molecules";
+import {
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 
 
 const NewProject = () => {
+  const [openPlatFormReport, setPlatFormReport] = useState(false);
   const form = useForm();
   const navigate = useNavigate();
 
@@ -55,7 +63,45 @@ const NewProject = () => {
 
   return (
     <>
-      <div>
+      
+      <DialogBox
+        size="sm"
+        actions={true}
+        buttonAlignment = "center"
+        openDialog={openPlatFormReport}
+        closeDialog={() => setPlatFormReport(false)}
+      >
+        <DialogTitle sx={{textAlign:"center", color:"#D94A56"}}>Cancel Alert</DialogTitle>
+        <DialogContent sx={{alignItems:"center"}}>Are you sure you want to cancel adding this project?</DialogContent>
+        <Box sx={{alignItems:"center"}}>
+        <Button
+              variant="outlined"
+              sx={{
+                color: `${grey[600]}`,
+                borderColor: `${grey[400]}`,
+                fontWeight: "bold",
+                textTransform: "none",
+                alignItems:"center",
+                marginRight: "15px"
+              }}
+              // onClick={() => goToPlatformPage()}
+              onClick={() => setPlatFormReport(false)}
+              
+            >
+              No, Continue
+            </Button>
+            <Button
+              variant="contained"
+
+              sx={{ textTransform: "none", backgroundColor: "#0E5FD9", alignItems:"center" }}
+              onClick={() => goToPlatformPage()}
+            >
+              Yes, Cancel
+            </Button>
+        </Box>
+
+        
+      </DialogBox>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
             New Project
@@ -70,7 +116,9 @@ const NewProject = () => {
                 fontWeight: "bold",
                 textTransform: "none"
               }}
-              onClick={() => goToPlatformPage()}
+              // onClick={() => goToPlatformPage()}
+              onClick={() => setPlatFormReport(true)}
+              
             >
               Cancel
             </Button>
@@ -253,7 +301,7 @@ const NewProject = () => {
             <SectionSix inMemoryDbs={cloudTechnologies} />
           </AccordionDetails>
         </Accordion>
-      </div>
+      
 
 
 
