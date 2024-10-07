@@ -63,257 +63,292 @@ const NewProject = () => {
 
   return (
     <>
-      
+
       <DialogBox
         size="sm"
         actions={true}
-        buttonAlignment = "center"
+        buttonAlignment="center"
         openDialog={openPlatFormReport}
         closeDialog={() => setPlatFormReport(false)}
       >
-        <DialogTitle sx={{textAlign:"center", color:"#D94A56"}}>Cancel Alert</DialogTitle>
-        <DialogContent sx={{alignItems:"center"}}>Are you sure you want to cancel adding this project?</DialogContent>
-        <Box sx={{alignItems:"center"}}>
-        <Button
-              variant="outlined"
-              sx={{
-                color: `${grey[600]}`,
-                borderColor: `${grey[400]}`,
-                fontWeight: "bold",
-                textTransform: "none",
-                alignItems:"center",
-                marginRight: "15px"
-              }}
-              // onClick={() => goToPlatformPage()}
-              onClick={() => setPlatFormReport(false)}
-              
-            >
-              No, Continue
-            </Button>
-            <Button
-              variant="contained"
+        <DialogTitle sx={{ textAlign: "center", color: "#D94A56" }}>Cancel Alert</DialogTitle>
+        <DialogContent sx={{ alignItems: "center" }}>Are you sure you want to cancel adding this project?</DialogContent>
+        <Box sx={{ alignItems: "center" }}>
+          <Button
+            variant="outlined"
+            sx={{
+              color: `${grey[600]}`,
+              borderColor: `${grey[400]}`,
+              fontWeight: "bold",
+              textTransform: "none",
+              alignItems: "center",
+              marginRight: "15px"
+            }}
+            // onClick={() => goToPlatformPage()}
+            onClick={() => setPlatFormReport(false)}
 
-              sx={{ textTransform: "none", backgroundColor: "#0E5FD9", alignItems:"center" }}
-              onClick={() => goToPlatformPage()}
-            >
-              Yes, Cancel
-            </Button>
+          >
+            No, Continue
+          </Button>
+          <Button
+            variant="contained"
+
+            sx={{ textTransform: "none", backgroundColor: "#0E5FD9", alignItems: "center" }}
+            onClick={() => goToPlatformPage()}
+          >
+            Yes, Cancel
+          </Button>
         </Box>
 
-        
+
       </DialogBox>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-            New Project
-          </Typography>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
+          New Project
+        </Typography>
 
-          <Stack direction="row" spacing={2} alignItems="center" sx={{ marginRight: 30 }}>
-            <Button
-              variant="outlined"
-              sx={{
-                color: `${grey[600]}`,
-                borderColor: `${grey[400]}`,
-                fontWeight: "bold",
-                textTransform: "none"
-              }}
-              // onClick={() => goToPlatformPage()}
-              onClick={() => setPlatFormReport(true)}
-              
-            >
-              Cancel
-            </Button>
+        <Stack direction="row" spacing={2} alignItems="center" sx={{ marginRight: 30 }}>
+          <Button
+            variant="outlined"
+            sx={{
+              color: `${grey[600]}`,
+              borderColor: `${grey[400]}`,
+              fontWeight: "bold",
+              textTransform: "none"
+            }}
+            // onClick={() => goToPlatformPage()}
+            onClick={() => setPlatFormReport(true)}
 
-            <Button
-              variant="contained"
-              sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
-            >
-              Submit
-            </Button>
-          </Stack>
+          >
+            Cancel
+          </Button>
+
+          <Button
+            variant="contained"
+            sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
+          >
+            Submit
+          </Button>
         </Stack>
+      </Stack>
 
-        <Accordion>
-          <AccordionDetails>
-            <Section buhInput={buhInput}
-              accountInput={accountInput}
-              ddInput={ddInput} />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1-content"
-            id="panel1-header"
-          >
-            <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
-              <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
-                <Typography variant="body" color="white">1</Typography>
-              </Avatar>
-              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
-                <EmergencyIcon style={{ fontSize: "small", color: "red" }} />
-                Upload SOW
-              </Typography>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <SectionOne />
-          </AccordionDetails>
-        </Accordion>
-        {/* <Accordion defaultExpanded> */}
-        {/* Section Two */}
-        <Accordion defaultExpanded>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1-content"
-            id="panel1-header"
-          >
-            {/* <Typography>Expanded by default</Typography> */}
-            <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
-              <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
-                <Typography variant="body" color="white">2</Typography>
-              </Avatar>
-              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
-                {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
-                Domains and Application Class
-              </Typography>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <SectionTwo
-              domainInput={buhInput}
-              applicationInput={accountInput}
-            />
-          </AccordionDetails>
-        </Accordion>
-        {/* </Accordion> */}
-        <Accordion defaultExpanded>
-          {/* Section Three */}
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1-content"
-            id="panel1-header"
-          >
-            {/* <Typography>Expanded by default</Typography> */}
-            <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
-              <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
-                <Typography variant="body" color="white">3</Typography>
-              </Avatar>
-              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
-                {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
-                Environment, Infrastructure, System Related Info
-              </Typography>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <SectionThree
-              environmentInput={cloudTechnologies}
-              cloudTechnologies={cloudTechnologies}
-              enterprisePlatforms={cloudTechnologies}
-              etlAndMdmTools={cloudTechnologies}
-              devops={cloudTechnologies}
-              lowCodeEnv={cloudTechnologies}
-              vcs={cloudTechnologies}
-              edgeComputing={cloudTechnologies}
-              relationalDb={cloudTechnologies}
-              nosqlDb={cloudTechnologies}
-              inMemoryDbs={cloudTechnologies}
-              mobileCloudComputing={cloudTechnologies}
-              systemMonitoringAndPerformance={cloudTechnologies}
-              directoryServices={cloudTechnologies}
-              ides={cloudTechnologies}
-              cmsApp={cloudTechnologies}
-              iPaas={cloudTechnologies}
-              frontendDevelopment={cloudTechnologies}
-              serverSide={cloudTechnologies}
-              fullStack={cloudTechnologies}
-              mobileDevelopment={cloudTechnologies}
-              apiDevelopment={cloudTechnologies}
-              applicationIntegrationTools={cloudTechnologies}
-              unitTestingFrameworks={cloudTechnologies}
-              programmingLanguages={cloudTechnologies}
-              codeQualityTools={cloudTechnologies}
-              testCoverage={cloudTechnologies}
-              productivityMeasurement={cloudTechnologies}
-              tracing={cloudTechnologies}
-            />
-          </AccordionDetails>
-        </Accordion>
-        <Accordion defaultExpanded>
-          {/* Section Four */}
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1-content"
-            id="panel1-header"
-          >
-            <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
-              <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
-                <Typography variant="body" color="white">4</Typography>
-              </Avatar>
-              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
-                {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
-                QA & DevOps
-              </Typography>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <SectionFour  
-              // SelectManualTestingMgmt={SelectManualTestingMgmt}
-              // FunctionalandIntegration={FunctionalandIntegration}
-              // PerformanceandLoadTest={PerformanceandLoadTest}
-              // ApplicationSecurityTesting={ApplicationSecurityTesting}
+      <Accordion sx={{
+        boxShadow: 'none', // Remove shadow
+        '&:before': {
+          display: 'none', // Remove divider line between sections
+        }
+      }}>
+        <AccordionDetails>
+          <Section buhInput={buhInput}
+            accountInput={accountInput}
+            ddInput={ddInput} />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion defaultExpanded sx={{
+        boxShadow: 'none', // Remove shadow
+        '&:before': {
+          display: 'none', // Remove divider line between sections
+        }
+      }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
+            <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
+              <Typography variant="body" color="white">1</Typography>
+            </Avatar>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
+              <EmergencyIcon style={{ fontSize: "small", color: "red" }} />
+              Upload SOW
+            </Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          <SectionOne />
+        </AccordionDetails>
+      </Accordion>
+      {/* <Accordion defaultExpanded> */}
+      {/* Section Two */}
+      <Accordion defaultExpanded sx={{
+        boxShadow: 'none', // Remove shadow
+        '&:before': {
+          display: 'none', // Remove divider line between sections
+        }
+      }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          {/* <Typography>Expanded by default</Typography> */}
+          <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
+            <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
+              <Typography variant="body" color="white">2</Typography>
+            </Avatar>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
+              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
+              Domains and Application Class
+            </Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          <SectionTwo
+            domainInput={buhInput}
+            applicationInput={accountInput}
+          />
+        </AccordionDetails>
+      </Accordion>
+      {/* </Accordion> */}
+      <Accordion defaultExpanded sx={{
+        boxShadow: 'none', // Remove shadow
+        '&:before': {
+          display: 'none', // Remove divider line between sections
+        }
+      }}>
+        {/* Section Three */}
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          {/* <Typography>Expanded by default</Typography> */}
+          <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
+            <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
+              <Typography variant="body" color="white">3</Typography>
+            </Avatar>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
+              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
+              Environment, Infrastructure, System Related Info
+            </Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          <SectionThree
+            environmentInput={cloudTechnologies}
+            cloudTechnologies={cloudTechnologies}
+            enterprisePlatforms={cloudTechnologies}
+            etlAndMdmTools={cloudTechnologies}
+            devops={cloudTechnologies}
+            lowCodeEnv={cloudTechnologies}
+            vcs={cloudTechnologies}
+            edgeComputing={cloudTechnologies}
+            relationalDb={cloudTechnologies}
+            nosqlDb={cloudTechnologies}
+            inMemoryDbs={cloudTechnologies}
+            mobileCloudComputing={cloudTechnologies}
+            systemMonitoringAndPerformance={cloudTechnologies}
+            directoryServices={cloudTechnologies}
+            ides={cloudTechnologies}
+            cmsApp={cloudTechnologies}
+            iPaas={cloudTechnologies}
+            frontendDevelopment={cloudTechnologies}
+            serverSide={cloudTechnologies}
+            fullStack={cloudTechnologies}
+            mobileDevelopment={cloudTechnologies}
+            apiDevelopment={cloudTechnologies}
+            applicationIntegrationTools={cloudTechnologies}
+            unitTestingFrameworks={cloudTechnologies}
+            programmingLanguages={cloudTechnologies}
+            codeQualityTools={cloudTechnologies}
+            testCoverage={cloudTechnologies}
+            productivityMeasurement={cloudTechnologies}
+            tracing={cloudTechnologies}
+          />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion defaultExpanded sx={{
+        boxShadow: 'none', // Remove shadow
+        '&:before': {
+          display: 'none', // Remove divider line between sections
+        }
+      }}>
+        {/* Section Four */}
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
+            <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
+              <Typography variant="body" color="white">4</Typography>
+            </Avatar>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
+              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
+              QA & DevOps
+            </Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          <SectionFour
+            // SelectManualTestingMgmt={SelectManualTestingMgmt}
+            // FunctionalandIntegration={FunctionalandIntegration}
+            // PerformanceandLoadTest={PerformanceandLoadTest}
+            // ApplicationSecurityTesting={ApplicationSecurityTesting}
 
-              SelectManualTestingMgmt={cloudTechnologies}
-              FunctionalandIntegration={cloudTechnologies}
-              PerformanceandLoadTest={cloudTechnologies}
-              ApplicationSecurityTesting={cloudTechnologies}
-            />
-          </AccordionDetails>
-        </Accordion>
-        {/* Section Five */}
-        <Accordion defaultExpanded>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel2-content"
-            id="panel2-header"
-          >
-            <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
-              <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
-                <Typography variant="body" color="white">5</Typography>
-              </Avatar>
-              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
-                {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
-                BI and Marketing
-              </Typography>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <SectionFive 
+            SelectManualTestingMgmt={cloudTechnologies}
+            FunctionalandIntegration={cloudTechnologies}
+            PerformanceandLoadTest={cloudTechnologies}
+            ApplicationSecurityTesting={cloudTechnologies}
+          />
+        </AccordionDetails>
+      </Accordion>
+      {/* Section Five */}
+      <Accordion defaultExpanded sx={{
+        boxShadow: 'none', // Remove shadow
+        '&:before': {
+          display: 'none', // Remove divider line between sections
+        }
+      }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2-content"
+          id="panel2-header"
+        >
+          <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
+            <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
+              <Typography variant="body" color="white">5</Typography>
+            </Avatar>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
+              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
+              BI and Marketing
+            </Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          <SectionFive
             AnalyticsReporting={cloudTechnologies}
-            SelectUserFeedbackandAnalytics={cloudTechnologies}/>
-          </AccordionDetails>
-        </Accordion>
-        {/* Section Six */}
-        <Accordion defaultExpanded>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel2-content"
-            id="panel2-header"
-          >
-            <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
-              <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
-                <Typography variant="body" color="white">6</Typography>
-              </Avatar>
-              <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
-                {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
-                AI and Machine Learning Technologies
-              </Typography>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <SectionSix inMemoryDbs={cloudTechnologies} />
-          </AccordionDetails>
-        </Accordion>
-      
+            SelectUserFeedbackandAnalytics={cloudTechnologies} />
+        </AccordionDetails>
+      </Accordion>
+      {/* Section Six */}
+      <Accordion defaultExpanded sx={{
+        boxShadow: 'none', // Remove shadow
+        '&:before': {
+          display: 'none', // Remove divider line between sections
+        }
+      }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2-content"
+          id="panel2-header"
+        >
+          <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
+            <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
+              <Typography variant="body" color="white">6</Typography>
+            </Avatar>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
+              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
+              AI and Machine Learning Technologies
+            </Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          <SectionSix inMemoryDbs={cloudTechnologies} />
+        </AccordionDetails>
+      </Accordion>
+
 
 
 
