@@ -256,7 +256,17 @@ const NewProject = () => {
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            <SectionFour />
+            <SectionFour  
+              // SelectManualTestingMgmt={SelectManualTestingMgmt}
+              // FunctionalandIntegration={FunctionalandIntegration}
+              // PerformanceandLoadTest={PerformanceandLoadTest}
+              // ApplicationSecurityTesting={ApplicationSecurityTesting}
+
+              SelectManualTestingMgmt={cloudTechnologies}
+              FunctionalandIntegration={cloudTechnologies}
+              PerformanceandLoadTest={cloudTechnologies}
+              ApplicationSecurityTesting={cloudTechnologies}
+            />
           </AccordionDetails>
         </Accordion>
         {/* Section Five */}
@@ -277,7 +287,9 @@ const NewProject = () => {
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            <SectionFive />
+            <SectionFive 
+            AnalyticsReporting={cloudTechnologies}
+            SelectUserFeedbackandAnalytics={cloudTechnologies}/>
           </AccordionDetails>
         </Accordion>
         {/* Section Six */}
