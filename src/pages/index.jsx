@@ -5,5 +5,6 @@ import Reports from "./Reports";
 import PlatformProject from "./PlatformProject";
 import ValueBoard from "./ValueBoard";
 import PageNotFound from "./PageNotFound";
+import NewProject from "./NewProject";
 
-export { LoginPage, HomePage,PMODashboard,Reports, PlatformProject,ValueBoard, PageNotFound };
+export { LoginPage, HomePage, PMODashboard, Reports, PlatformProject, ValueBoard, PageNotFound, NewProject };
