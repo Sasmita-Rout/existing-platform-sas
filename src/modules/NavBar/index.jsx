@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Drawer, List, Box, IconButton, Divider, Avatar } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
@@ -24,10 +25,14 @@ const NAVIGATION = [
 
 const NavBar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const currentPath = window.location.pathname;
-
+  const navigate = useNavigate();
+  const location = useLocation();
   const toggleDrawer = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  const handleNavItemClick = (path) => {
+    navigate(path);
   };
 
   return (
@@ -52,33 +57,25 @@ const NavBar = () => {
             backgroundColor: "#fafbfc",
           }}
         >
-          <IconButton onClick={toggleDrawer}>
+          <img
+            src={isExpanded ? logo_header : logo}
+            alt="Logo"
+            style={{
+              background: "white",
+              marginLeft: "8px",
+              width: isExpanded ? "200px" : "40px",
+              height: isExpanded ? "auto" : "30px",
+              transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
+            }}
+          />
+          <IconButton  onClick={toggleDrawer}>
             {isExpanded ? (
               <MenuOpenIcon style={{ color: "black" }} />
             ) : (
               <MenuIcon style={{ color: "black" }} />
             )}
           </IconButton>
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            paddingBottom: "20px",
-          }}
-        >
-          <img
-            src={isExpanded ? logo_header : logo}
-            alt="Logo"
-            style={{
-              background: "white",
-              width: isExpanded ? "250px" : "80px",
-              height: isExpanded ? "auto" : "60px",
-              transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
-            }}
-          />
-        </Box>
+        </Box> 
 
         <List>
           {NAVIGATION.map((item) => (
@@ -88,16 +85,15 @@ const NavBar = () => {
               title={item.title}
               path={item.path}
               isExpanded={isExpanded}
-              currentPath={currentPath}
+              isActive={location.pathname === item.path}
+              onClick={() => handleNavItemClick(item.path)}
             />
           ))}
         </List>
-
         <Divider />
-
         <List sx={{ marginTop: "auto" }}>
           <Box
-            sx={{ display: "flex", justifyContent: "center", padding: "20px" }}
+            sx={{ display: "flex", justifyContent: "center",alignItems:'center', padding: "20px" }}
           >
             <Avatar
               alt="User Avatar"
@@ -105,7 +101,7 @@ const NavBar = () => {
               sx={{
                 width: isExpanded ? 56 : 32,
                 height: isExpanded ? 56 : 32,
-                transition: "width 0.3s ease-in-out",
+                transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
               }}
             />
           </Box>
@@ -115,7 +111,8 @@ const NavBar = () => {
             title="Notifications"
             path="#notifications"
             isExpanded={isExpanded}
-            currentPath={currentPath}
+            isActive={false}
+            onClick={() => {}}
           />
 
           <NavItem
@@ -123,7 +120,8 @@ const NavBar = () => {
             title="Logout"
             path="#logout"
             isExpanded={isExpanded}
-            currentPath={currentPath}
+            isActive={false}
+            onClick={() => {}}
           />
         </List>
       </Drawer>

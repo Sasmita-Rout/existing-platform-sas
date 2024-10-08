@@ -1,23 +1,26 @@
 import React from "react";
 import { ListItem, ListItemIcon, ListItemText } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-
-const NavItem = ({ icon, title, path, isExpanded, currentPath }) => {
-  const navigate = useNavigate();
-
-  const handleNavigation = () => {
-    navigate(path);
-  };
-
+const NavItem = ({
+  icon,
+  title,
+  path,
+  isExpanded,
+  currentPath,
+  isActive,
+  onClick,
+}) => {
   return (
     <ListItem
       button
-      onClick={handleNavigation}
+      onClick={onClick}
       sx={{
+        cursor: "pointer",
         "&:hover": {
-          backgroundColor: "#e57373",
+          backgroundColor: "#d1d1d1",
         },
-        backgroundColor: currentPath === path ? "#ef5350" : "transparent",
+        backgroundColor: isActive ? "#e57373" : "transparent",
+        color: isActive ? "white" : "inherit",
+        transition: "background-color 0.3s ease-in-out",
       }}
     >
       <ListItemIcon sx={{ color: "white" }}>{icon}</ListItemIcon>
@@ -25,5 +28,4 @@ const NavItem = ({ icon, title, path, isExpanded, currentPath }) => {
     </ListItem>
   );
 };
-
 export default NavItem;
