@@ -7,6 +7,7 @@ import {
   Reports,
   PlatformProject,
   ValueBoard,
+  NewProject,
   PageNotFound,
 } from "../pages";
 
@@ -45,6 +46,10 @@ export const appRoutes = [
           },
         ],
       },
+      {
+        path: "/PlatformProject/NewProject",
+        element: <NewProject />
+      }
     ],
   },
   {

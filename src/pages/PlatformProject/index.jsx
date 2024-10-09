@@ -1,4 +1,5 @@
-import { Box, Typography, IconButton, Stack } from "@mui/material";
+import { Box, Typography, Container, IconButton, Stack } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 import { Boxes, PrimaryButton } from "../../components/atoms";
 import FilterComponent from "../../modules/FilterComponent";
 import FilterOptions from "../../modules/FilterOptions";
@@ -7,6 +8,11 @@ import { Add, Edit, PieChart } from "@mui/icons-material";
 import { useState } from "react";
 
 const PlatformProject = () => {
+  const navigate = useNavigate();
+
+  const goToNewProjectPage = () => {
+    navigate("/PlatformProject/NewProject");
+  }
   const [openPlatFormReport, setPlatFormReport] = useState(false);
   const technologies = [
     { title: "Frontend Technology" },
@@ -215,9 +221,15 @@ const PlatformProject = () => {
   ];
 
   return (
-    <>
+    <Box p={2}>
       <Box p={2}>
-        <Stack
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
+          Platform Project Data
+        </Typography>
+        <PrimaryButton startIcon={<Add />}  onClick={() => goToNewProjectPage()} >Add New Project</PrimaryButton>
+      </Stack>
+        {/* <Stack
           direction="row"
           alignItems="center"
           justifyContent="space-between"
@@ -225,9 +237,9 @@ const PlatformProject = () => {
           <Typography variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
             Platform Project Data
           </Typography>
-          <PrimaryButton startIcon={<Add />}>Add New Project</PrimaryButton>
-        </Stack>
-        <Box pt={2}>
+          <PrimaryButton label="Add New Project" icon={<Add />} />
+        </Stack> */}
+        <Box p={2}>
           <FilterOptions
             buhInput={technologies}
             accountInput={technologies}
@@ -286,7 +298,7 @@ const PlatformProject = () => {
           ></iframe>
         </Box>
       </DialogBox>
-    </>
+    </Box>
   );
 };
 
