@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Drawer, List, Box, IconButton, Divider, Avatar } from "@mui/material";
+import {
+  Drawer,
+  List,
+  Box,
+  IconButton,
+  Divider,
+  Avatar,
+  Typography,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -10,10 +18,11 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import LayersIcon from "@mui/icons-material/Layers";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { Outlet } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import logo_header from "../../assets/images/accionlabs-icon.png";
 import { NavItem } from "../../components/organism";
+import { useUserStore } from "../../zustand/index";
+import { googleLogout } from "@react-oauth/google";
 
 const NAVIGATION = [
   { title: "Home", icon: <HomeIcon />, path: "/home" },
@@ -23,12 +32,21 @@ const NAVIGATION = [
   { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" },
 ];
 
-const NavBar = () => {
+const NavBar = ({ onExpand }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { user, logout } = useUserStore();
+  const handleLogout = () => {
+    googleLogout();
+    logout();
+    navigate("/login");
+  };
+
   const toggleDrawer = () => {
     setIsExpanded(!isExpanded);
+    onExpand(!isExpanded);
   };
 
   const handleNavItemClick = (path) => {
@@ -68,14 +86,14 @@ const NavBar = () => {
               transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
             }}
           />
-          <IconButton  onClick={toggleDrawer}>
+          <IconButton onClick={toggleDrawer}>
             {isExpanded ? (
               <MenuOpenIcon style={{ color: "black" }} />
             ) : (
               <MenuIcon style={{ color: "black" }} />
             )}
           </IconButton>
-        </Box> 
+        </Box>
 
         <List>
           {NAVIGATION.map((item) => (
@@ -93,18 +111,36 @@ const NavBar = () => {
         <Divider />
         <List sx={{ marginTop: "auto" }}>
           <Box
-            sx={{ display: "flex", justifyContent: "center",alignItems:'center', padding: "20px" }}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "20px",
+            }}
           >
             <Avatar
+              src={user?.picture || "default-avatar-url.png"}
               alt="User Avatar"
-              src={"https://your-avatar-url.com/avatar.png"}
               sx={{
                 width: isExpanded ? 56 : 32,
                 height: isExpanded ? 56 : 32,
+                borderRadius: "50%",
                 transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
               }}
             />
           </Box>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#fff",
+              textAlign: "center",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {user?.name || "Guest"}
+          </Typography>
 
           <NavItem
             icon={<NotificationsIcon />}
@@ -121,21 +157,10 @@ const NavBar = () => {
             path="#logout"
             isExpanded={isExpanded}
             isActive={false}
-            onClick={() => {}}
+            onClick={handleLogout}
           />
         </List>
       </Drawer>
-      <Box
-        sx={{
-          flexGrow: 1,
-          marginLeft: isExpanded ? 32 : 8,
-          padding: 3,
-          transition: "margin-left 0.3s ease-in-out",
-          // overflowX: "hidden",
-        }}
-      >
-        <Outlet />
-      </Box>
     </Box>
   );
 };
