@@ -5,7 +5,8 @@ import FilterComponent from "../../modules/FilterComponent";
 import FilterOptions from "../../modules/FilterOptions";
 import { DataGrid, DialogBox } from "../../components/molecules";
 import { Add, Edit, PieChart } from "@mui/icons-material";
-import { useState } from "react";
+import fetchRecords from "../../components/apiServices/FetchRecords";
+import { useEffect, useState } from "react";
 
 const PlatformProject = () => {
   const navigate = useNavigate();
@@ -14,6 +15,46 @@ const PlatformProject = () => {
     navigate("/PlatformProject/NewProject");
   }
   const [openPlatFormReport, setPlatFormReport] = useState(false);
+  const [accountName, setAccountName] = useState([])
+  const [projectName, setProjectName] = useState([])
+  const [buhName, setBuhName] = useState([])
+  const [ddName, setDdName] = useState([])
+
+
+
+  const typeOfDropdown = ["account_name", "project_name", "buh_name", "dd_name"]
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const promises = typeOfDropdown.map(async (item) => {
+          const response = await fetchRecords(item, null, false, false);
+          return { item, response };
+        });
+
+        const results = await Promise.all(promises);
+
+        results.forEach(({ item, response }) => {
+          if (item === "account_name") {
+            setAccountName(response);
+          } else if (item === "project_name") {
+            setProjectName(response);
+          } else if (item === "buh_name") {
+            setBuhName(response);
+          } else if (item === "dd_name") {
+            setDdName(response);
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  console.log(accountName, "AccName")
+
   const technologies = [
     { title: "Frontend Technology" },
     { title: "Domain" },
@@ -223,12 +264,12 @@ const PlatformProject = () => {
   return (
     <Box p={2}>
       <Box p={2}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-          Platform Project Data
-        </Typography>
-        <PrimaryButton startIcon={<Add />}  onClick={() => goToNewProjectPage()} >Add New Project</PrimaryButton>
-      </Stack>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
+            Platform Project Data
+          </Typography>
+          <PrimaryButton startIcon={<Add />} onClick={() => goToNewProjectPage()} >Add New Project</PrimaryButton>
+        </Stack>
         {/* <Stack
           direction="row"
           alignItems="center"
