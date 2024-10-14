@@ -87,7 +87,6 @@ const NewProject = () => {
               alignItems: "center",
               marginRight: "15px"
             }}
-            // onClick={() => goToPlatformPage()}
             onClick={() => setPlatFormReport(false)}
 
           >
@@ -119,7 +118,6 @@ const NewProject = () => {
               fontWeight: "bold",
               textTransform: "none"
             }}
-            // onClick={() => goToPlatformPage()}
             onClick={() => setPlatFormReport(true)}
 
           >
@@ -172,7 +170,6 @@ const NewProject = () => {
           <SectionOne />
         </AccordionDetails>
       </Accordion>
-      {/* <Accordion defaultExpanded> */}
       {/* Section Two */}
       <Accordion defaultExpanded sx={{
         boxShadow: 'none', // Remove shadow
@@ -185,13 +182,11 @@ const NewProject = () => {
           aria-controls="panel1-content"
           id="panel1-header"
         >
-          {/* <Typography>Expanded by default</Typography> */}
           <Box sx={{ display: 'flex', borderRadius: '5px', border: `1px solid ${grey[400]}`, padding: '10px', gap: 1, width: "100%", backgroundColor: `${grey[200]}` }}>
             <Avatar sx={{ bgcolor: 'grey', width: 30, height: 30 }}>
               <Typography variant="body" color="white">2</Typography>
             </Avatar>
             <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
-              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
               Domains and Application Class
             </Typography>
           </Box>
