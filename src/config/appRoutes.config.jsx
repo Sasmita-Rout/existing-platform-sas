@@ -20,29 +20,29 @@ export const appRoutes = [
     element: <PrivateRoute />,
     children: [
       {
-        path: "home",
+        path: "/home",
         element: <HomePage />,
       },
       {
-        path: "pmo-dashboard",
+        path: "/pmo-dashboard",
         element: <PMODashboard />,
       },
       {
-        path: "reports",
+        path: "/reports",
         element: <Reports />,
       },
       {
-        path: "PlatformProject",
+        path: "/PlatformProject",
         element: <PlatformProject />,
       },
       {
-        path: "value-board",
+        path: "/value-board",
         element: <ValueBoard />,
       },
       {
         path: "/PlatformProject/NewProject",
-        element: <NewProject />
-      }
+        element: <NewProject />,
+      },
     ],
   },
   {

@@ -21,7 +21,7 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import logo from "../../assets/images/logo.png";
 import logo_header from "../../assets/images/accionlabs-icon.png";
 import { NavItem } from "../../components/organism";
-import { useUserStore } from "../../zustand/index";
+import { useUserStore } from "../../zustand/UserInfo/UserInfo";
 import { googleLogout } from "@react-oauth/google";
 
 const NAVIGATION = [
@@ -37,7 +37,7 @@ const NavBar = ({ onExpand }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user, logout } = useUserStore();
+  const { pmoUser, logout, setUser } = useUserStore();
   const handleLogout = () => {
     googleLogout();
     logout();
@@ -119,7 +119,7 @@ const NavBar = ({ onExpand }) => {
             }}
           >
             <Avatar
-              src={user?.picture || "default-avatar-url.png"}
+              src={pmoUser?.picture || "default-avatar-url.png"}
               alt="User Avatar"
               sx={{
                 width: isExpanded ? 56 : 32,
@@ -139,7 +139,7 @@ const NavBar = ({ onExpand }) => {
               textOverflow: "ellipsis",
             }}
           >
-            {user?.name || "Guest"}
+            {pmoUser?.name || "Guest"}
           </Typography>
 
           <NavItem

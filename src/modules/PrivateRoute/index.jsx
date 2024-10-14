@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import Cookies from "js-cookie";
 import NavBar from "../NavBar";
+import { Box } from "@mui/material";
 
 const PrivateRoute = () => {
   const value = Cookies.get("pmoUser");
@@ -17,12 +18,12 @@ const PrivateRoute = () => {
   };
 
   return (
-    <div style={{ display: "flex" }}>
+    <Box style={{ display: "flex" }}>
       <NavBar onExpand={setIsExpanded} />
-      <div style={contentStyle}>
+      <Box style={contentStyle}>
         <Outlet />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
