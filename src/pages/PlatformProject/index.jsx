@@ -51,12 +51,14 @@ const PlatformProject = () => {
     fetchData();
   }, []);
 
-  const technologies = [
-    { title: "Frontend Technology" },
-    { title: "Domain" },
-    { title: "Cloud Technology" },
-    { title: "Data Engineering" },
-  ];
+  const technologies = {
+    values: [
+      "Frontend Technology",
+      "Domain",
+      "Cloud Technology",
+      "Data Engineering",
+    ]
+  };
 
   const tabs = [
     {
@@ -122,10 +124,10 @@ const PlatformProject = () => {
   ];
 
   const languages = {
-    frontendTechnology: [{ title: "Express" }, { title: "NestJS" }],
-    domain: [{ title: "Redux" }, { title: "Next.js" }],
-    cloudTechnology: [{ title: "RxJS" }, { title: "NgRx" }],
-    dataEngineering: [{ title: "Grid" }, { title: "Utilities" }],
+    frontendTechnology: ["Express","NestJS" ],
+    domain: ["Redux","Next.js" ],
+    cloudTechnology: ["RxJS","NgRx" ],
+    dataEngineering: ["Grid","Utilities" ]
   };
 
   const rows = [
@@ -278,10 +280,10 @@ const PlatformProject = () => {
         </Stack> */}
         <Box p={2}>
           <FilterOptions
-            buhInput={buhName}
-            accountInput={accountName}
-            projectInput={projectName}
-            ddInput={ddName}
+            buhInput={buhName.values}
+            accountInput={accountName.values}
+            projectInput={projectName.values}
+            ddInput={ddName.values}
           />
           <Stack mt={2} direction="row" justifyContent="space-between">
             <Boxes boxes={boxes} />
@@ -303,7 +305,7 @@ const PlatformProject = () => {
           </Stack>
           <Box mb={2}>
             <FilterComponent
-              technologyInput={technologies}
+              technologyInput={technologies.values}
               languageInput={languages}
             />
           </Box>

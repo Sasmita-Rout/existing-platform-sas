@@ -26,7 +26,6 @@ export default function FilterComponent({ technologyInput, languageInput }) {
           : word[0].toUpperCase() + word.slice(1).toLowerCase()
       )
       .join("");
-
     setLanguageDropdown(languageInput[technologyFilterValue] || []);
   };
 
@@ -44,14 +43,14 @@ export default function FilterComponent({ technologyInput, languageInput }) {
   const onChangeSingleFilter = (event, newValue) => {
     setSelectedValue(newValue);
     setSelectedValues([]); // Reset multi-select when a new single select is chosen
-    getLanguageDropdownValues(newValue?.title);
+    getLanguageDropdownValues(newValue);
   };
 
   // Handler for multi-select autocomplete
   const handleOnSelect = (event, newValue) => {
     const uniqueValues = [...selectedValues];
     newValue.forEach((newItem) => {
-      if (!uniqueValues.some((item) => item.title === newItem.title)) {
+      if (!uniqueValues.some((item) => item === newItem)) {
         uniqueValues.push(newItem);
       }
     });
@@ -61,7 +60,7 @@ export default function FilterComponent({ technologyInput, languageInput }) {
   // Function to display selected items
   const displaySelectedItem = (selectedItem, onRemove) => (
     <Box
-      key={selectedItem.title}
+      key={selectedItem}
       sx={{
         display: "flex",
         alignItems: "center",
@@ -77,7 +76,7 @@ export default function FilterComponent({ technologyInput, languageInput }) {
       }}
     >
       <Typography sx={{ fontSize: "0.75rem", paddingRight: "8px" }}>
-        {selectedItem.title}
+        {selectedItem}
       </Typography>
       <IconButton onClick={onRemove} size="small">
         <ClearIcon fontSize="inherit" />

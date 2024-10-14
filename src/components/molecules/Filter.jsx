@@ -22,7 +22,7 @@ export function Filter({
             <Autocomplete
                 multiple={isMultiSelect} // Toggle between multi-select and single-select
                 disableCloseOnSelect={isMultiSelect}
-                options={input.values}
+                options={input}
                 getOptionLabel={(option) => option || ''} // Ensure option has title
                 onChange={handleOnSelect} // Pass the handler function
                 value={selectedValues} // Selected values dynamically passed
