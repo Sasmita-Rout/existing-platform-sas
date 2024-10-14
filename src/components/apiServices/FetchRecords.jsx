@@ -2,7 +2,7 @@ import { JWT_HEADER, JSON_HEADER } from "../../config/authConfig";
 import apiUrlConfig from "../../config/apiUrlConfig";
 
 async function fetchRecords(endpoint, token, fetchAsTxt, fetchAsBlob) {
-  const { apiUrl } = apiUrlConfig
+  const { apiUrl } = apiUrlConfig;
   const config = {
     method: 'GET',
     mode: 'cors',

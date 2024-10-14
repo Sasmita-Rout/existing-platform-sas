@@ -7,6 +7,7 @@ import { DataGrid, DialogBox } from "../../components/molecules";
 import { Add, Edit, PieChart } from "@mui/icons-material";
 import fetchRecords from "../../components/apiServices/FetchRecords";
 import { useEffect, useState } from "react";
+import { createUpdateRecord } from "../../components/apiServices/index";
 
 const PlatformProject = () => {
   const navigate = useNavigate();
@@ -30,8 +31,6 @@ const PlatformProject = () => {
           return { filterName, response };
         });
 
-        const results = await Promise.all(promises);
-
         results.forEach(({ filterName, response }) => {
           if (filterName === "account_name") {
             setAccountName(response);
@@ -46,10 +45,9 @@ const PlatformProject = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-    };
+    }
+  });
 
-    fetchData();
-  }, []);
 
   const technologies = {
     values: [
@@ -92,126 +90,97 @@ const PlatformProject = () => {
     },
   ];
 
-  const boxes = [
-    {
-      id: 0,
-      title: "Total Accounts",
-      titleNum: "28",
-      percent: "",
-      color: "#0FAF62",
-    },
-    {
-      id: 1,
-      title: "Total Projects",
-      titleNum: "105",
-      percent: "",
-      color: "#FF9500",
-    },
-    {
-      id: 2,
-      title: "Domains",
-      titleNum: "23",
-      percent: "",
-      color: "#01A4C9",
-    },
-    {
-      id: 3,
-      title: "Applications Class",
-      titleNum: "23",
-      percent: "",
-      color: "#BA3838",
-    },
-  ];
+  
 
   const languages = {
-    frontendTechnology: ["Express","NestJS" ],
-    domain: ["Redux","Next.js" ],
-    cloudTechnology: ["RxJS","NgRx" ],
-    dataEngineering: ["Grid","Utilities" ]
+    frontendTechnology: ["Express", "NestJS"],
+    domain: ["Redux", "Next.js"],
+    cloudTechnology: ["RxJS", "NgRx"],
+    dataEngineering: ["Grid", "Utilities"]
   };
 
-  const rows = [
-    {
-      id: 1,
-      accountName: "American Water",
-      programName: "HOS",
-      buhName: "Anandh shah",
-      ddName: "Raghavendra",
-      status: "Inactive",
-    },
-    {
-      id: 2,
-      accountName: "CBD",
-      programName: "C3",
-      buhName: "Shyam",
-      ddName: "Nikhil Damwani",
-      status: "Active",
-    },
-    {
-      id: 3,
-      accountName: "American Water",
-      programName: "HOS",
-      buhName: "Anandh shah",
-      ddName: "Raghavendra",
-      status: "Inactive",
-    },
-    {
-      id: 4,
-      accountName: "CBD",
-      programName: "C3",
-      buhName: "Shyam",
-      ddName: "Nikhil Damwani",
-      status: "Active",
-    },
-    {
-      id: 5,
-      accountName: "American Water",
-      programName: "HOS",
-      buhName: "Anandh shah",
-      ddName: "Raghavendra",
-      status: "Inactive",
-    },
-    {
-      id: 6,
-      accountName: "CBD",
-      programName: "C3",
-      buhName: "Shyam",
-      ddName: "Nikhil Damwani",
-      status: "Active",
-    },
-    {
-      id: 7,
-      accountName: "American Water",
-      programName: "HOS",
-      buhName: "Anandh shah",
-      ddName: "Raghavendra",
-      status: "Inactive",
-    },
-    {
-      id: 8,
-      accountName: "CBD",
-      programName: "C3",
-      buhName: "Shyam",
-      ddName: "Nikhil Damwani",
-      status: "Active",
-    },
-    {
-      id: 9,
-      accountName: "American Water",
-      programName: "HOS",
-      buhName: "Anandh shah",
-      ddName: "Raghavendra",
-      status: "Inactive",
-    },
-    {
-      id: 10,
-      accountName: "CBD",
-      programName: "C3",
-      buhName: "Shyam",
-      ddName: "Nikhil Damwani",
-      status: "Active",
-    },
-  ];
+  // let rows = [
+  //   {
+  //     id: 1,
+  //     accountName: "American Water",
+  //     programName: "HOS",
+  //     buhName: "Anandh shah",
+  //     ddName: "Raghavendra",
+  //     status: "Inactive",
+  //   },
+  //   {
+  //     id: 2,
+  //     accountName: "CBD",
+  //     programName: "C3",
+  //     buhName: "Shyam",
+  //     ddName: "Nikhil Damwani",
+  //     status: "Active",
+  //   },
+  //   {
+  //     id: 3,
+  //     accountName: "American Water",
+  //     programName: "HOS",
+  //     buhName: "Anandh shah",
+  //     ddName: "Raghavendra",
+  //     status: "Inactive",
+  //   },
+  //   {
+  //     id: 4,
+  //     accountName: "CBD",
+  //     programName: "C3",
+  //     buhName: "Shyam",
+  //     ddName: "Nikhil Damwani",
+  //     status: "Active",
+  //   },
+  //   {
+  //     id: 5,
+  //     accountName: "American Water",
+  //     programName: "HOS",
+  //     buhName: "Anandh shah",
+  //     ddName: "Raghavendra",
+  //     status: "Inactive",
+  //   },
+  //   {
+  //     id: 6,
+  //     accountName: "CBD",
+  //     programName: "C3",
+  //     buhName: "Shyam",
+  //     ddName: "Nikhil Damwani",
+  //     status: "Active",
+  //   },
+  //   {
+  //     id: 7,
+  //     accountName: "American Water",
+  //     programName: "HOS",
+  //     buhName: "Anandh shah",
+  //     ddName: "Raghavendra",
+  //     status: "Inactive",
+  //   },
+  //   {
+  //     id: 8,
+  //     accountName: "CBD",
+  //     programName: "C3",
+  //     buhName: "Shyam",
+  //     ddName: "Nikhil Damwani",
+  //     status: "Active",
+  //   },
+  //   {
+  //     id: 9,
+  //     accountName: "American Water",
+  //     programName: "HOS",
+  //     buhName: "Anandh shah",
+  //     ddName: "Raghavendra",
+  //     status: "Inactive",
+  //   },
+  //   {
+  //     id: 10,
+  //     accountName: "CBD",
+  //     programName: "C3",
+  //     buhName: "Shyam",
+  //     ddName: "Nikhil Damwani",
+  //     status: "Active",
+  //   },
+  // ];
 
   const columns = [
     {
@@ -259,6 +228,68 @@ const PlatformProject = () => {
     },
   ];
 
+  const [tableData, setTableData] = useState({}); 
+  const [tableRows, setTableRows] = useState([])
+
+useEffect(() => {
+  async function fetchTableData() {
+    try {
+      const response = await createUpdateRecord(null, "platform_data/summary?page=1&page_size=10", null, "GET");
+      return response;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  async function getData() {
+    const tableData1 = await fetchTableData();
+    if (tableData1 && typeof tableData1 === 'object') {
+      setTableData(tableData1); // Set the fetched data to state
+    }
+  }
+
+  getData();
+}, []);
+
+// Log tableData after it has been updated
+useEffect(() => {
+  console.log(tableData, 'tableData after setTableData');
+  setTableRows( )
+
+
+}, [tableData]);
+
+const boxes = [
+  {
+    id: 0,
+    title: "Total Accounts",
+    titleNum: tableData.account_name_count,
+    percent: "",
+    color: "#0FAF62",
+  },
+  {
+    id: 1,
+    title: "Total Projects",
+    titleNum: tableData.project_name_count,
+    percent: "",
+    color: "#FF9500",
+  },
+  {
+    id: 2,
+    title: "Domains",
+    titleNum: tableData.domains_count,
+    percent: "",
+    color: "#01A4C9",
+  },
+  {
+    id: 3,
+    title: "Applications Class",
+    titleNum: tableData.application_class_count,
+    percent: "",
+    color: "#BA3838",
+  },
+];
+
   return (
     <Box p={2}>
       <Box p={2}>
@@ -268,16 +299,6 @@ const PlatformProject = () => {
           </Typography>
           <PrimaryButton startIcon={<Add />} onClick={() => goToNewProjectPage()} >Add New Project</PrimaryButton>
         </Stack>
-        {/* <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Typography variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-            Platform Project Data
-          </Typography>
-          <PrimaryButton label="Add New Project" icon={<Add />} />
-        </Stack> */}
         <Box p={2}>
           <FilterOptions
             buhInput={buhName.values}
@@ -311,7 +332,7 @@ const PlatformProject = () => {
           </Box>
 
           <DataGrid
-            rows={rows}
+            rows={tableRows}
             columns={columns}
             pagination={false}
             hideFooter={false}
