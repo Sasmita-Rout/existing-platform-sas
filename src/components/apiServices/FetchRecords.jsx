@@ -1,6 +1,8 @@
 import { JWT_HEADER, JSON_HEADER } from "../../config/authConfig";
+import apiUrlConfig from "../../config/apiUrlConfig";
 
 async function fetchRecords(endpoint, token, fetchAsTxt, fetchAsBlob) {
+  const { apiUrl } = apiUrlConfig
   const config = {
     method: 'GET',
     mode: 'cors',
@@ -9,9 +11,13 @@ async function fetchRecords(endpoint, token, fetchAsTxt, fetchAsBlob) {
       : Object.assign({}, JSON_HEADER),
     cache: 'default',
   };
+  if (!token) {
+    delete config["headers"]
+  }
+  const url = `${apiUrl}/platform_data/dropdown?dropdown_type=${endpoint}`
 
   try {
-    const response = await fetch(endpoint, config);
+    const response = await fetch(url, config);
 
     // Check if the response is OK (status 200–299)
     if (!response.ok) {
@@ -28,7 +34,7 @@ async function fetchRecords(endpoint, token, fetchAsTxt, fetchAsBlob) {
     }
   } catch (error) {
     console.error('Error:', error);
-    throw error; // Propagate the error to be handled by the calling code
+    throw error;
   }
 }
 

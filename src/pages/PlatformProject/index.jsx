@@ -20,28 +20,26 @@ const PlatformProject = () => {
   const [buhName, setBuhName] = useState([])
   const [ddName, setDdName] = useState([])
 
-
-
   const typeOfDropdown = ["account_name", "project_name", "buh_name", "dd_name"]
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const promises = typeOfDropdown.map(async (item) => {
-          const response = await fetchRecords(item, null, false, false);
-          return { item, response };
+        const promises = typeOfDropdown.map(async (filterName) => {
+          const response = await fetchRecords(filterName, false, false, false);
+          return { filterName, response };
         });
 
         const results = await Promise.all(promises);
 
-        results.forEach(({ item, response }) => {
-          if (item === "account_name") {
+        results.forEach(({ filterName, response }) => {
+          if (filterName === "account_name") {
             setAccountName(response);
-          } else if (item === "project_name") {
+          } else if (filterName === "project_name") {
             setProjectName(response);
-          } else if (item === "buh_name") {
+          } else if (filterName === "buh_name") {
             setBuhName(response);
-          } else if (item === "dd_name") {
+          } else if (filterName === "dd_name") {
             setDdName(response);
           }
         });
@@ -52,8 +50,6 @@ const PlatformProject = () => {
 
     fetchData();
   }, []);
-
-  console.log(accountName, "AccName")
 
   const technologies = [
     { title: "Frontend Technology" },
@@ -282,10 +278,10 @@ const PlatformProject = () => {
         </Stack> */}
         <Box p={2}>
           <FilterOptions
-            buhInput={technologies}
-            accountInput={technologies}
-            projectInput={technologies}
-            ddInput={technologies}
+            buhInput={buhName}
+            accountInput={accountName}
+            projectInput={projectName}
+            ddInput={ddName}
           />
           <Stack mt={2} direction="row" justifyContent="space-between">
             <Boxes boxes={boxes} />
