@@ -30,6 +30,7 @@ const PlatformProject = () => {
           const response = await fetchRecords(filterName, false, false, false);
           return { filterName, response };
         });
+        const results = await Promise.all(promises);
 
         results.forEach(({ filterName, response }) => {
           if (filterName === "account_name") {
@@ -46,7 +47,8 @@ const PlatformProject = () => {
         console.error("Error fetching data:", error);
       }
     }
-  });
+    fetchData();
+  }, []);
 
 
   const technologies = {
@@ -90,7 +92,7 @@ const PlatformProject = () => {
     },
   ];
 
-  
+
 
   const languages = {
     frontendTechnology: ["Express", "NestJS"],
@@ -228,67 +230,67 @@ const PlatformProject = () => {
     },
   ];
 
-  const [tableData, setTableData] = useState({}); 
+  const [tableData, setTableData] = useState({});
   const [tableRows, setTableRows] = useState([])
 
-useEffect(() => {
-  async function fetchTableData() {
-    try {
-      const response = await createUpdateRecord(null, "platform_data/summary?page=1&page_size=10", null, "GET");
-      return response;
-    } catch (error) {
-      console.error("Error fetching data:", error);
+  useEffect(() => {
+    async function fetchTableData() {
+      try {
+        const response = await createUpdateRecord(null, "platform_data/summary?page=1&page_size=10", null, "GET");
+        return response;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
-  }
 
-  async function getData() {
-    const tableData1 = await fetchTableData();
-    if (tableData1 && typeof tableData1 === 'object') {
-      setTableData(tableData1); // Set the fetched data to state
+    async function getData() {
+      const tableData1 = await fetchTableData();
+      if (tableData1 && typeof tableData1 === 'object') {
+        setTableData(tableData1); // Set the fetched data to state
+      }
     }
-  }
 
-  getData();
-}, []);
+    getData();
+  }, []);
 
-// Log tableData after it has been updated
-useEffect(() => {
-  console.log(tableData, 'tableData after setTableData');
-  setTableRows( )
+  // Log tableData after it has been updated
+  useEffect(() => {
+    console.log(tableData, 'tableData after setTableData');
+    setTableRows()
 
 
-}, [tableData]);
+  }, [tableData]);
 
-const boxes = [
-  {
-    id: 0,
-    title: "Total Accounts",
-    titleNum: tableData.account_name_count,
-    percent: "",
-    color: "#0FAF62",
-  },
-  {
-    id: 1,
-    title: "Total Projects",
-    titleNum: tableData.project_name_count,
-    percent: "",
-    color: "#FF9500",
-  },
-  {
-    id: 2,
-    title: "Domains",
-    titleNum: tableData.domains_count,
-    percent: "",
-    color: "#01A4C9",
-  },
-  {
-    id: 3,
-    title: "Applications Class",
-    titleNum: tableData.application_class_count,
-    percent: "",
-    color: "#BA3838",
-  },
-];
+  const boxes = [
+    {
+      id: 0,
+      title: "Total Accounts",
+      titleNum: tableData.account_name_count,
+      percent: "",
+      color: "#0FAF62",
+    },
+    {
+      id: 1,
+      title: "Total Projects",
+      titleNum: tableData.project_name_count,
+      percent: "",
+      color: "#FF9500",
+    },
+    {
+      id: 2,
+      title: "Domains",
+      titleNum: tableData.domains_count,
+      percent: "",
+      color: "#01A4C9",
+    },
+    {
+      id: 3,
+      title: "Applications Class",
+      titleNum: tableData.application_class_count,
+      percent: "",
+      color: "#BA3838",
+    },
+  ];
 
   return (
     <Box p={2}>
