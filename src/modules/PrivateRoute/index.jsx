@@ -3,26 +3,30 @@ import { Navigate, Outlet } from "react-router-dom";
 import Cookies from "js-cookie";
 import NavBar from "../NavBar";
 import { Box } from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const Content = styled(Box)(({ theme, isExpanded }) => ({
+  marginLeft: isExpanded ? 240 : 80,
+  transition: theme.transitions.create("margin-left", {
+    duration: theme.transitions.duration.standard,
+    easing: theme.transitions.easing.easeInOut,
+  }),
+}));
 
 const PrivateRoute = () => {
   const value = Cookies.get("pmoUser");
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [menuBar,setMenuBar] =useState(false);
 
   if (!value) {
     return <Navigate to="/login" replace />;
   }
 
-  const contentStyle = {
-    marginLeft: isExpanded ? 240 : 80,
-    transition: "margin-left 0.3s ease-in-out",
-  };
-
   return (
-    <Box style={{ display: "flex" }}>
-      <NavBar onExpand={setIsExpanded} />
-      <Box style={contentStyle}>
+    <Box sx={{ display: "flex" }}>
+      <NavBar onExpand={setMenuBar} />
+      <Content isExpanded={menuBar}>
         <Outlet />
-      </Box>
+      </Content>
     </Box>
   );
 };

@@ -20,9 +20,11 @@ import LayersIcon from "@mui/icons-material/Layers";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import logo from "../../assets/images/logo.png";
 import logo_header from "../../assets/images/accionlabs-icon.png";
-import { NavItem } from "../../components/organism";
-import { useUserStore } from "../../zustand/UserInfo/UserInfo";
+import NavItem from "./NavItem";
+import { useUserStore } from "../../zustand/index";
 import { googleLogout } from "@react-oauth/google";
+import ConfirmationDialog from "../../components/molecules/ConfirmationDialog";
+import theme from "../styles/theme";
 
 const NAVIGATION = [
   { title: "Home", icon: <HomeIcon />, path: "/home" },
@@ -34,10 +36,11 @@ const NAVIGATION = [
 
 const NavBar = ({ onExpand }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { pmoUser, logout, setUser } = useUserStore();
+  const { pmoUser, logout } = useUserStore();
   const handleLogout = () => {
     googleLogout();
     logout();
@@ -52,6 +55,9 @@ const NavBar = ({ onExpand }) => {
   const handleNavItemClick = (path) => {
     navigate(path);
   };
+  const handleLogoutClick = () => {
+    setOpenDialog(true);
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -59,15 +65,15 @@ const NavBar = ({ onExpand }) => {
         variant="permanent"
         open={isExpanded}
         PaperProps={{
-          sx: {
-            backgroundColor: "#5A646E",
+          sx: { 
+            backgroundColor: theme.palette.gray.main,
             width: isExpanded ? 240 : 80,
             transition: "width 0.3s ease-in-out",
             overflowX: "hidden",
           },
         }}
       >
-        <Box
+        {/* <Box
           sx={{
             display: "flex",
             justifyContent: isExpanded ? "flex-end" : "center",
@@ -91,6 +97,34 @@ const NavBar = ({ onExpand }) => {
               <MenuOpenIcon style={{ color: "black" }} />
             ) : (
               <MenuIcon style={{ color: "black" }} />
+            )}
+          </IconButton>
+        </Box> */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "10px",
+            backgroundColor: theme.palette.light.main,
+          }}
+        >
+          <img
+            src={isExpanded ? logo_header : logo}
+            alt="Logo"
+            style={{
+              background: "white",
+              width: isExpanded ? "250px" : "50px",
+              height: isExpanded ? "auto" : "35px",
+              transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
+            }}
+          />
+          <IconButton onClick={toggleDrawer}>
+            {isExpanded ? (
+              <MenuOpenIcon style={{ color: theme.palette.black.main, }} />
+            ) : (
+              <MenuIcon style={{ color: theme.palette.black.main, }} />
             )}
           </IconButton>
         </Box>
@@ -132,7 +166,7 @@ const NavBar = ({ onExpand }) => {
           <Typography
             variant="body2"
             sx={{
-              color: "#fff",
+              color: theme.palette.white.main,
               textAlign: "center",
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -157,10 +191,17 @@ const NavBar = ({ onExpand }) => {
             path="#logout"
             isExpanded={isExpanded}
             isActive={false}
-            onClick={handleLogout}
+            onClick={handleLogoutClick}
           />
         </List>
       </Drawer>
+      <ConfirmationDialog
+        open={openDialog}
+        onClose={setOpenDialog}
+        onConfirm={handleLogout}
+        title="Logout Confirmation"
+        content="Are you sure you want to logout?"
+      />
     </Box>
   );
 };

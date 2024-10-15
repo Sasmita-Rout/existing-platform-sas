@@ -1,5 +1,6 @@
 import React from "react";
 import { ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import theme from "../styles/theme";
 const NavItem = ({
   icon,
   title,
@@ -15,16 +16,16 @@ const NavItem = ({
       onClick={onClick}
       sx={{
         cursor: "pointer",
-        "&:hover": {
-          backgroundColor: "#d1d1d1",
+        "&:hover": { 
+          backgroundColor: theme.palette.lightGray.main,
         },
         backgroundColor: isActive ? "#e57373" : "transparent",
-        color: isActive ? "white" : "inherit",
+        color: isActive ? theme.palette.white.main : "inherit",
         transition: "background-color 0.3s ease-in-out",
       }}
     >
-      <ListItemIcon sx={{ color: "white" }}>{icon}</ListItemIcon>
-      {isExpanded && <ListItemText primary={title} sx={{ color: "white" }} />}
+      <ListItemIcon sx={{ color: theme.palette.white.main }}>{icon}</ListItemIcon>
+      {isExpanded && <ListItemText primary={title} sx={{ color: theme.palette.white.main }} />}
     </ListItem>
   );
 };

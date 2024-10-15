@@ -10,6 +10,21 @@ const theme = createTheme({
     }, 
     grey: {
       main: "#626e73"
+    },
+    gray: {
+      main: "#5A646E"
+    },
+    black: {
+      main: "black"
+    },
+    light: {
+      main: "#fafbfc"
+    },
+    white: {
+      main: "#fff"
+    },
+    lightGray: {
+      main: "#d1d1d1"
     }
   },
   typography: {
