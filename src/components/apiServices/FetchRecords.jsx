@@ -1,8 +1,6 @@
 import { JWT_HEADER, JSON_HEADER } from "../../config/authConfig";
-import apiUrlConfig from "../../config/apiUrlConfig";
 
 async function fetchRecords(endpoint, token, fetchAsTxt, fetchAsBlob) {
-  const { apiUrl } = apiUrlConfig;
   const config = {
     method: 'GET',
     mode: 'cors',
@@ -14,10 +12,9 @@ async function fetchRecords(endpoint, token, fetchAsTxt, fetchAsBlob) {
   if (!token) {
     delete config["headers"]
   }
-  const url = `${apiUrl}/platform_data/dropdown?dropdown_type=${endpoint}`
 
   try {
-    const response = await fetch(url, config);
+    const response = await fetch(endpoint, config);
 
     // Check if the response is OK (status 200–299)
     if (!response.ok) {

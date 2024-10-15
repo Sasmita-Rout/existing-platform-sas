@@ -5,9 +5,10 @@ import FilterComponent from "../../modules/FilterComponent";
 import FilterOptions from "../../modules/FilterOptions";
 import { DataGrid, DialogBox } from "../../components/molecules";
 import { Add, Edit, PieChart } from "@mui/icons-material";
-import fetchRecords from "../../components/apiServices/FetchRecords";
 import { useEffect, useState } from "react";
-import { createUpdateRecord } from "../../components/apiServices/index";
+import { createUpdateRecord, fetchRecords } from "../../components/apiServices/index";
+import apiUrlConfig from "../../config/apiUrlConfig";
+
 
 const PlatformProject = () => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ const PlatformProject = () => {
   const goToNewProjectPage = () => {
     navigate("/PlatformProject/NewProject");
   }
+  const { apiUrl } = apiUrlConfig;
+
   const [openPlatFormReport, setPlatFormReport] = useState(false);
   const [accountName, setAccountName] = useState([])
   const [projectName, setProjectName] = useState([])
@@ -27,7 +30,9 @@ const PlatformProject = () => {
     const fetchData = async () => {
       try {
         const promises = typeOfDropdown.map(async (filterName) => {
-          const response = await fetchRecords(filterName, false, false, false);
+          const url = `${apiUrl}/platform_data/dropdown?dropdown_type=${filterName}`
+
+          const response = await fetchRecords(url, false, false, false);
           return { filterName, response };
         });
         const results = await Promise.all(promises);
