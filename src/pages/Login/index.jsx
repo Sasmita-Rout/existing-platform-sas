@@ -7,21 +7,18 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { setUser } = useUserStore();
 
-  const handleSuccess = (response) => {
-    try {
-      if (response?.credential) {
-        Cookies.set("pmoUser", response?.credential, { expires: 0.5 });
-        const userData = JSON.parse(atob(response?.credential.split(".")[1]));
-        if (userData.name) {
-          setUser(userData);
-          navigate("/home");
-        } else {
-          navigate("/");
-        }
+  const handleSuccess = async (response) => {
+    if (response?.credential) {
+      Cookies.set("pmoUser", response?.credential, { expires: 0.5 });
+      const userData = await JSON.parse(
+        atob(response?.credential.split(".")[1])
+      );
+      if (userData.name) {
+        setUser(userData);
+        navigate("/home");
+      } else {
+        navigate("/");
       }
-    } catch (error) {
-      console.error("Failed to decode user data:", error);
-      navigate("/PageNotFound");
     }
   };
 

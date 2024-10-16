@@ -15,8 +15,10 @@ const NavItem = ({
       button
       onClick={onClick}
       sx={{
+        paddingLeft: "10px !important",
+        paddingRight: "10px !important",
         cursor: "pointer",
-        "&:hover": { 
+        "&:hover": {
           backgroundColor: theme.palette.lightGray.main,
         },
         backgroundColor: isActive ? "#e57373" : "transparent",
@@ -24,8 +26,21 @@ const NavItem = ({
         transition: "background-color 0.3s ease-in-out",
       }}
     >
-      <ListItemIcon sx={{ color: theme.palette.white.main }}>{icon}</ListItemIcon>
-      {isExpanded && <ListItemText primary={title} sx={{ color: theme.palette.white.main }} />}
+      <ListItemIcon
+        sx={{
+          color: theme.palette.white.main,
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        {icon}
+      </ListItemIcon>
+      {isExpanded && (
+        <ListItemText
+          primary={title}
+          sx={{ color: theme.palette.white.main }}
+        />
+      )}
     </ListItem>
   );
 };

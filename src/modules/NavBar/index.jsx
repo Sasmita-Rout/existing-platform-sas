@@ -8,6 +8,9 @@ import {
   Divider,
   Avatar,
   Typography,
+  Button,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
@@ -22,8 +25,8 @@ import logo from "../../assets/images/logo.png";
 import logo_header from "../../assets/images/accionlabs-icon.png";
 import NavItem from "./NavItem";
 import { useUserStore } from "../../zustand/index";
-import { googleLogout } from "@react-oauth/google";
-import ConfirmationDialog from "../../components/molecules/ConfirmationDialog";
+import { DialogBox } from "../../components/molecules";
+import { grey } from "@mui/material/colors";
 import theme from "../styles/theme";
 
 const NAVIGATION = [
@@ -34,29 +37,26 @@ const NAVIGATION = [
   { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" },
 ];
 
-const NavBar = ({ onExpand }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
+const NavBar = ({ setIsExpanded, isExpanded }) => {
+  const [openPlatFormReport, setPlatFormReport] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
   const { pmoUser, logout } = useUserStore();
   const handleLogout = () => {
-    googleLogout();
     logout();
     navigate("/login");
   };
 
   const toggleDrawer = () => {
     setIsExpanded(!isExpanded);
-    onExpand(!isExpanded);
+    isExpanded(!isExpanded);
   };
 
   const handleNavItemClick = (path) => {
     navigate(path);
   };
   const handleLogoutClick = () => {
-    setOpenDialog(true);
+    setPlatFormReport(true);
   };
 
   return (
@@ -65,7 +65,7 @@ const NavBar = ({ onExpand }) => {
         variant="permanent"
         open={isExpanded}
         PaperProps={{
-          sx: { 
+          sx: {
             backgroundColor: theme.palette.gray.main,
             width: isExpanded ? 240 : 80,
             transition: "width 0.3s ease-in-out",
@@ -73,40 +73,12 @@ const NavBar = ({ onExpand }) => {
           },
         }}
       >
-        {/* <Box
-          sx={{
-            display: "flex",
-            justifyContent: isExpanded ? "flex-end" : "center",
-            padding: "10px",
-            backgroundColor: "#fafbfc",
-          }}
-        >
-          <img
-            src={isExpanded ? logo_header : logo}
-            alt="Logo"
-            style={{
-              background: "white",
-              marginLeft: "8px",
-              width: isExpanded ? "200px" : "40px",
-              height: isExpanded ? "auto" : "30px",
-              transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
-            }}
-          />
-          <IconButton onClick={toggleDrawer}>
-            {isExpanded ? (
-              <MenuOpenIcon style={{ color: "black" }} />
-            ) : (
-              <MenuIcon style={{ color: "black" }} />
-            )}
-          </IconButton>
-        </Box> */}
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            padding: "10px",
             backgroundColor: theme.palette.light.main,
           }}
         >
@@ -122,9 +94,9 @@ const NavBar = ({ onExpand }) => {
           />
           <IconButton onClick={toggleDrawer}>
             {isExpanded ? (
-              <MenuOpenIcon style={{ color: theme.palette.black.main, }} />
+              <MenuOpenIcon style={{ color: theme.palette.black.main }} />
             ) : (
-              <MenuIcon style={{ color: theme.palette.black.main, }} />
+              <MenuIcon style={{ color: theme.palette.black.main }} />
             )}
           </IconButton>
         </Box>
@@ -149,7 +121,6 @@ const NavBar = ({ onExpand }) => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              padding: "20px",
             }}
           >
             <Avatar
@@ -195,13 +166,41 @@ const NavBar = ({ onExpand }) => {
           />
         </List>
       </Drawer>
-      <ConfirmationDialog
-        open={openDialog}
-        onClose={setOpenDialog}
-        onConfirm={handleLogout}
-        title="Logout Confirmation"
-        content="Are you sure you want to logout?"
-      />
+      <DialogBox
+        size="xs"
+        actions={true}
+        buttonAlignment="center"
+        openDialog={openPlatFormReport}
+        closeDialog={() => setPlatFormReport(false)}
+      >
+        <DialogTitle sx={{ textAlign: "center", color: "#D94A56" }}>
+          Logout Confirmation
+        </DialogTitle>
+        <DialogContent sx={{ textAlign: "center", alignItems: "center" }}>
+          Are you sure you want to logout?
+        </DialogContent>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            variant="outlined"
+            sx={{
+              color: `${grey[600]}`,
+              borderColor: `${grey[400]}`,
+              fontWeight: "bold",
+              textTransform: "none",
+              alignItems: "center",
+            }}
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        </Box>
+      </DialogBox>
     </Box>
   );
 };
