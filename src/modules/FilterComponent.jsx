@@ -7,26 +7,25 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Filter } from "../components/molecules/index";
 import { Stack } from "@mui/material";
+import apiUrlConfig from "../config/apiUrlConfig";
+import { fetchRecords } from "../components/apiServices/index";
 
-export default function FilterComponent({ technologyInput, languageInput }) {
+
+export default function FilterComponent({ technologyInput }) {
   const [selectedValues, setSelectedValues] = React.useState([]); // For multi-select
   const [selectedValue, setSelectedValue] = React.useState(null); // For single select
   const [languageDropdown, setLanguageDropdown] = React.useState([]); // Language dropdown dynamically
 
-  // Get multi-select filter dropdown based on the selected technology filter
-  const getLanguageDropdownValues = (selectedValue) => {
-    if (!selectedValue) return;
+  const { apiUrl } = apiUrlConfig;
 
-    // Process the selected technology and set the appropriate language dropdown
-    const technologyFilterValue = selectedValue
-      .split(" ")
-      .map((word, index) =>
-        index === 0
-          ? word.toLowerCase()
-          : word[0].toUpperCase() + word.slice(1).toLowerCase()
-      )
-      .join("");
-    setLanguageDropdown(languageInput[technologyFilterValue] || []);
+  // Get multi-select filter dropdown based on the selected technology filter
+  const getLanguageDropdownValues = async (selectedValue) => {
+    if (!selectedValue) {
+      setLanguageDropdown([])
+    };
+    const languageUrl = `${apiUrl}/platform_data/column_dropdown?dropdown_type=${selectedValue}`
+    const languageResponse = await fetchRecords(languageUrl, false, false, false)
+    setLanguageDropdown(languageResponse["values"] || []);
   };
 
   // Clear all multi-selected values

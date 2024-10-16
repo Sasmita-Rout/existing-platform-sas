@@ -23,6 +23,7 @@ const PlatformProject = () => {
   const [projectName, setProjectName] = useState([])
   const [buhName, setBuhName] = useState([])
   const [ddName, setDdName] = useState([])
+  const [technologyData, setTechnologyData] = useState([])
 
   const typeOfDropdown = ["account_name", "project_name", "buh_name", "dd_name"]
 
@@ -55,15 +56,20 @@ const PlatformProject = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchAdvanceFilterTechnologies = async () => {
+      try {
+        const techUrl = `${apiUrl}/platform_data/columns`
+        const result = await fetchRecords(techUrl, false, false, false)
+        const technologyData = result["columns"] ? setTechnologyData(result["columns"]) : []
+        return technologyData
 
-  const technologies = {
-    values: [
-      "Frontend Technology",
-      "Domain",
-      "Cloud Technology",
-      "Data Engineering",
-    ]
-  };
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchAdvanceFilterTechnologies()
+  }, [])
 
   const tabs = [
     {
@@ -96,15 +102,6 @@ const PlatformProject = () => {
       Component: <div>Hello, I am tab 6</div>,
     },
   ];
-
-
-
-  const languages = {
-    frontendTechnology: ["Express", "NestJS"],
-    domain: ["Redux", "Next.js"],
-    cloudTechnology: ["RxJS", "NgRx"],
-    dataEngineering: ["Grid", "Utilities"]
-  };
 
   // let rows = [
   //   {
@@ -333,8 +330,7 @@ const PlatformProject = () => {
           </Stack>
           <Box mb={2}>
             <FilterComponent
-              technologyInput={technologies.values}
-              languageInput={languages}
+              technologyInput={technologyData}
             />
           </Box>
 
