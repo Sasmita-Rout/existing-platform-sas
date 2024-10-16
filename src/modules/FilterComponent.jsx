@@ -41,7 +41,6 @@ export default function FilterComponent({ technologyInput }) {
   // Handler for single select autocomplete
   const onChangeSingleFilter = (event, newValue) => {
     setSelectedValue(newValue);
-    setSelectedValues([]); // Reset multi-select when a new single select is chosen
     getLanguageDropdownValues(newValue);
   };
 
