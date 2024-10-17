@@ -101,7 +101,8 @@ const NavBar = () => {
           >
             <Avatar
               alt="User Avatar"
-              src={"https://your-avatar-url.com/avatar.png"}
+              // src={"https://your-avatar-url.com/avatar.png"}
+              src=""
               sx={{
                 width: isExpanded ? 56 : 32,
                 height: isExpanded ? 56 : 32,

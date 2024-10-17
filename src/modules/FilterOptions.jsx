@@ -9,6 +9,10 @@ export default function FilterOptions({
   accountInput,
   ddInput,
   projectInput,
+  onBuhChange, // new prop for handling BUH change
+  onAccountChange, // new prop for handling Account change
+  onDdChange, // new prop for handling DD change
+  onProjectChange, // new prop for handling Project change
 }) {
   const [buhValue, setBuhValue] = React.useState(null);
   const [accountValue, setAccountValue] = React.useState(null);
@@ -25,7 +29,7 @@ export default function FilterOptions({
       {/* BUH Filter */}
       <Filter
         input={buhInput}
-        handleOnSelect={(event, newValue) => setBuhValue(newValue)} // Direct state update
+        handleOnSelect={(event, newValue) => {setBuhValue(newValue), onBuhChange(newValue)}} // Direct state update
         selectedValues={buhValue}
         isMultiSelect={false}
         placeholder={buhFilterPlaceholder}
@@ -37,7 +41,7 @@ export default function FilterOptions({
       {/* Account Filter */}
       <Filter
         input={accountInput}
-        handleOnSelect={(event, newValue) => setAccountValue(newValue)} // Direct state update
+        handleOnSelect={(event, newValue) => {setAccountValue(newValue), onAccountChange(newValue)}} // Direct state update
         selectedValues={accountValue}
         isMultiSelect={false}
         placeholder={accountFilterPlaceholder}
@@ -49,7 +53,7 @@ export default function FilterOptions({
       {/* DD Filter */}
       <Filter
         input={ddInput}
-        handleOnSelect={(event, newValue) => setDdValue(newValue)} // Direct state update
+        handleOnSelect={(event, newValue) => {setDdValue(newValue), onDdChange(newValue)}} // Direct state update
         selectedValues={ddValue}
         isMultiSelect={false}
         placeholder={ddFilterPlaceholder}
@@ -60,7 +64,7 @@ export default function FilterOptions({
       {/* Project Filter */}
       <Filter
         input={projectInput}
-        handleOnSelect={(event, newValue) => setProjectValue(newValue)} // Direct state update
+        handleOnSelect={(event, newValue) => {setProjectValue(newValue), onProjectChange(newValue)}} // Direct state update
         selectedValues={projectValue}
         isMultiSelect={false}
         placeholder={projectFilterPlaceholder}

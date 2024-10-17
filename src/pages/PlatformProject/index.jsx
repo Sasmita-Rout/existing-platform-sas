@@ -8,6 +8,7 @@ import { Add, Edit, PieChart } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { createUpdateRecord, fetchRecords } from "../../components/apiServices/index";
 import apiUrlConfig from "../../config/apiUrlConfig";
+import useTableHook from "./useTableHook";
 
 
 const PlatformProject = () => {
@@ -24,6 +25,31 @@ const PlatformProject = () => {
   const [buhName, setBuhName] = useState([])
   const [ddName, setDdName] = useState([])
   const [technologyData, setTechnologyData] = useState([])
+
+  const [buhSelected, setBuhSelected] = useState(null);
+  const [accountSelected, setAccountSelected] = useState(null);
+  const [ddSelected, setDdSelected] = useState(null);
+  const [projectSelected, setProjectSelected] = useState(null);
+  const [state, setState] = useState({
+    searchText: '',
+    filters: {
+      buhName: '',
+      ddNmae: '',
+      projectName: '',
+      accountName: '',
+    },
+  });
+
+  useEffect(() => {
+    setState({
+      filters: {
+        buhName: buhSelected,
+        ddNmae: ddSelected,
+        projectName: projectSelected,
+        accountName: accountSelected,
+      },
+    })
+  }, [accountSelected, projectSelected, ddSelected, buhSelected])
 
   const typeOfDropdown = ["account_name", "project_name", "buh_name", "dd_name"]
 
@@ -103,108 +129,25 @@ const PlatformProject = () => {
     },
   ];
 
-  // let rows = [
-  //   {
-  //     id: 1,
-  //     accountName: "American Water",
-  //     programName: "HOS",
-  //     buhName: "Anandh shah",
-  //     ddName: "Raghavendra",
-  //     status: "Inactive",
-  //   },
-  //   {
-  //     id: 2,
-  //     accountName: "CBD",
-  //     programName: "C3",
-  //     buhName: "Shyam",
-  //     ddName: "Nikhil Damwani",
-  //     status: "Active",
-  //   },
-  //   {
-  //     id: 3,
-  //     accountName: "American Water",
-  //     programName: "HOS",
-  //     buhName: "Anandh shah",
-  //     ddName: "Raghavendra",
-  //     status: "Inactive",
-  //   },
-  //   {
-  //     id: 4,
-  //     accountName: "CBD",
-  //     programName: "C3",
-  //     buhName: "Shyam",
-  //     ddName: "Nikhil Damwani",
-  //     status: "Active",
-  //   },
-  //   {
-  //     id: 5,
-  //     accountName: "American Water",
-  //     programName: "HOS",
-  //     buhName: "Anandh shah",
-  //     ddName: "Raghavendra",
-  //     status: "Inactive",
-  //   },
-  //   {
-  //     id: 6,
-  //     accountName: "CBD",
-  //     programName: "C3",
-  //     buhName: "Shyam",
-  //     ddName: "Nikhil Damwani",
-  //     status: "Active",
-  //   },
-  //   {
-  //     id: 7,
-  //     accountName: "American Water",
-  //     programName: "HOS",
-  //     buhName: "Anandh shah",
-  //     ddName: "Raghavendra",
-  //     status: "Inactive",
-  //   },
-  //   {
-  //     id: 8,
-  //     accountName: "CBD",
-  //     programName: "C3",
-  //     buhName: "Shyam",
-  //     ddName: "Nikhil Damwani",
-  //     status: "Active",
-  //   },
-  //   {
-  //     id: 9,
-  //     accountName: "American Water",
-  //     programName: "HOS",
-  //     buhName: "Anandh shah",
-  //     ddName: "Raghavendra",
-  //     status: "Inactive",
-  //   },
-  //   {
-  //     id: 10,
-  //     accountName: "CBD",
-  //     programName: "C3",
-  //     buhName: "Shyam",
-  //     ddName: "Nikhil Damwani",
-  //     status: "Active",
-  //   },
-  // ];
-
   const columns = [
     {
       flex: 0.4,
       headerName: "Account Name",
-      field: "accountName",
+      field: "account_name",
     },
     {
       flex: 0.3,
       headerName: "Program Name",
-      field: "programName",
+      field: "project_name",
     },
     {
       flex: 0.15,
       headerName: "BUH Name",
-      field: "buhName",
+      field: "buh_name",
     },
     {
       flex: 0.15,
-      field: "ddName",
+      field: "dd_name",
       headerName: "DD Name",
     },
     {
@@ -223,7 +166,7 @@ const PlatformProject = () => {
           <IconButton
             sx={{ padding: 0 }}
             aria-label="edit"
-            onClick={() => console.log("Action")}
+            // onClick={() => console.log("Action")}
           >
             <Edit />
           </IconButton>
@@ -255,13 +198,41 @@ const PlatformProject = () => {
     getData();
   }, []);
 
-  // Log tableData after it has been updated
+  // // Log tableData after it has been updated
+  // useEffect(() => {
+  //   const mainFilterTable = useTableHook({...state, tableData});
+  //   if ((tableData && Array.isArray(tableData.data)) || (mainFilterTable && Array.isArray(mainFilterTable)) ) {
+  //     let finalData = mainFilterTable || tableData.data
+  //     let filteredTable = finalData.map((item, index) => ({
+  //       id: index + 1,
+  //       ...item
+  //     }));
+  //     setTableRows(filteredTable);
+  //   } else {
+  //     console.error('tableData or tableData.data is undefined or not an array');
+  //   }
+
+  // }, [tableData, state]);
+
   useEffect(() => {
-    console.log(tableData, 'tableData after setTableData');
-    setTableRows()
-
-
-  }, [tableData]);
+    const { data: tableArray = [] } = tableData || {};
+    const mainFilterTable = useTableHook({ ...state, tableData });
+    
+    const finalData = Array.isArray(mainFilterTable) && mainFilterTable.length >= 0
+      ? mainFilterTable
+      : tableArray;
+    
+    if (Array.isArray(finalData)) {
+      const filteredTable = finalData.map((item, index) => ({
+        id: index + 1,
+        ...item
+      }));
+      setTableRows(filteredTable);
+    } else {
+      console.error('tableData or tableData.data is undefined or not an array');
+    }
+  }, [tableData, state]);
+  
 
   const boxes = [
     {
@@ -309,6 +280,10 @@ const PlatformProject = () => {
             accountInput={accountName.values}
             projectInput={projectName.values}
             ddInput={ddName.values}
+            onBuhChange={setBuhSelected} // callback for BUH change
+            onAccountChange={setAccountSelected} // callback for Account change
+            onDdChange={setDdSelected} // callback for DD change
+            onProjectChange={setProjectSelected} // callback for Project change
           />
           <Stack mt={2} direction="row" justifyContent="space-between">
             <Boxes boxes={boxes} />
