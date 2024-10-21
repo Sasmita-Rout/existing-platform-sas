@@ -24,6 +24,18 @@ export default function FilterOptions({
   const ddFilterPlaceholder = "Select DD";
   const projectFilterPlaceholder = "Select Project";
 
+  // Clear all multi-selected values
+  const handleClearAll = () => {
+    setBuhValue(null);
+    setAccountValue(null);
+    setDdValue(null);
+    setProjectValue(null);
+    onProjectChange(null);
+    onBuhChange(null);
+    onAccountChange(null);
+    onDdChange(null);
+  };
+
   return (
     <Stack flexDirection="row">
       {/* BUH Filter */}
@@ -76,8 +88,10 @@ export default function FilterOptions({
           style={{
             backgroundColor: "grey",
             color: "white",
-            marginBottom: "5px",
+            width:"100%",
+            height: "100%"
           }}
+          onClick={handleClearAll}
         >
           Reset
         </Button>
