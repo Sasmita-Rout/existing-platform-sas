@@ -1,5 +1,17 @@
 import React, { useState } from "react";
-import { Drawer, List, Box, IconButton, Divider, Avatar } from "@mui/material";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  Drawer,
+  List,
+  Box,
+  IconButton,
+  Divider,
+  Avatar,
+  Typography,
+  Button,
+  DialogTitle,
+  DialogContent,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuOpenIcon from "@mui/icons-material/MenuOpen";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -9,10 +21,13 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import LayersIcon from "@mui/icons-material/Layers";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { Outlet } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 import logo_header from "../../assets/images/accionlabs-icon.png";
-import { NavItem } from "../../components/organism";
+import NavItem from "./NavItem";
+import { useUserStore } from "../../zustand/index";
+import { DialogBox } from "../../components/molecules";
+import { grey } from "@mui/material/colors";
+import theme from "../styles/theme";
 
 const NAVIGATION = [
   { title: "Home", icon: <HomeIcon />, path: "/home" },
@@ -22,12 +37,26 @@ const NAVIGATION = [
   { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" },
 ];
 
-const NavBar = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const currentPath = window.location.pathname;
+const NavBar = ({ setIsExpanded, isExpanded }) => {
+  const [openPlatFormReport, setPlatFormReport] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { pmoUser, logout } = useUserStore();
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   const toggleDrawer = () => {
     setIsExpanded(!isExpanded);
+    isExpanded(!isExpanded);
+  };
+
+  const handleNavItemClick = (path) => {
+    navigate(path);
+  };
+  const handleLogoutClick = () => {
+    setPlatFormReport(true);
   };
 
   return (
@@ -37,7 +66,7 @@ const NavBar = () => {
         open={isExpanded}
         PaperProps={{
           sx: {
-            backgroundColor: "#5A646E",
+            backgroundColor: theme.palette.gray.main,
             width: isExpanded ? 240 : 80,
             transition: "width 0.3s ease-in-out",
             overflowX: "hidden",
@@ -47,25 +76,10 @@ const NavBar = () => {
         <Box
           sx={{
             display: "flex",
-            justifyContent: isExpanded ? "flex-end" : "center",
-            padding: "10px",
-            backgroundColor: "#fafbfc",
-          }}
-        >
-          <IconButton onClick={toggleDrawer}>
-            {isExpanded ? (
-              <MenuOpenIcon style={{ color: "black" }} />
-            ) : (
-              <MenuIcon style={{ color: "black" }} />
-            )}
-          </IconButton>
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
+            flexDirection: "column",
             justifyContent: "center",
-            paddingBottom: "20px",
+            alignItems: "center",
+            backgroundColor: theme.palette.light.main,
           }}
         >
           <img
@@ -73,11 +87,18 @@ const NavBar = () => {
             alt="Logo"
             style={{
               background: "white",
-              width: isExpanded ? "250px" : "80px",
-              height: isExpanded ? "auto" : "60px",
+              width: isExpanded ? "250px" : "50px",
+              height: isExpanded ? "auto" : "35px",
               transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
             }}
           />
+          <IconButton onClick={toggleDrawer}>
+            {isExpanded ? (
+              <MenuOpenIcon style={{ color: theme.palette.black.main }} />
+            ) : (
+              <MenuIcon style={{ color: theme.palette.black.main }} />
+            )}
+          </IconButton>
         </Box>
 
         <List>
@@ -88,35 +109,51 @@ const NavBar = () => {
               title={item.title}
               path={item.path}
               isExpanded={isExpanded}
-              currentPath={currentPath}
+              isActive={location.pathname === item.path}
+              onClick={() => handleNavItemClick(item.path)}
             />
           ))}
         </List>
-
         <Divider />
-
         <List sx={{ marginTop: "auto" }}>
           <Box
-            sx={{ display: "flex", justifyContent: "center", padding: "20px" }}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
             <Avatar
+              src={pmoUser?.picture || "default-avatar-url.png"}
               alt="User Avatar"
-              // src={"https://your-avatar-url.com/avatar.png"}
-              src=""
               sx={{
                 width: isExpanded ? 56 : 32,
                 height: isExpanded ? 56 : 32,
-                transition: "width 0.3s ease-in-out",
+                borderRadius: "50%",
+                transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
               }}
             />
           </Box>
+          <Typography
+            variant="body2"
+            sx={{
+              color: theme.palette.white.main,
+              textAlign: "center",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {pmoUser?.name || "Guest"}
+          </Typography>
 
           <NavItem
             icon={<NotificationsIcon />}
             title="Notifications"
             path="#notifications"
             isExpanded={isExpanded}
-            currentPath={currentPath}
+            isActive={false}
+            onClick={() => {}}
           />
 
           <NavItem
@@ -124,21 +161,46 @@ const NavBar = () => {
             title="Logout"
             path="#logout"
             isExpanded={isExpanded}
-            currentPath={currentPath}
+            isActive={false}
+            onClick={handleLogoutClick}
           />
         </List>
       </Drawer>
-      <Box
-        sx={{
-          flexGrow: 1,
-          marginLeft: isExpanded ? 32 : 8,
-          padding: 3,
-          transition: "margin-left 0.3s ease-in-out",
-          // overflowX: "hidden",
-        }}
+      <DialogBox
+        size="xs"
+        actions={true}
+        buttonAlignment="center"
+        openDialog={openPlatFormReport}
+        closeDialog={() => setPlatFormReport(false)}
       >
-        <Outlet />
-      </Box>
+        <DialogTitle sx={{ textAlign: "center", color: "#D94A56" }}>
+          Logout Confirmation
+        </DialogTitle>
+        <DialogContent sx={{ textAlign: "center", alignItems: "center" }}>
+          Are you sure you want to logout?
+        </DialogContent>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            variant="outlined"
+            sx={{
+              color: `${grey[600]}`,
+              borderColor: `${grey[400]}`,
+              fontWeight: "bold",
+              textTransform: "none",
+              alignItems: "center",
+            }}
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        </Box>
+      </DialogBox>
     </Box>
   );
 };
