@@ -6,37 +6,39 @@ const ValueBoard = () => {
   const tabs = [ 
     {
       index: 0,
-      label: "Name",
+      label: "Project",
       Component: 1
     },
     {
       index: 1,
-      label: "Name",
+      label: "People",
       Component: "2"
     },
     {
       index: 2,
-      label: "Name",
+      label: "Process",
       Component: "e"
     },
     {
       index: 3,
-      label: "Name",
+      label: "Product",
       Component: "4"
     },
     {
       index: 4,
-      label: "Name",
+      label: "Platform",
       Component: "4"
     },
     {
       index: 5,
-      label: "Name",
+      label: "VB Review Comments",
       Component: "1"
     }
   ]
   return (
+    <Box sx={{ width: "100%" }}>
       <GenericTabs tabs={tabs} />
+      </Box>
   );
 };
 
