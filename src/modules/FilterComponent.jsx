@@ -7,27 +7,25 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Filter } from "../components/molecules/index";
 import { Stack } from "@mui/material";
+import apiUrlConfig from "../config/apiUrlConfig";
+import { fetchRecords } from "../components/apiServices/index";
 
-export default function FilterComponent({ technologyInput, languageInput }) {
+
+export default function FilterComponent({ technologyInput }) {
   const [selectedValues, setSelectedValues] = React.useState([]); // For multi-select
   const [selectedValue, setSelectedValue] = React.useState(null); // For single select
   const [languageDropdown, setLanguageDropdown] = React.useState([]); // Language dropdown dynamically
 
+  const { apiUrl } = apiUrlConfig;
+
   // Get multi-select filter dropdown based on the selected technology filter
-  const getLanguageDropdownValues = (selectedValue) => {
-    if (!selectedValue) return;
-
-    // Process the selected technology and set the appropriate language dropdown
-    const technologyFilterValue = selectedValue
-      .split(" ")
-      .map((word, index) =>
-        index === 0
-          ? word.toLowerCase()
-          : word[0].toUpperCase() + word.slice(1).toLowerCase()
-      )
-      .join("");
-
-    setLanguageDropdown(languageInput[technologyFilterValue] || []);
+  const getLanguageDropdownValues = async (selectedValue) => {
+    if (!selectedValue) {
+      setLanguageDropdown([])
+    };
+    const languageUrl = `${apiUrl}/platform_data/column_dropdown?dropdown_type=${selectedValue}`
+    const languageResponse = await fetchRecords(languageUrl, false, false, false)
+    setLanguageDropdown(languageResponse["values"] || []);
   };
 
   // Clear all multi-selected values
@@ -43,15 +41,14 @@ export default function FilterComponent({ technologyInput, languageInput }) {
   // Handler for single select autocomplete
   const onChangeSingleFilter = (event, newValue) => {
     setSelectedValue(newValue);
-    setSelectedValues([]); // Reset multi-select when a new single select is chosen
-    getLanguageDropdownValues(newValue?.title);
+    getLanguageDropdownValues(newValue);
   };
 
   // Handler for multi-select autocomplete
   const handleOnSelect = (event, newValue) => {
     const uniqueValues = [...selectedValues];
     newValue.forEach((newItem) => {
-      if (!uniqueValues.some((item) => item.title === newItem.title)) {
+      if (!uniqueValues.some((item) => item === newItem)) {
         uniqueValues.push(newItem);
       }
     });
@@ -61,7 +58,7 @@ export default function FilterComponent({ technologyInput, languageInput }) {
   // Function to display selected items
   const displaySelectedItem = (selectedItem, onRemove) => (
     <Box
-      key={selectedItem.title}
+      key={selectedItem}
       sx={{
         display: "flex",
         alignItems: "center",
@@ -77,7 +74,7 @@ export default function FilterComponent({ technologyInput, languageInput }) {
       }}
     >
       <Typography sx={{ fontSize: "0.75rem", paddingRight: "8px" }}>
-        {selectedItem.title}
+        {selectedItem}
       </Typography>
       <IconButton onClick={onRemove} size="small">
         <ClearIcon fontSize="inherit" />

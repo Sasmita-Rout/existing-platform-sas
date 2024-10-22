@@ -5,7 +5,11 @@ import FilterComponent from "../../modules/FilterComponent";
 import FilterOptions from "../../modules/FilterOptions";
 import { DataGrid, DialogBox } from "../../components/molecules";
 import { Add, Edit, PieChart } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createUpdateRecord, fetchRecords } from "../../components/apiServices/index";
+import apiUrlConfig from "../../config/apiUrlConfig";
+import useTableHook from "./useTableHook";
+
 
 const PlatformProject = () => {
   const navigate = useNavigate();
@@ -13,13 +17,85 @@ const PlatformProject = () => {
   const goToNewProjectPage = () => {
     navigate("/PlatformProject/NewProject");
   }
+  const { apiUrl } = apiUrlConfig;
+
   const [openPlatFormReport, setPlatFormReport] = useState(false);
-  const technologies = [
-    { title: "Frontend Technology" },
-    { title: "Domain" },
-    { title: "Cloud Technology" },
-    { title: "Data Engineering" },
-  ];
+  const [accountName, setAccountName] = useState([])
+  const [projectName, setProjectName] = useState([])
+  const [buhName, setBuhName] = useState([])
+  const [ddName, setDdName] = useState([])
+  const [technologyData, setTechnologyData] = useState([])
+
+  const [buhSelected, setBuhSelected] = useState(null);
+  const [accountSelected, setAccountSelected] = useState(null);
+  const [ddSelected, setDdSelected] = useState(null);
+  const [projectSelected, setProjectSelected] = useState(null);
+  const [state, setState] = useState({
+    searchText: '',
+    filters: {
+      buhName: '',
+      ddNmae: '',
+      projectName: '',
+      accountName: '',
+    },
+  });
+
+  useEffect(() => {
+    setState({
+      filters: {
+        buhName: buhSelected,
+        ddNmae: ddSelected,
+        projectName: projectSelected,
+        accountName: accountSelected,
+      },
+    })
+  }, [accountSelected, projectSelected, ddSelected, buhSelected])
+
+  const typeOfDropdown = ["account_name", "project_name", "buh_name", "dd_name"]
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const promises = typeOfDropdown.map(async (filterName) => {
+          const url = `${apiUrl}/platform_data/dropdown?dropdown_type=${filterName}`
+
+          const response = await fetchRecords(url, false, false, false);
+          return { filterName, response };
+        });
+        const results = await Promise.all(promises);
+
+        results.forEach(({ filterName, response }) => {
+          if (filterName === "account_name") {
+            setAccountName(response);
+          } else if (filterName === "project_name") {
+            setProjectName(response);
+          } else if (filterName === "buh_name") {
+            setBuhName(response);
+          } else if (filterName === "dd_name") {
+            setDdName(response);
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchAdvanceFilterTechnologies = async () => {
+      try {
+        const techUrl = `${apiUrl}/platform_data/columns`
+        const result = await fetchRecords(techUrl, false, false, false)
+        const technologyData = result["columns"] ? setTechnologyData(result["columns"]) : []
+        return technologyData
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchAdvanceFilterTechnologies()
+  }, [])
 
   const tabs = [
     {
@@ -53,146 +129,25 @@ const PlatformProject = () => {
     },
   ];
 
-  const boxes = [
-    {
-      id: 0,
-      title: "Total Accounts",
-      titleNum: "28",
-      percent: "",
-      color: "#0FAF62",
-    },
-    {
-      id: 1,
-      title: "Total Projects",
-      titleNum: "105",
-      percent: "",
-      color: "#FF9500",
-    },
-    {
-      id: 2,
-      title: "Domains",
-      titleNum: "23",
-      percent: "",
-      color: "#01A4C9",
-    },
-    {
-      id: 3,
-      title: "Applications Class",
-      titleNum: "23",
-      percent: "",
-      color: "#BA3838",
-    },
-  ];
-
-  const languages = {
-    frontendTechnology: [{ title: "Express" }, { title: "NestJS" }],
-    domain: [{ title: "Redux" }, { title: "Next.js" }],
-    cloudTechnology: [{ title: "RxJS" }, { title: "NgRx" }],
-    dataEngineering: [{ title: "Grid" }, { title: "Utilities" }],
-  };
-
-  const rows = [
-    {
-      id: 1,
-      accountName: "American Water",
-      programName: "HOS",
-      buhName: "Anandh shah",
-      ddName: "Raghavendra",
-      status: "Inactive",
-    },
-    {
-      id: 2,
-      accountName: "CBD",
-      programName: "C3",
-      buhName: "Shyam",
-      ddName: "Nikhil Damwani",
-      status: "Active",
-    },
-    {
-      id: 3,
-      accountName: "American Water",
-      programName: "HOS",
-      buhName: "Anandh shah",
-      ddName: "Raghavendra",
-      status: "Inactive",
-    },
-    {
-      id: 4,
-      accountName: "CBD",
-      programName: "C3",
-      buhName: "Shyam",
-      ddName: "Nikhil Damwani",
-      status: "Active",
-    },
-    {
-      id: 5,
-      accountName: "American Water",
-      programName: "HOS",
-      buhName: "Anandh shah",
-      ddName: "Raghavendra",
-      status: "Inactive",
-    },
-    {
-      id: 6,
-      accountName: "CBD",
-      programName: "C3",
-      buhName: "Shyam",
-      ddName: "Nikhil Damwani",
-      status: "Active",
-    },
-    {
-      id: 7,
-      accountName: "American Water",
-      programName: "HOS",
-      buhName: "Anandh shah",
-      ddName: "Raghavendra",
-      status: "Inactive",
-    },
-    {
-      id: 8,
-      accountName: "CBD",
-      programName: "C3",
-      buhName: "Shyam",
-      ddName: "Nikhil Damwani",
-      status: "Active",
-    },
-    {
-      id: 9,
-      accountName: "American Water",
-      programName: "HOS",
-      buhName: "Anandh shah",
-      ddName: "Raghavendra",
-      status: "Inactive",
-    },
-    {
-      id: 10,
-      accountName: "CBD",
-      programName: "C3",
-      buhName: "Shyam",
-      ddName: "Nikhil Damwani",
-      status: "Active",
-    },
-  ];
-
   const columns = [
     {
       flex: 0.4,
       headerName: "Account Name",
-      field: "accountName",
+      field: "account_name",
     },
     {
       flex: 0.3,
       headerName: "Program Name",
-      field: "programName",
+      field: "project_name",
     },
     {
       flex: 0.15,
       headerName: "BUH Name",
-      field: "buhName",
+      field: "buh_name",
     },
     {
       flex: 0.15,
-      field: "ddName",
+      field: "dd_name",
       headerName: "DD Name",
     },
     {
@@ -211,7 +166,7 @@ const PlatformProject = () => {
           <IconButton
             sx={{ padding: 0 }}
             aria-label="edit"
-            onClick={() => console.log("Action")}
+            // onClick={() => console.log("Action")}
           >
             <Edit />
           </IconButton>
@@ -220,31 +175,115 @@ const PlatformProject = () => {
     },
   ];
 
+  const [tableData, setTableData] = useState({});
+  const [tableRows, setTableRows] = useState([])
+
+  useEffect(() => {
+    async function fetchTableData() {
+      try {
+        const response = await createUpdateRecord(null, "platform_data/summary?page=1&page_size=10", null, "GET");
+        return response;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    async function getData() {
+      const tableData1 = await fetchTableData();
+      if (tableData1 && typeof tableData1 === 'object') {
+        setTableData(tableData1); // Set the fetched data to state
+      }
+    }
+
+    getData();
+  }, []);
+
+  // // Log tableData after it has been updated
+  // useEffect(() => {
+  //   const mainFilterTable = useTableHook({...state, tableData});
+  //   if ((tableData && Array.isArray(tableData.data)) || (mainFilterTable && Array.isArray(mainFilterTable)) ) {
+  //     let finalData = mainFilterTable || tableData.data
+  //     let filteredTable = finalData.map((item, index) => ({
+  //       id: index + 1,
+  //       ...item
+  //     }));
+  //     setTableRows(filteredTable);
+  //   } else {
+  //     console.error('tableData or tableData.data is undefined or not an array');
+  //   }
+
+  // }, [tableData, state]);
+
+  useEffect(() => {
+    const { data: tableArray = [] } = tableData || {};
+    const mainFilterTable = useTableHook({ ...state, tableData });
+    
+    const finalData = Array.isArray(mainFilterTable) && mainFilterTable.length >= 0
+      ? mainFilterTable
+      : tableArray;
+    
+    if (Array.isArray(finalData)) {
+      const filteredTable = finalData.map((item, index) => ({
+        id: index + 1,
+        ...item
+      }));
+      setTableRows(filteredTable);
+    } else {
+      console.error('tableData or tableData.data is undefined or not an array');
+    }
+  }, [tableData, state]);
+  
+
+  const boxes = [
+    {
+      id: 0,
+      title: "Total Accounts",
+      titleNum: tableData.account_name_count,
+      percent: "",
+      color: "#0FAF62",
+    },
+    {
+      id: 1,
+      title: "Total Projects",
+      titleNum: tableData.project_name_count,
+      percent: "",
+      color: "#FF9500",
+    },
+    {
+      id: 2,
+      title: "Domains",
+      titleNum: tableData.domains_count,
+      percent: "",
+      color: "#01A4C9",
+    },
+    {
+      id: 3,
+      title: "Applications Class",
+      titleNum: tableData.application_class_count,
+      percent: "",
+      color: "#BA3838",
+    },
+  ];
+
   return (
     <Box p={2}>
       <Box p={2}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-          Platform Project Data
-        </Typography>
-        <PrimaryButton startIcon={<Add />}  onClick={() => goToNewProjectPage()} >Add New Project</PrimaryButton>
-      </Stack>
-        {/* <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Typography variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
             Platform Project Data
           </Typography>
-          <PrimaryButton label="Add New Project" icon={<Add />} />
-        </Stack> */}
+          <PrimaryButton startIcon={<Add />} onClick={() => goToNewProjectPage()} >Add New Project</PrimaryButton>
+        </Stack>
         <Box p={2}>
           <FilterOptions
-            buhInput={technologies}
-            accountInput={technologies}
-            projectInput={technologies}
-            ddInput={technologies}
+            buhInput={buhName.values}
+            accountInput={accountName.values}
+            projectInput={projectName.values}
+            ddInput={ddName.values}
+            onBuhChange={setBuhSelected} // callback for BUH change
+            onAccountChange={setAccountSelected} // callback for Account change
+            onDdChange={setDdSelected} // callback for DD change
+            onProjectChange={setProjectSelected} // callback for Project change
           />
           <Stack mt={2} direction="row" justifyContent="space-between">
             <Boxes boxes={boxes} />
@@ -266,13 +305,12 @@ const PlatformProject = () => {
           </Stack>
           <Box mb={2}>
             <FilterComponent
-              technologyInput={technologies}
-              languageInput={languages}
+              technologyInput={technologyData}
             />
           </Box>
 
           <DataGrid
-            rows={rows}
+            rows={tableRows}
             columns={columns}
             pagination={false}
             hideFooter={false}

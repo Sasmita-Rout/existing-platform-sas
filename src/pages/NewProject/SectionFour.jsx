@@ -3,13 +3,6 @@ import { Box, Typography } from "@mui/material";
 import { Filter } from "../../components/molecules/Filter";
 
 const SectionFour = (props) => {
-  const [selectedValue, setSelectedValue] = React.useState(null); // For single select
-  const technologies = [
-    { title: "Frontend Technology" },
-    { title: "Domain" },
-    { title: "Cloud Technology" },
-    { title: "Data Engineering" },
-  ];
 
   // Handler for single select autocomplete
   const [selectedValues, setSelectedValues] = React.useState({});
