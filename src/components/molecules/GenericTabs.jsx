@@ -33,7 +33,8 @@ export function GenericTabs({ tabs = [] }) {
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    // <Box sx={{ width: "100%" }}>
+    <>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}
@@ -41,7 +42,7 @@ export function GenericTabs({ tabs = [] }) {
           aria-label="pmo-table-panels"
         >
           {tabs?.map(({ label }, i) => (
-            <Tab label={label} key={i} className="fullWidth"></Tab>
+            <Tab label={label} key={i} sx={{ minWidth: "130px"}}></Tab>
             // <Tab label={label} key={i} className={"fullWidth " + (aria-selected ? 'colorBlack' : 'white')}></Tab>
           ))}
         </Tabs>
@@ -51,7 +52,8 @@ export function GenericTabs({ tabs = [] }) {
           {Component}
         </CustomTabPanel>
       ))}
-    </Box>
+      </>
+    // </Box>
   );
 }
 
