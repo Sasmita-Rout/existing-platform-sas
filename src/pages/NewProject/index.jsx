@@ -75,8 +75,8 @@ const NewProject = () => {
         closeDialog={() => setPlatFormReport(false)}
       >
         <DialogTitle sx={{ textAlign: "center", color: "#D94A56" }}>Cancel Alert</DialogTitle>
-        <DialogContent sx={{ alignItems: "center" }}>Are you sure you want to cancel adding this project?</DialogContent>
-        <Box sx={{ alignItems: "center" }}>
+        <DialogContent sx={{ alignItems: "center", marginLeft:8 }}>Are you sure you want to cancel adding this project?</DialogContent>
+        <Box sx={{ alignItems: "center", marginLeft:20 }}>
           <Button
             variant="outlined"
             sx={{

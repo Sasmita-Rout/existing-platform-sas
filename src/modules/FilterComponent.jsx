@@ -85,7 +85,7 @@ export default function FilterComponent({ technologyInput }) {
   return (
     <>
       <h3>RESULTS</h3>
-      <Stack flexDirection="row">
+      <Stack flexDirection="row" style={{marginBottom:50}}>
         {/* Single-select Autocomplete */}
         <Filter
           input={technologyInput}
@@ -110,11 +110,11 @@ export default function FilterComponent({ technologyInput }) {
           showIcon={true}
         />
 
-        <Button variant="contained">Apply</Button>
+        <Button variant="contained"sx={{ maxHeight: 55, marginRight: 5}}>Apply</Button>
 
         {/* Display selected items */}
         {selectedValues.length > 0 && (
-          <Box sx={{ display: "flex", flexWrap: "wrap", marginTop: 2 }}>
+          <Box sx={{ display: "flex", flexWrap: "noWrap", marginTop: 2, overflowX: "auto", maxWidth:400, marginLeft: 2 }}>
             {selectedValues.map((selectedItem) =>
               displaySelectedItem(selectedItem, () =>
                 handleRemove(selectedItem)
