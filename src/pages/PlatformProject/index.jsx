@@ -259,7 +259,7 @@ const PlatformProject = () => {
     <RequestErrorLoader
       hideBackground
       body={{
-        data: tableRows,
+        data: true,
         request: loader,
       }}
     >
@@ -319,6 +319,7 @@ const PlatformProject = () => {
             </Box>
 
             <DataGrid
+              height="526px"
               rows={tableRows}
               columns={columns}
               pagination={false}
