@@ -1,44 +1,48 @@
 import { Box, Typography, Container, IconButton, Stack } from "@mui/material";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { Boxes, PrimaryButton } from "../../components/atoms";
 import FilterComponent from "../../modules/FilterComponent";
 import FilterOptions from "../../modules/FilterOptions";
 import { DataGrid, DialogBox } from "../../components/molecules";
 import { Add, Edit, PieChart } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { createUpdateRecord, fetchRecords } from "../../components/apiServices/index";
+import {
+  createUpdateRecord,
+  fetchRecords,
+} from "../../components/apiServices/index";
 import apiUrlConfig from "../../config/apiUrlConfig";
 import useTableHook from "./useTableHook";
-
+import { RequestErrorLoader } from "../../components/organism";
 
 const PlatformProject = () => {
   const navigate = useNavigate();
 
   const goToNewProjectPage = () => {
     navigate("/PlatformProject/NewProject");
-  }
+  };
   const { apiUrl } = apiUrlConfig;
 
   const [openPlatFormReport, setPlatFormReport] = useState(false);
-  const [accountName, setAccountName] = useState([])
-  const [projectName, setProjectName] = useState([])
-  const [buhName, setBuhName] = useState([])
-  const [ddName, setDdName] = useState([])
-  const [technologyData, setTechnologyData] = useState([])
+  const [accountName, setAccountName] = useState([]);
+  const [projectName, setProjectName] = useState([]);
+  const [buhName, setBuhName] = useState([]);
+  const [ddName, setDdName] = useState([]);
+  const [technologyData, setTechnologyData] = useState([]);
 
   const [buhSelected, setBuhSelected] = useState(null);
   const [accountSelected, setAccountSelected] = useState(null);
   const [ddSelected, setDdSelected] = useState(null);
   const [projectSelected, setProjectSelected] = useState(null);
   const [state, setState] = useState({
-    searchText: '',
+    searchText: "",
     filters: {
-      buhName: '',
-      ddNmae: '',
-      projectName: '',
-      accountName: '',
+      buhName: "",
+      ddNmae: "",
+      projectName: "",
+      accountName: "",
     },
   });
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     setState({
@@ -48,16 +52,22 @@ const PlatformProject = () => {
         projectName: projectSelected,
         accountName: accountSelected,
       },
-    })
-  }, [accountSelected, projectSelected, ddSelected, buhSelected])
+    });
+  }, [accountSelected, projectSelected, ddSelected, buhSelected]);
 
-  const typeOfDropdown = ["account_name", "project_name", "buh_name", "dd_name"]
+  const typeOfDropdown = [
+    "account_name",
+    "project_name",
+    "buh_name",
+    "dd_name",
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const promises = typeOfDropdown.map(async (filterName) => {
-          const url = `${apiUrl}/platform_data/dropdown?dropdown_type=${filterName}`
+          setLoader(true);
+          const url = `${apiUrl}/platform_data/dropdown?dropdown_type=${filterName}`;
 
           const response = await fetchRecords(url, false, false, false);
           return { filterName, response };
@@ -75,59 +85,34 @@ const PlatformProject = () => {
             setDdName(response);
           }
         });
+        setLoader(false);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setLoader(false);
       }
-    }
+    };
+    setLoader(true);
     fetchData();
   }, []);
 
   useEffect(() => {
     const fetchAdvanceFilterTechnologies = async () => {
       try {
-        const techUrl = `${apiUrl}/platform_data/columns`
-        const result = await fetchRecords(techUrl, false, false, false)
-        const technologyData = result["columns"] ? setTechnologyData(result["columns"]) : []
-        return technologyData
-
+        const techUrl = `${apiUrl}/platform_data/columns`;
+        const result = await fetchRecords(techUrl, false, false, false);
+        const technologyData = result["columns"]
+          ? setTechnologyData(result["columns"])
+          : [];
+        setLoader(false);
+        return technologyData;
       } catch (error) {
         console.error("Error fetching data:", error);
+        setLoader(false);
       }
-    }
-    fetchAdvanceFilterTechnologies()
-  }, [])
-
-  const tabs = [
-    {
-      label: "Results",
-      Component: <div>Hello, I am tab 1</div>,
-    },
-    {
-      label: "Domain & Application Class",
-      Component: <div>Hello, I am tab 2</div>,
-    },
-    {
-      label: "Environment, Infrastructure, System Related Info",
-      Component: (
-        <div>
-          <h1>Tab with heading</h1>
-          <p>Hello I am a tab with a heading</p>
-        </div>
-      ),
-    },
-    {
-      label: "Development",
-      Component: <div>Hello, I am tab 4</div>,
-    },
-    {
-      label: "QA & DevOps",
-      Component: <div>Hello, I am tab 5</div>,
-    },
-    {
-      label: "BI & Marketing",
-      Component: <div>Hello, I am tab 6</div>,
-    },
-  ];
+    };
+    setLoader(true);
+    fetchAdvanceFilterTechnologies();
+  }, []);
 
   const columns = [
     {
@@ -176,12 +161,17 @@ const PlatformProject = () => {
   ];
 
   const [tableData, setTableData] = useState({});
-  const [tableRows, setTableRows] = useState([])
+  const [tableRows, setTableRows] = useState([]);
 
   useEffect(() => {
     async function fetchTableData() {
       try {
-        const response = await createUpdateRecord(null, "platform_data/summary?page=1&page_size=10", null, "GET");
+        const response = await createUpdateRecord(
+          null,
+          "platform_data/summary?page=1&page_size=10",
+          null,
+          "GET"
+        );
         return response;
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -190,7 +180,7 @@ const PlatformProject = () => {
 
     async function getData() {
       const tableData1 = await fetchTableData();
-      if (tableData1 && typeof tableData1 === 'object') {
+      if (tableData1 && typeof tableData1 === "object") {
         setTableData(tableData1); // Set the fetched data to state
       }
     }
@@ -217,22 +207,22 @@ const PlatformProject = () => {
   useEffect(() => {
     const { data: tableArray = [] } = tableData || {};
     const mainFilterTable = useTableHook({ ...state, tableData });
-    
-    const finalData = Array.isArray(mainFilterTable) && mainFilterTable.length >= 0
-      ? mainFilterTable
-      : tableArray;
-    
+
+    const finalData =
+      Array.isArray(mainFilterTable) && mainFilterTable.length >= 0
+        ? mainFilterTable
+        : tableArray;
+
     if (Array.isArray(finalData)) {
       const filteredTable = finalData.map((item, index) => ({
         id: index + 1,
-        ...item
+        ...item,
       }));
       setTableRows(filteredTable);
     } else {
-      console.error('tableData or tableData.data is undefined or not an array');
+      console.error("tableData or tableData.data is undefined or not an array");
     }
   }, [tableData, state]);
-  
 
   const boxes = [
     {
@@ -266,77 +256,97 @@ const PlatformProject = () => {
   ];
 
   return (
-    <Box p={2}>
+    <RequestErrorLoader
+      hideBackground
+      body={{
+        data: tableRows,
+        request: loader,
+      }}
+    >
       <Box p={2}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-            Platform Project Data
-          </Typography>
-          <PrimaryButton startIcon={<Add />} onClick={() => goToNewProjectPage()} >Add New Project</PrimaryButton>
-        </Stack>
         <Box p={2}>
-          <FilterOptions
-            buhInput={buhName.values}
-            accountInput={accountName.values}
-            projectInput={projectName.values}
-            ddInput={ddName.values}
-            onBuhChange={setBuhSelected} // callback for BUH change
-            onAccountChange={setAccountSelected} // callback for Account change
-            onDdChange={setDdSelected} // callback for DD change
-            onProjectChange={setProjectSelected} // callback for Project change
-          />
-          <Stack mt={2} direction="row" justifyContent="space-between">
-            <Boxes boxes={boxes} />
-            <Stack width={200}>
-              <PrimaryButton
-                startIcon={<PieChart />}
-                sx={{ marginBottom: "4px" }}
-                onClick={() => setPlatFormReport(true)}
-              >
-                Platform Related Data Reports
-              </PrimaryButton>
-              <PrimaryButton
-                startIcon={<PieChart />}
-                onClick={() => setPlatFormReport(true)}
-              >
-                Tools and Metrics Data Reports
-              </PrimaryButton>
-            </Stack>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography
+              ml={1}
+              variant="h4"
+              gutterBottom
+              sx={{ fontWeight: 600 }}
+            >
+              Platform Project Data
+            </Typography>
+            <PrimaryButton
+              startIcon={<Add />}
+              onClick={() => goToNewProjectPage()}
+            >
+              Add New Project
+            </PrimaryButton>
           </Stack>
-          <Box mb={2}>
-            <FilterComponent
-              technologyInput={technologyData}
+          <Box p={2}>
+            <FilterOptions
+              buhInput={buhName.values}
+              accountInput={accountName.values}
+              projectInput={projectName.values}
+              ddInput={ddName.values}
+              onBuhChange={setBuhSelected} // callback for BUH change
+              onAccountChange={setAccountSelected} // callback for Account change
+              onDdChange={setDdSelected} // callback for DD change
+              onProjectChange={setProjectSelected} // callback for Project change
+            />
+            <Stack mt={2} direction="row" justifyContent="space-between">
+              <Boxes boxes={boxes} />
+              <Stack width={200}>
+                <PrimaryButton
+                  startIcon={<PieChart />}
+                  sx={{ marginBottom: "4px" }}
+                  onClick={() => setPlatFormReport(true)}
+                >
+                  Platform Related Data Reports
+                </PrimaryButton>
+                <PrimaryButton
+                  startIcon={<PieChart />}
+                  onClick={() => setPlatFormReport(true)}
+                >
+                  Tools and Metrics Data Reports
+                </PrimaryButton>
+              </Stack>
+            </Stack>
+            <Box mb={2}>
+              <FilterComponent technologyInput={technologyData} />
+            </Box>
+
+            <DataGrid
+              rows={tableRows}
+              columns={columns}
+              pagination={false}
+              hideFooter={false}
+              sx={{ border: "none" }}
+              pageSizeOptions={[5, 10, 15, 20]}
             />
           </Box>
-
-          <DataGrid
-            rows={tableRows}
-            columns={columns}
-            pagination={false}
-            hideFooter={false}
-            sx={{ border: "none" }}
-            pageSizeOptions={[5, 10, 15, 20]}
-          />
         </Box>
+        <DialogBox
+          size="xl"
+          openDialog={openPlatFormReport}
+          closeDialog={() => setPlatFormReport(false)}
+        >
+          <Box height={"60vh"}>
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_3bucp9nmjd?embedded=true"
+              frameborder="0"
+              style={{ border: "0" }}
+              allowfullscreen
+              sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+            ></iframe>
+          </Box>
+        </DialogBox>
       </Box>
-      <DialogBox
-        size="xl"
-        openDialog={openPlatFormReport}
-        closeDialog={() => setPlatFormReport(false)}
-      >
-        <Box height={"60vh"}>
-          <iframe
-            width="100%"
-            height="100%"
-            src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_3bucp9nmjd?embedded=true"
-            frameborder="0"
-            style={{ border: "0" }}
-            allowfullscreen
-            sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-          ></iframe>
-        </Box>
-      </DialogBox>
-    </Box>
+    </RequestErrorLoader>
   );
 };
 

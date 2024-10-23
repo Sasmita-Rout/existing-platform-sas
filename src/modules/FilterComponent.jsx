@@ -10,7 +10,6 @@ import { Stack } from "@mui/material";
 import apiUrlConfig from "../config/apiUrlConfig";
 import { fetchRecords } from "../components/apiServices/index";
 
-
 export default function FilterComponent({ technologyInput }) {
   const [selectedValues, setSelectedValues] = React.useState([]); // For multi-select
   const [selectedValue, setSelectedValue] = React.useState(null); // For single select
@@ -21,10 +20,15 @@ export default function FilterComponent({ technologyInput }) {
   // Get multi-select filter dropdown based on the selected technology filter
   const getLanguageDropdownValues = async (selectedValue) => {
     if (!selectedValue) {
-      setLanguageDropdown([])
-    };
-    const languageUrl = `${apiUrl}/platform_data/column_dropdown?dropdown_type=${selectedValue}`
-    const languageResponse = await fetchRecords(languageUrl, false, false, false)
+      setLanguageDropdown([]);
+    }
+    const languageUrl = `${apiUrl}/platform_data/column_dropdown?dropdown_type=${selectedValue}`;
+    const languageResponse = await fetchRecords(
+      languageUrl,
+      false,
+      false,
+      false
+    );
     setLanguageDropdown(languageResponse["values"] || []);
   };
 
@@ -85,7 +89,7 @@ export default function FilterComponent({ technologyInput }) {
   return (
     <>
       <h3>RESULTS</h3>
-      <Stack flexDirection="row" style={{marginBottom:50}}>
+      <Stack flexDirection="row" style={{ marginBottom: 50 }}>
         {/* Single-select Autocomplete */}
         <Filter
           input={technologyInput}
@@ -110,11 +114,22 @@ export default function FilterComponent({ technologyInput }) {
           showIcon={true}
         />
 
-        <Button variant="contained"sx={{ maxHeight: 55, marginRight: 5}}>Apply</Button>
+        <Button variant="contained" sx={{ maxHeight: 55, marginRight: 5 }}>
+          Apply
+        </Button>
 
         {/* Display selected items */}
         {selectedValues.length > 0 && (
-          <Box sx={{ display: "flex", flexWrap: "noWrap", marginTop: 2, overflowX: "auto", maxWidth:400, marginLeft: 2 }}>
+          <Box
+            sx={{
+              marginTop: 2,
+              maxWidth: 400,
+              marginLeft: 2,
+              display: "flex",
+              flexWrap: "noWrap",
+              overflowX: "scroll",
+            }}
+          >
             {selectedValues.map((selectedItem) =>
               displaySelectedItem(selectedItem, () =>
                 handleRemove(selectedItem)
