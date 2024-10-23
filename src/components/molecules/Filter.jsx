@@ -18,7 +18,7 @@ export function Filter({
 }) {
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', maxHeight:60 }}>
             <Autocomplete
                 multiple={isMultiSelect} // Toggle between multi-select and single-select
                 disableCloseOnSelect={isMultiSelect}
