@@ -21,7 +21,7 @@ const PrivateRoute = () => {
   }
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ width: "100%" }}>
       <NavBar setIsExpanded={setIsExpanded} isExpanded={isExpanded} />
       <StyledBox isExpanded={isExpanded}>
         <Outlet />

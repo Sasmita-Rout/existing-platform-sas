@@ -10,7 +10,7 @@ import { Stack } from "@mui/material";
 import apiUrlConfig from "../config/apiUrlConfig";
 import { fetchRecords } from "../components/apiServices/index";
 
-export default function FilterComponent({ technologyInput }) {
+export default function FilterComponent({ technologyInput, onValuesChange }) {
   const [selectedValues, setSelectedValues] = React.useState([]); // For multi-select
   const [selectedValue, setSelectedValue] = React.useState(null); // For single select
   const [languageDropdown, setLanguageDropdown] = React.useState([]); // Language dropdown dynamically
@@ -36,6 +36,10 @@ export default function FilterComponent({ technologyInput }) {
   const handleClearAll = () => {
     setSelectedValues([]);
   };
+
+  const handleButtonClick = () => {
+    onValuesChange(selectedValues);
+  }
 
   // Handler for removing a specific multi-selected value
   const handleRemove = (valueToRemove) => {
@@ -114,7 +118,7 @@ export default function FilterComponent({ technologyInput }) {
           showIcon={true}
         />
 
-        <Button variant="contained" sx={{ maxHeight: 55, marginRight: 5 }}>
+        <Button variant="contained" onClick={handleButtonClick} sx={{ maxHeight: 55, marginRight: 5 }}>
           Apply
         </Button>
 

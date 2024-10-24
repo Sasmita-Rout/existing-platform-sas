@@ -41,7 +41,11 @@ const PlatformProject = () => {
       projectName: "",
       accountName: "",
     },
+    keywords: ""
   });
+  const [tableData, setTableData] = useState({});
+  const [boxData, setBoxData] = useState({});
+  const [handleOptions, setHandleOptions] = useState([]);
   const [loader, setLoader] = useState(false);
 
   useEffect(() => {
@@ -52,8 +56,9 @@ const PlatformProject = () => {
         projectName: projectSelected,
         accountName: accountSelected,
       },
+      keywords: [...handleOptions]
     });
-  }, [accountSelected, projectSelected, ddSelected, buhSelected]);
+  }, [accountSelected, projectSelected, ddSelected, buhSelected, handleOptions]);
 
   const typeOfDropdown = [
     "account_name",
@@ -166,96 +171,70 @@ const PlatformProject = () => {
     },
   ];
 
-  const [tableData, setTableData] = useState({});
-  const [tableRows, setTableRows] = useState([]);
+
 
   useEffect(() => {
     async function fetchTableData() {
       try {
-        const response = await createUpdateRecord(
-          null,
-          "platform_data/summary?page=1&page_size=10",
-          null,
-          "GET"
-        );
-        return response;
+        const boxSection = await createUpdateRecord(null, "platform_data/summary?page=1&page_size=10", null, "GET");
+        const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=1&page_size=10`, null, "GET");
+        setTableData(response.records);
+        setBoxData(boxSection);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
 
-    async function getData() {
-      const tableData1 = await fetchTableData();
-      if (tableData1 && typeof tableData1 === "object") {
-        setTableData(tableData1); // Set the fetched data to state
+    fetchTableData();
+  }, []);
+
+  // Function to add values to the existing array
+  const handleSelectedValues = (values) => {
+    setHandleOptions((preVal) => [...preVal, values]);
+  };
+
+
+  useEffect(() => {
+    async function fetchUpdateTable() {
+      try {
+        if (state.keywords.length > 0) {
+          const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=${state.keywords}&page=1&page_size=1`, null, "GET");
+          setTableData(response.records);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     }
 
-    getData();
-  }, []);
-
-  // // Log tableData after it has been updated
-  // useEffect(() => {
-  //   const mainFilterTable = useTableHook({...state, tableData});
-  //   if ((tableData && Array.isArray(tableData.data)) || (mainFilterTable && Array.isArray(mainFilterTable)) ) {
-  //     let finalData = mainFilterTable || tableData.data
-  //     let filteredTable = finalData.map((item, index) => ({
-  //       id: index + 1,
-  //       ...item
-  //     }));
-  //     setTableRows(filteredTable);
-  //   } else {
-  //     console.error('tableData or tableData.data is undefined or not an array');
-  //   }
-
-  // }, [tableData, state]);
-
-  useEffect(() => {
-    const { data: tableArray = [] } = tableData || {};
-    const mainFilterTable = useTableHook({ ...state, tableData });
-
-    const finalData =
-      Array.isArray(mainFilterTable) && mainFilterTable.length >= 0
-        ? mainFilterTable
-        : tableArray;
-
-    if (Array.isArray(finalData)) {
-      const filteredTable = finalData.map((item, index) => ({
-        id: index + 1,
-        ...item,
-      }));
-      setTableRows(filteredTable);
-    } else {
-      console.error("tableData or tableData.data is undefined or not an array");
-    }
-  }, [tableData, state]);
+    fetchUpdateTable();
+  }, [state]);
 
   const boxes = [
     {
       id: 0,
       title: "Total Accounts",
-      titleNum: tableData.account_name_count,
+      titleNum: boxData?.account_name_count || 0,
       percent: "",
       color: "#0FAF62",
     },
     {
       id: 1,
       title: "Total Projects",
-      titleNum: tableData.project_name_count,
+      titleNum: boxData?.project_name_count || 0,
       percent: "",
       color: "#FF9500",
     },
     {
       id: 2,
       title: "Domains",
-      titleNum: tableData.domains_count,
+      titleNum: boxData?.domains_count || 0,
       percent: "",
       color: "#01A4C9",
     },
     {
       id: 3,
       title: "Applications Class",
-      titleNum: tableData.application_class_count,
+      titleNum: boxData?.application_class_count || 0,
       percent: "",
       color: "#BA3838",
     },
@@ -271,10 +250,76 @@ const PlatformProject = () => {
     // >
     <Box p={2}>
       <Box p={2}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
+        <Box p={2}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography
+              ml={1}
+              variant="h4"
+              gutterBottom
+              sx={{ fontWeight: 600 }}
+            >
+              Platform Project Data
+            </Typography>
+            <PrimaryButton
+              startIcon={<Add />}
+              onClick={() => goToNewProjectPage()}
+            >
+              Add New Project
+            </PrimaryButton>
+          </Stack>
+          <Box p={2}>
+            <FilterOptions
+              buhInput={buhName.values}
+              accountInput={accountName.values}
+              projectInput={projectName.values}
+              ddInput={ddName.values}
+              onBuhChange={setBuhSelected} // callback for BUH change
+              onAccountChange={setAccountSelected} // callback for Account change
+              onDdChange={setDdSelected} // callback for DD change
+              onProjectChange={setProjectSelected} // callback for Project change
+            />
+            <Stack mt={2} direction="row" justifyContent="space-between">
+              <Boxes boxes={boxes} />
+              <Stack width={200}>
+                <PrimaryButton
+                  startIcon={<PieChart />}
+                  sx={{ marginBottom: "4px" }}
+                  onClick={() => setPlatFormReport(true)}
+                >
+                  Platform Related Data Reports
+                </PrimaryButton>
+                <PrimaryButton
+                  startIcon={<PieChart />}
+                  onClick={() => setPlatFormReport(true)}
+                >
+                  Tools and Metrics Data Reports
+                </PrimaryButton>
+              </Stack>
+            </Stack>
+            <Box mb={2}>
+              <FilterComponent technologyInput={technologyData} onValuesChange={handleSelectedValues} />
+            </Box>
+
+            <DataGrid
+              height="526px"
+              rows={tableData}
+              getRowId={tableData.id}
+              columns={columns}
+              pagination={false}
+              hideFooter={false}
+              sx={{ border: "none" }}
+              pageSizeOptions={[5, 10, 15, 20]}
+            />
+          </Box>
+        </Box>
+        <DialogBox
+          size="xl"
+          openDialog={openPlatFormReport}
+          closeDialog={() => setPlatFormReport(false)}
         >
           <Typography
             ml={1}
