@@ -64,6 +64,8 @@ const PlatformProject = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoader(true); // Set loader only once before the request starts
+
       try {
         const promises = typeOfDropdown.map(async (filterName) => {
           const url = `${apiUrl}/platform_data/dropdown?dropdown_type=${filterName}`;
