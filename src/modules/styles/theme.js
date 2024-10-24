@@ -25,6 +25,9 @@ const theme = createTheme({
     },
     lightGray: {
       main: "#d1d1d1"
+    },
+    highlight:{
+      main: "#1976d2"
     }
   },
   typography: {
