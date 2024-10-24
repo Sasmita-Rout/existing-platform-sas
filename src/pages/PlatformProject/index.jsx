@@ -64,7 +64,7 @@ const PlatformProject = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoader(true); // Set loader only once before the request starts
+      setLoader(true);
 
       try {
         const promises = typeOfDropdown.map(async (filterName) => {
@@ -72,7 +72,6 @@ const PlatformProject = () => {
 
           const response = await fetchRecords(url, false, false, false);
 
-          // Always return an object, even if the response is null
           return { filterName, response: response !== null ? response : ""};
         });
 
@@ -92,10 +91,10 @@ const PlatformProject = () => {
           }
         });
 
-        setLoader(false); // Set loader to false after all requests are completed
+        setLoader(false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setLoader(false); // Ensure loader is stopped even in case of error
+        setLoader(false);
       }
     };
     setLoader(true);
