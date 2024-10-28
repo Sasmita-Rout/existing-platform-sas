@@ -334,49 +334,7 @@ const PlatformProject = () => {
           >
             Add New Project
           </PrimaryButton>
-        </Stack>
-        <Box p={2}>
-          <FilterOptions
-            buhInput={buhName}
-            accountInput={accountName}
-            projectInput={projectName}
-            ddInput={ddName}
-            onBuhChange={setBuhSelected} // callback for BUH change
-            onAccountChange={setAccountSelected} // callback for Account change
-            onDdChange={setDdSelected} // callback for DD change
-            onProjectChange={setProjectSelected} // callback for Project change
-          />
-          <Stack mt={2} direction="row" justifyContent="space-between">
-            <Boxes boxes={boxes} />
-            <Stack width={200}>
-              <PrimaryButton
-                startIcon={<PieChart />}
-                sx={{ marginBottom: "4px" }}
-                onClick={() => setPlatFormReport(true)}
-              >
-                Platform Related Data Reports
-              </PrimaryButton>
-              <PrimaryButton
-                startIcon={<PieChart />}
-                onClick={() => setPlatFormReport(true)}
-              >
-                Tools and Metrics Data Reports
-              </PrimaryButton>
-            </Stack>
-          </Stack>
-          <Box mb={2}>
-            <FilterComponent technologyInput={technologyData} />
-          </Box>
-
-          <DataGrid
-            rows={tableRows}
-            columns={columns}
-            pagination={false}
-            hideFooter={false}
-            sx={{ border: "none" }}
-            pageSizeOptions={[5, 10, 15, 20]}
-          />
-        </Box>
+        </DialogBox>
       </Box>
       <DialogBox
         size="xl"
