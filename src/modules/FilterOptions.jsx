@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Filter } from "../components/molecules/index";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -9,10 +9,10 @@ export default function FilterOptions({
   accountInput,
   ddInput,
   projectInput,
-  onBuhChange, // new prop for handling BUH change
-  onAccountChange, // new prop for handling Account change
-  onDdChange, // new prop for handling DD change
-  onProjectChange, // new prop for handling Project change
+  onBuhChange,
+  onAccountChange,
+  onDdChange,
+  onProjectChange,
 }) {
   const [buhValue, setBuhValue] = React.useState(null);
   const [accountValue, setAccountValue] = React.useState(null);
@@ -24,72 +24,64 @@ export default function FilterOptions({
   const ddFilterPlaceholder = "Select DD";
   const projectFilterPlaceholder = "Select Project";
 
-  // Clear all multi-selected values
   const handleClearAll = () => {
     setBuhValue(null);
     setAccountValue(null);
     setDdValue(null);
     setProjectValue(null);
-    onProjectChange(null);
-    onBuhChange(null);
-    onAccountChange(null);
-    onDdChange(null);
   };
+
+  useEffect(() => {
+    onBuhChange(buhValue);
+    onAccountChange(accountValue);
+    onDdChange(ddValue);
+    onProjectChange(projectValue);
+  }, [buhValue, accountValue, ddValue, projectValue]);
 
   return (
     <Stack flexDirection="row">
       {/* BUH Filter */}
       <Filter
         input={buhInput}
-        handleOnSelect={(event, newValue) => {setBuhValue(newValue), onBuhChange(newValue)}} // Direct state update
+        handleOnSelect={(event, newValue) => setBuhValue(newValue)} // Direct state update
         selectedValues={buhValue}
         isMultiSelect={false}
         placeholder={buhFilterPlaceholder}
-        onFocus={buhFilterPlaceholder}
-        onBlur={buhFilterPlaceholder}
-        showIcon={false}
       />
 
       {/* Account Filter */}
       <Filter
         input={accountInput}
-        handleOnSelect={(event, newValue) => {setAccountValue(newValue), onAccountChange(newValue)}} // Direct state update
+        handleOnSelect={(event, newValue) => setAccountValue(newValue)} // Direct state update
         selectedValues={accountValue}
         isMultiSelect={false}
         placeholder={accountFilterPlaceholder}
-        onFocus={accountFilterPlaceholder}
-        onBlur={accountFilterPlaceholder}
-        showIcon={false}
       />
 
       {/* DD Filter */}
       <Filter
         input={ddInput}
-        handleOnSelect={(event, newValue) => {setDdValue(newValue), onDdChange(newValue)}} // Direct state update
+        handleOnSelect={(event, newValue) => setDdValue(newValue)} // Direct state update
         selectedValues={ddValue}
         isMultiSelect={false}
         placeholder={ddFilterPlaceholder}
-        onFocus={ddFilterPlaceholder}
-        onBlur={ddFilterPlaceholder}
       />
 
       {/* Project Filter */}
       <Filter
         input={projectInput}
-        handleOnSelect={(event, newValue) => {setProjectValue(newValue), onProjectChange(newValue)}} // Direct state update
+        handleOnSelect={(event, newValue) => setProjectValue(newValue)} // Direct state update
         selectedValues={projectValue}
         isMultiSelect={false}
         placeholder={projectFilterPlaceholder}
-        onFocus={projectFilterPlaceholder}
-        onBlur={projectFilterPlaceholder}
       />
       <Box ml="auto">
         <Button
           style={{
             backgroundColor: "grey",
             color: "white",
-            width:"100%",
-            height: "100%"
+            width: "100%",
+            height: "100%",
           }}
           onClick={handleClearAll}
         >

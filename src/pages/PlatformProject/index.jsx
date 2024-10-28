@@ -64,27 +64,33 @@ const PlatformProject = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoader(true);
+
       try {
         const promises = typeOfDropdown.map(async (filterName) => {
-          setLoader(true);
           const url = `${apiUrl}/platform_data/dropdown?dropdown_type=${filterName}`;
 
           const response = await fetchRecords(url, false, false, false);
-          return { filterName, response };
+
+          return { filterName, response: response !== null ? response : ""};
         });
+
         const results = await Promise.all(promises);
 
+        // Process each result and set the corresponding state
         results.forEach(({ filterName, response }) => {
+
           if (filterName === "account_name") {
-            setAccountName(response);
+            setAccountName(response.values);
           } else if (filterName === "project_name") {
-            setProjectName(response);
+            setProjectName(response.values);
           } else if (filterName === "buh_name") {
-            setBuhName(response);
+            setBuhName(response.values);
           } else if (filterName === "dd_name") {
-            setDdName(response);
+            setDdName(response.values);
           }
         });
+
         setLoader(false);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -100,9 +106,9 @@ const PlatformProject = () => {
       try {
         const techUrl = `${apiUrl}/platform_data/columns`;
         const result = await fetchRecords(techUrl, false, false, false);
-        const technologyData = result["columns"]
-          ? setTechnologyData(result["columns"])
-          : [];
+        const technologyData = result !== null && result["columns"] ?
+          setTechnologyData(result["columns"])
+          : ""
         setLoader(false);
         return technologyData;
       } catch (error) {
@@ -151,7 +157,7 @@ const PlatformProject = () => {
           <IconButton
             sx={{ padding: 0 }}
             aria-label="edit"
-            // onClick={() => console.log("Action")}
+          // onClick={() => console.log("Action")}
           >
             <Edit />
           </IconButton>
@@ -256,98 +262,97 @@ const PlatformProject = () => {
   ];
 
   return (
-    <RequestErrorLoader
-      hideBackground
-      body={{
-        data: true,
-        request: loader,
-      }}
-    >
+    // <RequestErrorLoader
+    //   hideBackground
+    //   body={{
+    //     data: true,
+    //     request: loader,
+    //   }}
+    // >
+    <Box p={2}>
       <Box p={2}>
-        <Box p={2}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography
-              ml={1}
-              variant="h4"
-              gutterBottom
-              sx={{ fontWeight: 600 }}
-            >
-              Platform Project Data
-            </Typography>
-            <PrimaryButton
-              startIcon={<Add />}
-              onClick={() => goToNewProjectPage()}
-            >
-              Add New Project
-            </PrimaryButton>
-          </Stack>
-          <Box p={2}>
-            <FilterOptions
-              buhInput={buhName.values}
-              accountInput={accountName.values}
-              projectInput={projectName.values}
-              ddInput={ddName.values}
-              onBuhChange={setBuhSelected} // callback for BUH change
-              onAccountChange={setAccountSelected} // callback for Account change
-              onDdChange={setDdSelected} // callback for DD change
-              onProjectChange={setProjectSelected} // callback for Project change
-            />
-            <Stack mt={2} direction="row" justifyContent="space-between">
-              <Boxes boxes={boxes} />
-              <Stack width={200}>
-                <PrimaryButton
-                  startIcon={<PieChart />}
-                  sx={{ marginBottom: "4px" }}
-                  onClick={() => setPlatFormReport(true)}
-                >
-                  Platform Related Data Reports
-                </PrimaryButton>
-                <PrimaryButton
-                  startIcon={<PieChart />}
-                  onClick={() => setPlatFormReport(true)}
-                >
-                  Tools and Metrics Data Reports
-                </PrimaryButton>
-              </Stack>
-            </Stack>
-            <Box mb={2}>
-              <FilterComponent technologyInput={technologyData} />
-            </Box>
-
-            <DataGrid
-              height="526px"
-              rows={tableRows}
-              columns={columns}
-              pagination={false}
-              hideFooter={false}
-              sx={{ border: "none" }}
-              pageSizeOptions={[5, 10, 15, 20]}
-            />
-          </Box>
-        </Box>
-        <DialogBox
-          size="xl"
-          openDialog={openPlatFormReport}
-          closeDialog={() => setPlatFormReport(false)}
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
         >
-          <Box height={"60vh"}>
-            <iframe
-              width="100%"
-              height="100%"
-              src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_3bucp9nmjd?embedded=true"
-              frameborder="0"
-              style={{ border: "0" }}
-              allowfullscreen
-              sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-            ></iframe>
+          <Typography
+            ml={1}
+            variant="h4"
+            gutterBottom
+            sx={{ fontWeight: 600 }}
+          >
+            Platform Project Data
+          </Typography>
+          <PrimaryButton
+            startIcon={<Add />}
+            onClick={() => goToNewProjectPage()}
+          >
+            Add New Project
+          </PrimaryButton>
+        </Stack>
+        <Box p={2}>
+          <FilterOptions
+            buhInput={buhName}
+            accountInput={accountName}
+            projectInput={projectName}
+            ddInput={ddName}
+            onBuhChange={setBuhSelected} // callback for BUH change
+            onAccountChange={setAccountSelected} // callback for Account change
+            onDdChange={setDdSelected} // callback for DD change
+            onProjectChange={setProjectSelected} // callback for Project change
+          />
+          <Stack mt={2} direction="row" justifyContent="space-between">
+            <Boxes boxes={boxes} />
+            <Stack width={200}>
+              <PrimaryButton
+                startIcon={<PieChart />}
+                sx={{ marginBottom: "4px" }}
+                onClick={() => setPlatFormReport(true)}
+              >
+                Platform Related Data Reports
+              </PrimaryButton>
+              <PrimaryButton
+                startIcon={<PieChart />}
+                onClick={() => setPlatFormReport(true)}
+              >
+                Tools and Metrics Data Reports
+              </PrimaryButton>
+            </Stack>
+          </Stack>
+          <Box mb={2}>
+            <FilterComponent technologyInput={technologyData} />
           </Box>
-        </DialogBox>
+
+          <DataGrid
+            rows={tableRows}
+            columns={columns}
+            pagination={false}
+            hideFooter={false}
+            sx={{ border: "none" }}
+            pageSizeOptions={[5, 10, 15, 20]}
+          />
+        </Box>
       </Box>
-    </RequestErrorLoader>
+      <DialogBox
+        size="xl"
+        openDialog={openPlatFormReport}
+        closeDialog={() => setPlatFormReport(false)}
+      >
+        <Box height={"60vh"}>
+          <iframe
+            width="100%"
+            height="100%"
+            src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_3bucp9nmjd?embedded=true"
+            frameborder="0"
+            style={{ border: "0" }}
+            allowfullscreen
+            sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+          ></iframe>
+        </Box>
+      </DialogBox>
+    </Box>
+    // </RequestErrorLoader>
   );
 };
 

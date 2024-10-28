@@ -18,7 +18,7 @@ async function fetchRecords(endpoint, token, fetchAsTxt, fetchAsBlob) {
 
     // Check if the response is OK (status 200–299)
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      return null
     }
 
     // Handle the response based on the specified format
@@ -31,7 +31,7 @@ async function fetchRecords(endpoint, token, fetchAsTxt, fetchAsBlob) {
     }
   } catch (error) {
     console.error('Error:', error);
-    throw error;
+    return null
   }
 }
 
