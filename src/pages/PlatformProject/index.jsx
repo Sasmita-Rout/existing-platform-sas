@@ -11,7 +11,6 @@ import {
   fetchRecords,
 } from "../../components/apiServices/index";
 import apiUrlConfig from "../../config/apiUrlConfig";
-import useTableHook from "./useTableHook";
 import { RequestErrorLoader } from "../../components/organism";
 
 const PlatformProject = () => {
