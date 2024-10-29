@@ -12,8 +12,8 @@ import {
 } from "../../components/apiServices/index";
 import apiUrlConfig from "../../config/apiUrlConfig";
 
+const tableApiCalled = createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=1&page_size=10`, null, "GET");
 const PlatformProject = () => {
-  const tableApiCalled = createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=1&page_size=10`, null, "GET");
   const navigate = useNavigate();
 
   const goToNewProjectPage = () => {
