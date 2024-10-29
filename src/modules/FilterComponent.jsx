@@ -35,6 +35,8 @@ export default function FilterComponent({ technologyInput, onValuesChange }) {
   // Clear all multi-selected values
   const handleClearAll = () => {
     setSelectedValues([]);
+    setSelectedValue([]);
+    onValuesChange(null);
   };
 
   const handleButtonClick = () => {

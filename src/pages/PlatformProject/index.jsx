@@ -11,9 +11,9 @@ import {
   fetchRecords,
 } from "../../components/apiServices/index";
 import apiUrlConfig from "../../config/apiUrlConfig";
-import { RequestErrorLoader } from "../../components/organism";
 
 const PlatformProject = () => {
+  const tableApiCalled = createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=1&page_size=10`, null, "GET");
   const navigate = useNavigate();
 
   const goToNewProjectPage = () => {
@@ -55,7 +55,7 @@ const PlatformProject = () => {
         projectName: projectSelected,
         accountName: accountSelected,
       },
-      keywords: [...handleOptions]
+      keywords: handleOptions
     });
   }, [accountSelected, projectSelected, ddSelected, buhSelected, handleOptions]);
 
@@ -76,7 +76,7 @@ const PlatformProject = () => {
 
           const response = await fetchRecords(url, false, false, false);
 
-          return { filterName, response: response !== null ? response : ""};
+          return { filterName, response: response !== null ? response : "" };
         });
 
         const results = await Promise.all(promises);
@@ -176,8 +176,6 @@ const PlatformProject = () => {
     async function fetchTableData() {
       try {
         const boxSection = await createUpdateRecord(null, "platform_data/summary?page=1&page_size=10", null, "GET");
-        const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=1&page_size=10`, null, "GET");
-        setTableData(response.records);
         setBoxData(boxSection);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -188,17 +186,41 @@ const PlatformProject = () => {
   }, []);
 
   // Function to add values to the existing array
-  const handleSelectedValues = (values) => {
-    setHandleOptions((preVal) => [...preVal, values]);
+  const handleSelectedValues = async (values) => {
+    if (values === null) {
+      setHandleOptions([]);
+      const response = await tableApiCalled;
+      const updatedData = response.records.map((item, index) => ({
+        ...item,
+        id: index
+      }));
+      setTableData(updatedData);
+    } else setHandleOptions(() => values);
   };
 
 
   useEffect(() => {
     async function fetchUpdateTable() {
       try {
-        if (state.keywords.length > 0) {
-          const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=${state.keywords}&page=1&page_size=1`, null, "GET");
-          setTableData(response.records);
+        if (state.keywords.length > 0 || Object.values(state.filters).some(Boolean)) {
+          const filterValues = [
+            ...(state.keywords || []),
+            ...Object.values(state.filters).filter(Boolean)
+          ];
+          const keywords = encodeURIComponent(filterValues);
+          const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=${keywords}&page=1&page_size=1`, null, "GET");
+          const updatedData = response.records.map((item, index) => ({
+            ...item,
+            id: index
+          }));
+          setTableData(updatedData);
+        } else {
+          const response = await tableApiCalled;
+          const updatedData = response.records.map((item, index) => ({
+            ...item,
+            id: index
+          }));
+          setTableData(updatedData);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -272,10 +294,10 @@ const PlatformProject = () => {
           </Stack>
           <Box p={2}>
             <FilterOptions
-              buhInput={buhName.values}
-              accountInput={accountName.values}
-              projectInput={projectName.values}
-              ddInput={ddName.values}
+              buhInput={buhName}
+              accountInput={accountName}
+              projectInput={projectName}
+              ddInput={ddName}
               onBuhChange={setBuhSelected} // callback for BUH change
               onAccountChange={setAccountSelected} // callback for Account change
               onDdChange={setDdSelected} // callback for DD change
@@ -306,7 +328,6 @@ const PlatformProject = () => {
             <DataGrid
               height="526px"
               rows={tableData}
-              getRowId={tableData.id}
               columns={columns}
               pagination={false}
               hideFooter={false}
