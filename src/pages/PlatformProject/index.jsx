@@ -208,7 +208,7 @@ const PlatformProject = () => {
             ...Object.values(state.filters).filter(Boolean)
           ];
           const keywords = encodeURIComponent(filterValues);
-          const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=${keywords}&page=1&page_size=1`, null, "GET");
+          const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=${keywords}&page=1&page_size=10`, null, "GET");
           const updatedData = response.records.map((item, index) => ({
             ...item,
             id: index
