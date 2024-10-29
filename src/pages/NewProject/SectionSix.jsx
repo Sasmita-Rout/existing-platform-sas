@@ -17,7 +17,7 @@ export default function SectionThree(props) {
     };
 
     const inputs = [
-        { key: 'environmentInput', labels: 'Select Domain' },
+        { key: 'aiAndMachineLearningTechnologies', labels: 'Select AI and Machine Learning' },
     ];
 
     return (

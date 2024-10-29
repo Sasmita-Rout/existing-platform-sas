@@ -19,7 +19,7 @@ const SectionFour = (props) => {
     { key: 'FunctionalandIntegration', labels: 'Select Functional and Integration...' },
     { key: 'PerformanceandLoadTest', labels: 'Select Performance and Load Test' },
     { key: 'ApplicationSecurityTesting', labels: 'Select Application Security Testing' },
-    { key: 'devops', labels: 'Select Devops' },
+    { key: 'devopsInfrastructureAsCodeIac', labels: 'Select Devops' },
   ];
   return (
     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>

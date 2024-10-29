@@ -13,7 +13,7 @@ export default function SectionThree(props) {
     };
 
     const inputs = [
-        { key: 'environmentInput', labels: 'Select Domain' },
+        { key: 'environmentInput', labels: 'Select Environment' },
         { key: 'cloudTechnologies', labels: 'Select Cloud Technologies' },
         { key: 'enterprisePlatforms', labels: 'Select Enterprise Platforms' },
         { key: 'etlAndMdmTools', labels: 'Select Data Engg-ETL & MDM Tools' },

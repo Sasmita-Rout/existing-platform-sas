@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import { Filter } from "../components/molecules/index";
 import { Stack } from "@mui/material";
 import apiUrlConfig from "../config/apiUrlConfig";
-import { fetchRecords } from "../components/apiServices/index";
+import { columnValues } from "../modules/FilterApiCall"
 
 export default function FilterComponent({ technologyInput, onValuesChange }) {
   const [selectedValues, setSelectedValues] = React.useState([]); // For multi-select
@@ -22,14 +22,9 @@ export default function FilterComponent({ technologyInput, onValuesChange }) {
     if (!selectedValue) {
       setLanguageDropdown([]);
     }
-    const languageUrl = `${apiUrl}/platform_data/column_dropdown?dropdown_type=${selectedValue}`;
-    const languageResponse = await fetchRecords(
-      languageUrl,
-      false,
-      false,
-      false
-    );
-    setLanguageDropdown(languageResponse["values"] || []);
+    const languageResponse = await columnValues(apiUrl, selectedValue)
+
+    setLanguageDropdown(languageResponse);
   };
 
   // Clear all multi-selected values

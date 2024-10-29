@@ -11,6 +11,8 @@ import {
   fetchRecords,
 } from "../../components/apiServices/index";
 import apiUrlConfig from "../../config/apiUrlConfig";
+import useTableHook from "./useTableHook";
+import { fetchFilterData, fetchColumnData } from "../../modules/FilterApiCall"
 import { RequestErrorLoader } from "../../components/organism";
 
 const PlatformProject = () => {
@@ -114,7 +116,7 @@ const PlatformProject = () => {
       }
     };
     setLoader(true);
-    fetchData();
+    fetchFilterData(apiUrl, typeOfDropdown, setLoader, setAccountName, setDdName, setProjectName, setBuhName);
   }, []);
 
   useEffect(() => {
@@ -134,7 +136,7 @@ const PlatformProject = () => {
       }
     };
     setLoader(true);
-    fetchAdvanceFilterTechnologies();
+    fetchColumnData(apiUrl, setTechnologyData, setLoader);
   }, []);
 
   const columns = [
