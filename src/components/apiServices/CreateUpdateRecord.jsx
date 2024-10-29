@@ -1,19 +1,16 @@
 import { JWT_HEADER, JSON_HEADER } from "../../config/authConfig";
 import apiUrlConfig from "../../config/apiUrlConfig";
 
-async function createUpdateRecord(token, endpoint, data, method) {
-    const { apiUrl } = apiUrlConfig
+async function createUpdateRecord(token, url, data, method) {
     const config = {
         method,
         mode: 'cors',
-        headers: token
-            ? Object.assign({}, JWT_HEADER(token), JSON_HEADER)
-            : Object.assign({}, JSON_HEADER),
+        // headers: token
+        //     ? Object.assign({}, JWT_HEADER(token), JSON_HEADER)
+        //     : Object.assign({}, JSON_HEADER),
         cache: 'default',
         body: data ? JSON.stringify(data) : null,
     };
-
-    const url = `${apiUrl}/${endpoint}`
 
     try {
         const response = await fetch(url, config);

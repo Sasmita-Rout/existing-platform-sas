@@ -23,7 +23,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { fetchFilterData, fetchColumnData, columnValues } from "../../modules/FilterApiCall"
+import { fetchFilterData, fetchColumnData, columnValues, addNewProject } from "../../modules/FilterApiCall"
 import apiUrlConfig from "../../config/apiUrlConfig";
 
 const NewProject = () => {
@@ -71,6 +71,10 @@ const NewProject = () => {
   const [aiMachineLearningTechnologies, setAiMachineLearningTechnologies] = useState([]);
   const [userFeedbackAnalyticsTools, setUserFeedbackAnalyticsTools] = useState([]);
   const [lowCodeEnvironments, setLowCodeEnvironments] = useState([]);
+  const [buhValue, selectBuhValue] = React.useState(null);
+  const [accountValue, selectAccountValue] = React.useState(null);
+  const [ddValue, selectDdValue] = React.useState(null);
+  const [projectName, setProjectName] = React.useState(null);
 
   const form = useForm();
   const navigate = useNavigate();
@@ -189,7 +193,9 @@ const NewProject = () => {
   //     "GCP",
   //   ]
   // };
-
+  const createNewProject = () => {
+    addNewProject(apiUrl, accountValue, projectName, buhValue, ddValue)
+  }
   return (
     <>
 
@@ -253,6 +259,7 @@ const NewProject = () => {
           <Button
             variant="contained"
             sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
+            onClick={(()=> {createNewProject})}
           >
             Submit
           </Button>
@@ -268,7 +275,9 @@ const NewProject = () => {
         <AccordionDetails>
           <Section buhInput={buhName}
             accountInput={accountName}
-            ddInput={ddName} />
+            ddInput={ddName}
+            selectBuhValue={selectBuhValue} selectAccountValue={selectAccountValue} selectDdValue={selectDdValue} setProjectName={setProjectName}
+            buhValue={buhValue} ddValue={ddValue} accountValue={accountValue} projectName={projectName} />
         </AccordionDetails>
       </Accordion>
       <Accordion defaultExpanded sx={{
