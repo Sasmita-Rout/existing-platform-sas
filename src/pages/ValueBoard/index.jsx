@@ -1,9 +1,10 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Stack } from "@mui/material";
+import { PrimaryButton } from "../../components/atoms";
 import { GenericTabs } from "../../components/molecules/index";
 
 const ValueBoard = () => {
 
-  const tabs = [ 
+  const tabs = [
     {
       index: 0,
       label: "Project",
@@ -36,9 +37,18 @@ const ValueBoard = () => {
     }
   ]
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ margin: "10px 25px" }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
+          Value Board
+        </Typography>
+        <Typography> Status: In-Progress</Typography>
+        <Typography> Start Date: 13-10-2024</Typography>
+        <Typography> End Date: 26-10-2024</Typography>
+        <PrimaryButton onClick={() => goToNewProjectPage()} >Update</PrimaryButton>
+      </Stack>
       <GenericTabs tabs={tabs} />
-      </Box>
+    </Box>
   );
 };
 

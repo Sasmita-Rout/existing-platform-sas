@@ -12,9 +12,7 @@ async function createUpdateRecord(token, endpoint, data, method) {
         cache: 'default',
         body: data ? JSON.stringify(data) : null,
     };
-    // endpoint = { account_name, project_name, buh_name, dd_name, page, page_size };
 
-    // const url = `${apiUrl}platform_data/summary?account_name=${account_name}&project_name=${project_name}&buh_name=${buh_name}&dd_name=${dd_name}&page=${page}&page_size=${page_size}`
     const url = `${apiUrl}/${endpoint}`
 
     try {
