@@ -19,6 +19,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState, useEffect } from "react";
 import { DialogBox } from "../../components/molecules";
 import {
+  Dialog,
+  DialogContentText,
   DialogTitle,
   DialogContent,
   DialogActions,
@@ -41,6 +43,7 @@ const NewProject = () => {
   const [domainValue, selectDomainValue] = React.useState(null);
   const [applicationValue, selectApplicationValue] = React.useState(null);
   const [app, setApp] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
   const [env, setEnv] = useState([]);
   const [cloudTechnologies, setCloudTechnologies] = useState([]);
   const [dataEngineeringEtlMdmTools, setDataEngineeringEtlMdmTools] = useState([]);
@@ -97,6 +100,23 @@ const NewProject = () => {
   const handleSelectedValuesChangeSectionSix = (selectedValues) => {
     setAllSelectedValuesSix(selectedValues);
   };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+};
+
+// Function to handle closing the dialog
+const handleCloseDialog = () => {
+    setOpenDialog(false);
+};
+
+// Function to handle confirm submission action
+const handleConfirmSubmit = () => {
+    console.log("Form submitted!");
+    createNewProject()
+    setOpenDialog(false);
+};
+
 
 
   const goToPlatformPage = () => {
@@ -283,12 +303,34 @@ const NewProject = () => {
           <Button
             variant="contained"
             sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
-            onClick={createNewProject}
+            onClick={handleOpenDialog}
           >
             Submit
-          </Button>
+            </Button>
         </Stack>
       </Stack>
+      <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                aria-labelledby="confirmation-dialog-title"
+                aria-describedby="confirmation-dialog-description"
+            >
+                <DialogTitle id="confirmation-dialog-title">{"Confirm Submission"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="confirmation-dialog-description">
+                        Are you sure you want to submit the project details?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleConfirmSubmit} color="primary" variant="contained" autoFocus>
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
 
       <Accordion sx={{
         boxShadow: 'none', // Remove shadow
