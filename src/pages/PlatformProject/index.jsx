@@ -12,8 +12,8 @@ import {
 } from "../../components/apiServices/index";
 import apiUrlConfig from "../../config/apiUrlConfig";
 
+const tableApiCalled = createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=1&page_size=10`, null, "GET");
 const PlatformProject = () => {
-  const tableApiCalled = createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=1&page_size=10`, null, "GET");
   const navigate = useNavigate();
 
   const goToNewProjectPage = () => {
@@ -35,10 +35,10 @@ const PlatformProject = () => {
   const [state, setState] = useState({
     searchText: "",
     filters: {
-      buhName: "",
-      ddNmae: "",
-      projectName: "",
-      accountName: "",
+      buh_name: "",
+      dd_name: "",
+      project_name: "",
+      account_name: "",
     },
     keywords: ""
   });
@@ -50,10 +50,10 @@ const PlatformProject = () => {
   useEffect(() => {
     setState({
       filters: {
-        buhName: buhSelected,
-        ddNmae: ddSelected,
-        projectName: projectSelected,
-        accountName: accountSelected,
+        buh_name: buhSelected,
+        dd_name: ddSelected,
+        project_name: projectSelected,
+        account_name: accountSelected,
       },
       keywords: handleOptions
     });
@@ -204,11 +204,25 @@ const PlatformProject = () => {
       try {
         if (state.keywords.length > 0 || Object.values(state.filters).some(Boolean)) {
           const filterValues = [
-            ...(state.keywords || []),
-            ...Object.values(state.filters).filter(Boolean)
+            ...(state.keywords || [])
           ];
           const keywords = encodeURIComponent(filterValues);
-          const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=${keywords}&page=1&page_size=10`, null, "GET");
+          const queryParams = new URLSearchParams({
+            ...(state.filters.account_name && { account_name: state.filters.account_name }),
+            ...(state.filters.project_name && { project_name: state.filters.project_name }),
+            ...(state.filters.buh_name && { buh_name: state.filters.buh_name }),
+            ...(state.filters.dd_name && { dd_name: state.filters.dd_name }),
+            ...(keywords && { keywords }),
+            page: 1,
+            page_size: 10
+          });
+
+          const response = await createUpdateRecord(
+            null,
+            `platform_data/search_advanced?${queryParams.toString()}`,
+            null,
+            "GET"
+          );
           const updatedData = response.records.map((item, index) => ({
             ...item,
             id: index
