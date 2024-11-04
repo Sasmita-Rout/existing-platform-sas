@@ -11,8 +11,15 @@ import {
   fetchRecords,
 } from "../../components/apiServices/index";
 import apiUrlConfig from "../../config/apiUrlConfig";
+import { fetchFilterData, fetchColumnData } from "../../modules/FilterApiCall";
+import { RequestErrorLoader } from "../../components/organism";
 
-const tableApiCalled = createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=1&page_size=10`, null, "GET");
+const tableApiCalled = createUpdateRecord(
+  null,
+  `platform_data/search_advanced?keywords=n&page=1&page_size=10`,
+  null,
+  "GET"
+);
 const PlatformProject = () => {
   const navigate = useNavigate();
 
@@ -40,7 +47,7 @@ const PlatformProject = () => {
       project_name: "",
       account_name: "",
     },
-    keywords: ""
+    keywords: "",
   });
   const [tableData, setTableData] = useState({});
   const [boxData, setBoxData] = useState({});
@@ -55,9 +62,15 @@ const PlatformProject = () => {
         project_name: projectSelected,
         account_name: accountSelected,
       },
-      keywords: handleOptions
+      keywords: handleOptions,
     });
-  }, [accountSelected, projectSelected, ddSelected, buhSelected, handleOptions]);
+  }, [
+    accountSelected,
+    projectSelected,
+    ddSelected,
+    buhSelected,
+    handleOptions,
+  ]);
 
   const typeOfDropdown = [
     "account_name",
@@ -83,7 +96,6 @@ const PlatformProject = () => {
 
         // Process each result and set the corresponding state
         results.forEach(({ filterName, response }) => {
-
           if (filterName === "account_name") {
             setAccountName(response.values);
           } else if (filterName === "project_name") {
@@ -103,6 +115,15 @@ const PlatformProject = () => {
     };
     setLoader(true);
     fetchData();
+    fetchFilterData(
+      apiUrl,
+      typeOfDropdown,
+      setLoader,
+      setAccountName,
+      setDdName,
+      setProjectName,
+      setBuhName
+    );
   }, []);
 
   useEffect(() => {
@@ -110,9 +131,10 @@ const PlatformProject = () => {
       try {
         const techUrl = `${apiUrl}/platform_data/columns`;
         const result = await fetchRecords(techUrl, false, false, false);
-        const technologyData = result !== null && result["columns"] ?
-          setTechnologyData(result["columns"])
-          : ""
+        const technologyData =
+          result !== null && result["columns"]
+            ? setTechnologyData(result["columns"])
+            : "";
         setLoader(false);
         return technologyData;
       } catch (error) {
@@ -161,7 +183,7 @@ const PlatformProject = () => {
           <IconButton
             sx={{ padding: 0 }}
             aria-label="edit"
-          // onClick={() => console.log("Action")}
+            // onClick={() => console.log("Action")}
           >
             <Edit />
           </IconButton>
@@ -170,12 +192,15 @@ const PlatformProject = () => {
     },
   ];
 
-
-
   useEffect(() => {
     async function fetchTableData() {
       try {
-        const boxSection = await createUpdateRecord(null, "platform_data/summary?page=1&page_size=10", null, "GET");
+        const boxSection = await createUpdateRecord(
+          null,
+          "platform_data/summary?page=1&page_size=10",
+          null,
+          "GET"
+        );
         setBoxData(boxSection);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -192,29 +217,33 @@ const PlatformProject = () => {
       const response = await tableApiCalled;
       const updatedData = response.records.map((item, index) => ({
         ...item,
-        id: index
+        id: index,
       }));
       setTableData(updatedData);
     } else setHandleOptions(() => values);
   };
 
-
   useEffect(() => {
     async function fetchUpdateTable() {
       try {
-        if (state.keywords.length > 0 || Object.values(state.filters).some(Boolean)) {
-          const filterValues = [
-            ...(state.keywords || [])
-          ];
+        if (
+          state.keywords.length > 0 ||
+          Object.values(state.filters).some(Boolean)
+        ) {
+          const filterValues = [...(state.keywords || [])];
           const keywords = encodeURIComponent(filterValues);
           const queryParams = new URLSearchParams({
-            ...(state.filters.account_name && { account_name: state.filters.account_name }),
-            ...(state.filters.project_name && { project_name: state.filters.project_name }),
+            ...(state.filters.account_name && {
+              account_name: state.filters.account_name,
+            }),
+            ...(state.filters.project_name && {
+              project_name: state.filters.project_name,
+            }),
             ...(state.filters.buh_name && { buh_name: state.filters.buh_name }),
             ...(state.filters.dd_name && { dd_name: state.filters.dd_name }),
             ...(keywords && { keywords }),
             page: 1,
-            page_size: 10
+            page_size: 10,
           });
 
           const response = await createUpdateRecord(
@@ -225,14 +254,14 @@ const PlatformProject = () => {
           );
           const updatedData = response.records.map((item, index) => ({
             ...item,
-            id: index
+            id: index,
           }));
           setTableData(updatedData);
         } else {
           const response = await tableApiCalled;
           const updatedData = response.records.map((item, index) => ({
             ...item,
-            id: index
+            id: index,
           }));
           setTableData(updatedData);
         }
@@ -336,15 +365,25 @@ const PlatformProject = () => {
               </Stack>
             </Stack>
             <Box mb={2}>
-              <FilterComponent technologyInput={technologyData} onValuesChange={handleSelectedValues} />
+              <FilterComponent
+                technologyInput={technologyData}
+                onValuesChange={handleSelectedValues}
+              />
             </Box>
 
+            {/* 
+            rowsPerPageOptions={[5, 10, 20]}
+            totalRowCount={data?.length || 0}
+            getRowId={params => params.opp_application_uuid} */}
+
             <DataGrid
+              pageSize={10}
               height="526px"
               rows={tableData}
               columns={columns}
-              pagination={false}
+              pagination={true}
               hideFooter={false}
+              totalRowCount={30}
               sx={{ border: "none" }}
               pageSizeOptions={[5, 10, 15, 20]}
             />
@@ -355,12 +394,7 @@ const PlatformProject = () => {
           openDialog={openPlatFormReport}
           closeDialog={() => setPlatFormReport(false)}
         >
-          <Typography
-            ml={1}
-            variant="h4"
-            gutterBottom
-            sx={{ fontWeight: 600 }}
-          >
+          <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
             Platform Project Data
           </Typography>
           <PrimaryButton
