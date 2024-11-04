@@ -40,11 +40,13 @@ export const fetchColumnData = async (apiUrl, setTechnologyData, setLoader) => {
     try {
         const url = `${apiUrl}/platform_data/columns`;
         const result = await fetchRecords(url, false, false, false);
-        const data = result !== null && result["columns"] ?
-            setTechnologyData(result["columns"])
-            : null
-        setLoader(false);
-        return data;
+        if (result && result["columns"]) {
+            const data = result["columns"];
+            setTechnologyData(data);
+            return data;
+        } else {
+            return null;
+        }
     } catch (error) {
         console.error("Error fetching data:", error);
         setLoader(false);

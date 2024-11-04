@@ -84,7 +84,7 @@ const NewProject = () => {
   const [accountValue, selectAccountValue] = React.useState(null);
   const [ddValue, selectDdValue] = React.useState(null);
   const [projectName, setProjectName] = React.useState(null);
-  
+  const [errorDailogBox, setErrorDailogBox] = useState(false);
   const form = useForm();
   const navigate = useNavigate();
 
@@ -102,20 +102,25 @@ const NewProject = () => {
   };
 
   const handleOpenDialog = () => {
-    setOpenDialog(true);
-};
+    if (buhValue === null || accountValue === null || ddValue === null || projectName === null || domainValue === null || applicationValue === null) {
+      setErrorDailogBox(true);
+    } else {
+      setOpenDialog(true);
+    }
+  };
 
-// Function to handle closing the dialog
-const handleCloseDialog = () => {
+  // Function to handle closing the dialog
+  const handleCloseDialog = () => {
     setOpenDialog(false);
-};
+  };
 
-// Function to handle confirm submission action
-const handleConfirmSubmit = () => {
+  // Function to handle confirm submission action
+  const handleConfirmSubmit = () => {
     console.log("Form submitted!");
     createNewProject()
     setOpenDialog(false);
-};
+    navigate("/PlatformProject");
+  };
 
 
 
@@ -207,41 +212,30 @@ const handleConfirmSubmit = () => {
 
     fetchData();
   }, [loader]);
-
-  // Define inputs for various sections
-  const buhInput = {
-    values: ["Tony", "Ruby", "San", "DC"]
-  }
-  const accountInput = {
-    values: [
-      "American Water",
-      "Awana",
-      "CBC",
-      "Cision"
-    ]
-  }
-  const ddInput = {
-    values: [
-      "AnandShah",
-      "Sen",
-      "CBC",
-      "Cision",
-    ]
-  };
-
-  // Same input for all props in SectionThree
-  // const cloudTechnologies = {
-  //   values: [
-  //     "AWS",
-  //     "Azure",
-  //     "GCP",
-  //   ]
-  // };
   const createNewProject = () => {
     addNewProject(apiUrl, accountValue, projectName, buhValue, ddValue, domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix)
   }
   return (
     <>
+
+      <Dialog
+        open={errorDailogBox}
+        onClose={() => setErrorDailogBox(false)}
+        aria-labelledby="confirmation-dialog-title"
+        aria-describedby="confirmation-dialog-description"
+      >
+        <DialogTitle id="confirmation-dialog-title">{"Error Form Submission"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirmation-dialog-description">
+            Please fill up these fields as they are mandotory: BUH, Account, DD Name, Project Name, Domain, Application Class
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setErrorDailogBox(false)} color="primary" variant="contained" autoFocus>
+            Sure
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <DialogBox
         size="sm"
@@ -306,30 +300,30 @@ const handleConfirmSubmit = () => {
             onClick={handleOpenDialog}
           >
             Submit
-            </Button>
+          </Button>
         </Stack>
       </Stack>
       <Dialog
-                open={openDialog}
-                onClose={handleCloseDialog}
-                aria-labelledby="confirmation-dialog-title"
-                aria-describedby="confirmation-dialog-description"
-            >
-                <DialogTitle id="confirmation-dialog-title">{"Confirm Submission"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="confirmation-dialog-description">
-                        Are you sure you want to submit the project details?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleConfirmSubmit} color="primary" variant="contained" autoFocus>
-                        Confirm
-                    </Button>
-                </DialogActions>
-            </Dialog>
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="confirmation-dialog-title"
+        aria-describedby="confirmation-dialog-description"
+      >
+        <DialogTitle id="confirmation-dialog-title">{"Confirm Submission"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirmation-dialog-description">
+            Are you sure you want to submit the project details?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmSubmit} color="primary" variant="contained" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
 
 
       <Accordion sx={{
@@ -396,10 +390,10 @@ const handleConfirmSubmit = () => {
           <SectionTwo
             domainInput={domain}
             applicationInput={app}
-            domainValue = {domainValue} 
-            selectDomainValue = {selectDomainValue}
-            applicationValue={applicationValue} 
-            selectApplicationValue={selectApplicationValue} 
+            domainValue={domainValue}
+            selectDomainValue={selectDomainValue}
+            applicationValue={applicationValue}
+            selectApplicationValue={selectApplicationValue}
           />
         </AccordionDetails>
       </Accordion>
