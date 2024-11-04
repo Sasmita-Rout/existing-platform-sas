@@ -81,15 +81,7 @@ const NewProject = () => {
   const [accountValue, selectAccountValue] = React.useState(null);
   const [ddValue, selectDdValue] = React.useState(null);
   const [projectName, setProjectName] = React.useState(null);
-  useEffect(() => {
-    console.log(domain, "INP")
-    console.log(allSelectedValues, "SectionThree")
-    console.log(allSelectedValuesFour, "SectionFour")
-    console.log(allSelectedValuesFive, "FIve")
-    console.log(allSelectedValuesSix, "Six")
-  }, [])
-
-
+  
   const form = useForm();
   const navigate = useNavigate();
 
