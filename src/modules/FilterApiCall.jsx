@@ -71,7 +71,7 @@ export const addNewProject = async (
     domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix
 
 ) => {
-    const url = `${apiUrl}/platform_data/create_project/`;
+    const url = `platform_data/create_project/`;
     const data = {
         submitter_email_id: "example@example.com", // Consider passing this as a parameter for flexibility
         submitting_time: "2024-10-15T12:34:56", // Get the current timestamp in ISO format

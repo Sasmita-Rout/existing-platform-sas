@@ -1,23 +1,24 @@
 import { JWT_HEADER, JSON_HEADER } from "../../config/authConfig";
 import apiUrlConfig from "../../config/apiUrlConfig";
 
-async function createUpdateRecord(token, url, data, method) {
+async function createUpdateRecord(token, endpoint, data, method) {
+    const { apiUrl } = apiUrlConfig
     const config = {
         method,
         mode: 'cors',
         headers: {
             "Content-Type": "application/json"
         },
-        // headers: token
-        //     ? Object.assign({}, JWT_HEADER(token), JSON_HEADER)
-        //     : Object.assign({}, JSON_HEADER),
         cache: 'default',
-        body: JSON.stringify(data) ,
+        body: data ? JSON.stringify(data) : null,
     };
+if (method === "GET") {
+    delete config["body"]
+}
+    const url = `${apiUrl}/${endpoint}`
 
     try {
         const response = await fetch(url, config);
-        console.log(response,"Resp")
 
         // Check if the response is OK (status 200–299)
         if (!response.ok) {

@@ -354,6 +354,10 @@ const NewProject = () => {
           <SectionTwo
             domainInput={domain}
             applicationInput={app}
+            domainValue = {domainValue} 
+            selectDomainValue = {selectDomainValue}
+            applicationValue={applicationValue} 
+            selectApplicationValue={selectApplicationValue} 
           />
         </AccordionDetails>
       </Accordion>
