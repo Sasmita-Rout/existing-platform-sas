@@ -11,7 +11,6 @@ import {
   fetchRecords,
 } from "../../components/apiServices/index";
 import apiUrlConfig from "../../config/apiUrlConfig";
-import { fetchFilterData, fetchColumnData } from "../../modules/FilterApiCall";
 import { RequestErrorLoader } from "../../components/organism";
 
 const tableApiCalled = createUpdateRecord(
@@ -115,15 +114,6 @@ const PlatformProject = () => {
     };
     setLoader(true);
     fetchData();
-    fetchFilterData(
-      apiUrl,
-      typeOfDropdown,
-      setLoader,
-      setAccountName,
-      setDdName,
-      setProjectName,
-      setBuhName
-    );
   }, []);
 
   useEffect(() => {
