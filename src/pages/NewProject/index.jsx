@@ -28,12 +28,18 @@ import apiUrlConfig from "../../config/apiUrlConfig";
 
 const NewProject = () => {
   const [openPlatFormReport, setPlatFormReport] = useState(false);
+  const [allSelectedValues, setAllSelectedValues] = useState({});
+  const [allSelectedValuesFour, setAllSelectedValuesFour] = useState({})
+  const [allSelectedValuesFive, setAllSelectedValuesFive] = useState({})
+  const [allSelectedValuesSix, setAllSelectedValuesSix] = useState({})
   const [accountName, setAccountName] = useState([]);
   const [buhName, setBuhName] = useState([]);
   const [ddName, setDdName] = useState([]);
   const [loader, setLoader] = useState(false);
   const [technologyData, setTechnologyData] = useState([]);
   const [domain, setDomain] = useState()
+  const [domainValue, selectDomainValue] = React.useState(null);
+  const [applicationValue, selectApplicationValue] = React.useState(null);
   const [app, setApp] = useState([]);
   const [env, setEnv] = useState([]);
   const [cloudTechnologies, setCloudTechnologies] = useState([]);
@@ -75,9 +81,31 @@ const NewProject = () => {
   const [accountValue, selectAccountValue] = React.useState(null);
   const [ddValue, selectDdValue] = React.useState(null);
   const [projectName, setProjectName] = React.useState(null);
+  useEffect(() => {
+    console.log(domain, "INP")
+    console.log(allSelectedValues, "SectionThree")
+    console.log(allSelectedValuesFour, "SectionFour")
+    console.log(allSelectedValuesFive, "FIve")
+    console.log(allSelectedValuesSix, "Six")
+  }, [])
+
 
   const form = useForm();
   const navigate = useNavigate();
+
+  const handleSelectedValuesChangeSectionThree = (selectedValues) => {
+    setAllSelectedValues(selectedValues);
+  };
+  const handleSelectedValuesChangeSectionFour = (selectedValues) => {
+    setAllSelectedValuesFour(selectedValues);
+  };
+  const handleSelectedValuesChangeSectionFive = (selectedValues) => {
+    setAllSelectedValuesFive(selectedValues);
+  };
+  const handleSelectedValuesChangeSectionSix = (selectedValues) => {
+    setAllSelectedValuesSix(selectedValues);
+  };
+
 
   const goToPlatformPage = () => {
     navigate("/PlatformProject");
@@ -90,8 +118,13 @@ const NewProject = () => {
   ];
 
   useEffect(() => {
-    fetchFilterData(apiUrl, typeOfDropdown, setLoader, setAccountName, setDdName, "", setBuhName);
+    const fetchData = async () => {
+      await fetchFilterData(apiUrl, typeOfDropdown, setLoader, setAccountName, setDdName, "", setBuhName);
+    };
+
+    fetchData();
   }, []);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -153,7 +186,6 @@ const NewProject = () => {
             return result;
           })
         );
-
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -162,7 +194,7 @@ const NewProject = () => {
     };
 
     fetchData();
-  }, [technologyData]);
+  }, [loader]);
 
   // Define inputs for various sections
   const buhInput = {
@@ -194,7 +226,7 @@ const NewProject = () => {
   //   ]
   // };
   const createNewProject = () => {
-    addNewProject(apiUrl, accountValue, projectName, buhValue, ddValue)
+    addNewProject(apiUrl, accountValue, projectName, buhValue, ddValue, domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix)
   }
   return (
     <>
@@ -259,7 +291,7 @@ const NewProject = () => {
           <Button
             variant="contained"
             sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
-            onClick={(()=> {createNewProject})}
+            onClick={createNewProject}
           >
             Submit
           </Button>
@@ -388,6 +420,7 @@ const NewProject = () => {
             testCoverage={testCoverage}
             productivityMeasurement={productivityMeasurement}
             tracing={tracing}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionThree}
           />
         </AccordionDetails>
       </Accordion>
@@ -425,6 +458,7 @@ const NewProject = () => {
             PerformanceandLoadTest={performanceLoadTestingTools}
             ApplicationSecurityTesting={applicationSecurityTestingTools}
             devopsInfrastructureAsCodeIac={devopsInfrastructureAsCodeIac}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionFour}
           />
         </AccordionDetails>
       </Accordion>
@@ -453,7 +487,8 @@ const NewProject = () => {
         <AccordionDetails>
           <SectionFive
             AnalyticsReporting={analyticsReporting}
-            SelectUserFeedbackandAnalytics={userFeedbackAnalyticsTools} />
+            SelectUserFeedbackandAnalytics={userFeedbackAnalyticsTools}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionFive} />
         </AccordionDetails>
       </Accordion>
       {/* Section Six */}
@@ -479,7 +514,9 @@ const NewProject = () => {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SectionSix aiAndMachineLearningTechnologies={aiMachineLearningTechnologies} />
+          <SectionSix aiAndMachineLearningTechnologies={aiMachineLearningTechnologies}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionSix}
+          />
         </AccordionDetails>
       </Accordion>
 

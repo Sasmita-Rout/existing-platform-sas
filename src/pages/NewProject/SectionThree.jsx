@@ -2,15 +2,16 @@ import React from 'react';
 import { Filter } from "../../components/molecules/index";
 import Box from '@mui/material/Box';
 
-export default function SectionThree(props) {
+export default function SectionThree({onSelectedValuesChange,...props}) {
     const [selectedValues, setSelectedValues] = React.useState({});
 
     const handleSelect = (key, newValue) => {
-        setSelectedValues((prevState) => ({
-            ...prevState,
-            [key]: newValue
-        }));
-    };
+        setSelectedValues((prevValues) => {
+          const updatedValues = { ...prevValues, [key]: newValue };
+          onSelectedValuesChange(updatedValues); // Call the callback with updated values
+          return updatedValues;
+        });
+      };
 
     const inputs = [
         { key: 'environmentInput', labels: 'Select Environment' },

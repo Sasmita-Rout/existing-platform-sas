@@ -5,15 +5,19 @@ async function createUpdateRecord(token, url, data, method) {
     const config = {
         method,
         mode: 'cors',
+        headers: {
+            "Content-Type": "application/json"
+        },
         // headers: token
         //     ? Object.assign({}, JWT_HEADER(token), JSON_HEADER)
         //     : Object.assign({}, JSON_HEADER),
         cache: 'default',
-        body: data ? JSON.stringify(data) : null,
+        body: JSON.stringify(data) ,
     };
 
     try {
         const response = await fetch(url, config);
+        console.log(response,"Resp")
 
         // Check if the response is OK (status 200–299)
         if (!response.ok) {
