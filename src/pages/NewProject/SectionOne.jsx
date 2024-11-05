@@ -10,7 +10,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useUserStore } from "../../zustand";
-import { JWT_HEADER } from "../../config/authConfig";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -27,6 +26,7 @@ const VisuallyHiddenInput = styled("input")({
 export default function SectionOne() {
   const [startDate, setStartDate] = React.useState(null);
   const [endDate, setEndDate] = React.useState(null);
+  const [selectedFile, setSelectedFile] = React.useState(null);
   const { pmoUser } = useUserStore();
 
   async function uploadFile(endpoint, file) {
@@ -36,7 +36,6 @@ export default function SectionOne() {
     const config = {
       method: "POST",
       mode: "cors",
-      // headers: token
       body: formData,
       cache: "default",
     };
@@ -59,10 +58,11 @@ export default function SectionOne() {
   const callUpload = (files) => {
     const file = files[0];
     if (file) {
+      setSelectedFile(file); // Store file info in state
       const url = `http://192.168.168.50:8012/upload?user=${pmoUser}`;
       uploadFile(url, file);
     } else {
-      alert("something went wrong");
+      alert("Something went wrong");
     }
   };
 
@@ -119,6 +119,12 @@ export default function SectionOne() {
               multiple
             />
           </Button>
+          {selectedFile && (
+            <Typography sx={{ marginTop: "10px", color: `${grey[600]}` }}>
+              Selected file: {selectedFile.name} (
+              {(selectedFile.size / 1024).toFixed(2)} KB)
+            </Typography>
+          )}
         </Box>
 
         {/* Date Pickers Section */}
