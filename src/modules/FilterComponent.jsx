@@ -41,6 +41,8 @@ export default function FilterComponent({ technologyInput, onValuesChange }) {
   // Handler for removing a specific multi-selected value
   const handleRemove = (valueToRemove) => {
     setSelectedValues((prev) => prev.filter((item) => item !== valueToRemove));
+    onValuesChange(selectedValues);
+    handleButtonClick();
   };
 
   // Handler for single select autocomplete
