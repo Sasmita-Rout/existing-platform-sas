@@ -11,18 +11,27 @@ const DataGrid = ({
   height = "auto",
   pagination = true,
   pageSizeOptions,
-  paginationMode = "client",
   checkboxSelection = false,
+  rowCount= 1,
+  paginationModelChange
 }) => {
   const [tablePageSize, setPageSize] = useState(pageSize);
   const [currentPage, setCurrentPage] = useState(0);
 
+  const [paginationModel, setPaginationModel] = useState({
+    page: currentPage,
+    pageSize: tablePageSize,
+  });
+
+  paginationModelChange(paginationModel);
   return (
     <Box sx={{ height: height, width: "100%" }}>
       <MUIDataGrid
         rows={rows}
         columns={columns}
         page={currentPage}
+        paginationMode="server"
+        rowCount={rowCount}
         pageSize={tablePageSize}
         pageSizeOptions={pageSizeOptions}
         disableAutosize={disableAutosize}
@@ -30,15 +39,9 @@ const DataGrid = ({
         hideFooter={hideFooter}
         onPageSizeChange={(page) => setPageSize(page)}
         onPageChange={(page) => setCurrentPage(page)}
-        paginationMode={paginationMode}
         checkboxSelection={checkboxSelection}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: pageSize,
-            },
-          },
-        }}
+        paginationModel={paginationModel}
+        onPaginationModelChange={setPaginationModel}
       />
     </Box>
   );

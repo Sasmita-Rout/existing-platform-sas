@@ -13,12 +13,6 @@ import {
 import apiUrlConfig from "../../config/apiUrlConfig";
 import { RequestErrorLoader } from "../../components/organism";
 
-const tableApiCalled = createUpdateRecord(
-  null,
-  `platform_data/search_advanced?keywords=n&page=1&page_size=10`,
-  null,
-  "GET"
-);
 const PlatformProject = () => {
   const navigate = useNavigate();
 
@@ -48,10 +42,17 @@ const PlatformProject = () => {
     },
     keywords: "",
   });
-  const [tableData, setTableData] = useState({});
+  const [tableData, setTableData] = useState({
+    records: null,
+    total_pages: null,
+    total_records: null,
+    current_page: null,
+    page_size: 10
+  });
   const [boxData, setBoxData] = useState({});
   const [handleOptions, setHandleOptions] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [pageChangeValues, setPageChangeValues] = useState({ page: null, pageSize: null })
 
   useEffect(() => {
     setState({
@@ -204,12 +205,18 @@ const PlatformProject = () => {
   const handleSelectedValues = async (values) => {
     if (values === null) {
       setHandleOptions([]);
-      const response = await tableApiCalled;
+      const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=1&page_size=10`, null, "GET");
       const updatedData = response.records.map((item, index) => ({
         ...item,
         id: index,
       }));
-      setTableData(updatedData);
+      setTableData({
+        records: updatedData,
+        total_pages: response.total_pages,
+        total_records: response.total_records,
+        current_page: response.current_page,
+        page_size: 10
+      })
     } else setHandleOptions(() => values);
   };
 
@@ -232,10 +239,9 @@ const PlatformProject = () => {
             ...(state.filters.buh_name && { buh_name: state.filters.buh_name }),
             ...(state.filters.dd_name && { dd_name: state.filters.dd_name }),
             ...(keywords && { keywords }),
-            page: 1,
-            page_size: 10,
+            page: pageChangeValues.page > 0 ? pageChangeValues.page : 1,
+            page_size: !!pageChangeValues.pageSize ? pageChangeValues.pageSize : 10,
           });
-
           const response = await createUpdateRecord(
             null,
             `platform_data/search_advanced?${queryParams.toString()}`,
@@ -246,14 +252,30 @@ const PlatformProject = () => {
             ...item,
             id: index,
           }));
-          setTableData(updatedData);
+
+          setTableData({
+            records: updatedData,
+            total_pages: response.total_pages,
+            total_records: response.total_records,
+            current_page: response.current_page,
+            page_size: 10
+          })
         } else {
-          const response = await tableApiCalled;
+          const pages = pageChangeValues.page > 0? pageChangeValues.page : 1;
+          const page_size = !!pageChangeValues.pageSize ? pageChangeValues.pageSize : 10;
+          const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=${pages}&page_size=${page_size}`, null, "GET");
           const updatedData = response.records.map((item, index) => ({
             ...item,
             id: index,
           }));
-          setTableData(updatedData);
+
+          setTableData({
+            records: updatedData,
+            total_pages: response.total_pages,
+            total_records: response.total_records,
+            current_page: response.current_page,
+            page_size: 10
+          })
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -261,7 +283,17 @@ const PlatformProject = () => {
     }
 
     fetchUpdateTable();
-  }, [state]);
+  }, [state, pageChangeValues]);
+
+
+  const onPageChange = async (values) => {
+    setPageChangeValues((prev) => {
+      if (prev.page !== values.page || prev.pageSize !== values.pageSize) {
+        return { page: values.page, pageSize: values.pageSize };
+      }
+      return prev;
+    });
+  };
 
   const boxes = [
     {
@@ -369,11 +401,14 @@ const PlatformProject = () => {
             <DataGrid
               pageSize={10}
               height="526px"
-              rows={tableData}
+              rows={tableData.records}
+              count={tableData.total_records}
+              rowCount={tableData.total_records}
               columns={columns}
               pagination={true}
+              autoPageSize
+              paginationModelChange={onPageChange}
               hideFooter={false}
-              totalRowCount={30}
               sx={{ border: "none" }}
               pageSizeOptions={[5, 10, 15, 20]}
             />
