@@ -52,7 +52,7 @@ const PlatformProject = () => {
   const [boxData, setBoxData] = useState({});
   const [handleOptions, setHandleOptions] = useState([]);
   const [loader, setLoader] = useState(false);
-  const [pageChangeValues, setPageChangeValues] = useState({ page: null, pageSize: null })
+  const [pageChangeValues, setPageChangeValues] = useState({ page: 1, pageSize: null })
 
   useEffect(() => {
     setState({
@@ -261,7 +261,7 @@ const PlatformProject = () => {
             page_size: 10
           })
         } else {
-          const pages = pageChangeValues.page > 0? pageChangeValues.page : 1;
+          const pages = pageChangeValues.page > 0 ? pageChangeValues.page : 1;
           const page_size = !!pageChangeValues.pageSize ? pageChangeValues.pageSize : 10;
           const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=${pages}&page_size=${page_size}`, null, "GET");
           const updatedData = response.records.map((item, index) => ({
