@@ -87,6 +87,46 @@ const NewProject = () => {
   const [errorDailogBox, setErrorDailogBox] = useState(false);
   const form = useForm();
   const navigate = useNavigate();
+  const settersMap = {
+    "domains": setDomain,
+    "application_class": setApp,
+    "environment": setEnv,
+    "cloud_technologies": setCloudTechnologies,
+    "data_engineering_etl_mdm_tools": setDataEngineeringEtlMdmTools,
+    "mobile_cloud_computing": setMobileCloudComputing,
+    "edge_computing": setEdgeComputing,
+    "enterprise_platforms": setEnterprisePlatforms,
+    "cms_applications": setCmsApplications,
+    "relational_databases_sql": setRelationalDatabasesSql,
+    "nosql_databases": setNoSqlDatabases,
+    "in_memory_databases": setInMemoryDatabases,
+    "system_monitoring_performance_tools": setSystemMonitoringPerformanceTools,
+    "ides": setIdes,
+    "version_control_system_vcs": setVersionControlSystemVcs,
+    "frontend_development": setFrontendDevelopment,
+    "server_side_backend_frameworks": setServerSideBackendFrameworks,
+    "mobile_development": setMobileDevelopment,
+    "full_stack_development": setFullStackDevelopment,
+    "programming_languages": setProgrammingLanguages,
+    "api_development_data_access_technologies": setApiDevelopmentDataAccessTechnologies,
+    "application_integration_tools": setApplicationIntegrationTools,
+    "analytics_reporting": setAnalyticsReporting,
+    "test_coverage": setTestCoverage,
+    "productivity_measurement": setProductivityMeasurement,
+    "tracing": setTracing,
+    "unit_testing_frameworks": setUnitTestingFrameworks,
+    "functional_integration_testing": setFunctionalIntegrationTesting,
+    "performance_load_testing_tools": setPerformanceLoadTestingTools,
+    "manual_testing_management_tools": setManualTestingManagementTools,
+    "application_security_testing_tools": setApplicationSecurityTestingTools,
+    "devops_infrastructure_as_code_iac": setDevopsInfrastructureAsCodeIac,
+    "directory_services_identity_management": setDirectoryServicesIdentityManagement,
+    "code_quality_tools": setCodeQualityTools,
+    "ipaas_integration_platform_as_a_service": setIpaasIntegrationPlatformAsAService,
+    "ai_machine_learning_technologies": setAiMachineLearningTechnologies,
+    "user_feedback_analytics_tools": setUserFeedbackAnalyticsTools,
+    "low_code_environments": setLowCodeEnvironments,
+  };
 
   const handleSelectedValuesChangeSectionThree = (selectedValues) => {
     setAllSelectedValues(selectedValues);
@@ -115,11 +155,13 @@ const NewProject = () => {
   };
 
   // Function to handle confirm submission action
-  const handleConfirmSubmit = () => {
+  const handleConfirmSubmit = async () => {
     console.log("Form submitted!");
-    createNewProject()
+    const response = await createNewProject();
+    if (response.id) {
+      navigate("/PlatformProject");
+    }
     setOpenDialog(false);
-    navigate("/PlatformProject");
   };
 
 
@@ -144,76 +186,27 @@ const NewProject = () => {
 
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoader(true);
+    const fetchDropdownData = async () => {
+      const responseData = await fetchColumnData(apiUrl, setTechnologyData, setLoader);
 
-      try {
-        const columnData = await fetchColumnData(apiUrl, setTechnologyData, setLoader);
+      responseData.map(async (data) => {
+        const result = await columnValues(apiUrl, data);
 
-        const settersMap = {
-          "domains": setDomain,
-          "application_class": setApp,
-          "environment": setEnv,
-          "cloud_technologies": setCloudTechnologies,
-          "data_engineering_etl_mdm_tools": setDataEngineeringEtlMdmTools,
-          "mobile_cloud_computing": setMobileCloudComputing,
-          "edge_computing": setEdgeComputing,
-          "enterprise_platforms": setEnterprisePlatforms,
-          "cms_applications": setCmsApplications,
-          "relational_databases_sql": setRelationalDatabasesSql,
-          "nosql_databases": setNoSqlDatabases,
-          "in_memory_databases": setInMemoryDatabases,
-          "system_monitoring_performance_tools": setSystemMonitoringPerformanceTools,
-          "ides": setIdes,
-          "version_control_system_vcs": setVersionControlSystemVcs,
-          "frontend_development": setFrontendDevelopment,
-          "server_side_backend_frameworks": setServerSideBackendFrameworks,
-          "mobile_development": setMobileDevelopment,
-          "full_stack_development": setFullStackDevelopment,
-          "programming_languages": setProgrammingLanguages,
-          "api_development_data_access_technologies": setApiDevelopmentDataAccessTechnologies,
-          "application_integration_tools": setApplicationIntegrationTools,
-          "analytics_reporting": setAnalyticsReporting,
-          "test_coverage": setTestCoverage,
-          "productivity_measurement": setProductivityMeasurement,
-          "tracing": setTracing,
-          "unit_testing_frameworks": setUnitTestingFrameworks,
-          "functional_integration_testing": setFunctionalIntegrationTesting,
-          "performance_load_testing_tools": setPerformanceLoadTestingTools,
-          "manual_testing_management_tools": setManualTestingManagementTools,
-          "application_security_testing_tools": setApplicationSecurityTestingTools,
-          "devops_infrastructure_as_code_iac": setDevopsInfrastructureAsCodeIac,
-          "directory_services_identity_management": setDirectoryServicesIdentityManagement,
-          "code_quality_tools": setCodeQualityTools,
-          "ipaas_integration_platform_as_a_service": setIpaasIntegrationPlatformAsAService,
-          "ai_machine_learning_technologies": setAiMachineLearningTechnologies,
-          "user_feedback_analytics_tools": setUserFeedbackAnalyticsTools,
-          "low_code_environments": setLowCodeEnvironments,
-        };
+        if(settersMap[data]) {
+          settersMap[data](result);
+        }
+      })
+    }
 
-        const results = await Promise.all(
-          technologyData.map(async (data) => {
-            const result = await columnValues(apiUrl, data);
+    fetchDropdownData();
+  }, []);
 
-            // Check if there's a setter for the current data value
-            if (settersMap[data]) {
-              settersMap[data](result);
-            }
 
-            return result;
-          })
-        );
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoader(false);
-      }
-    };
 
-    fetchData();
-  }, [loader]);
-  const createNewProject = () => {
-    addNewProject(apiUrl, accountValue, projectName, buhValue, ddValue, domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix)
+
+  const createNewProject = async () => {
+    const response = await addNewProject(apiUrl, accountValue, projectName, buhValue, ddValue, domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix)
+    return response;
   }
   return (
     <>
