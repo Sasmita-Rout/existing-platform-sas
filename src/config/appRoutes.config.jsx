@@ -1,5 +1,14 @@
 import PrivateRoute from "../modules/PrivateRoute";
-import { HomePage, LoginPage, PlatformProject } from "../pages";
+import {
+  HomePage,
+  LoginPage,
+  PMODashboard,
+  Reports,
+  PlatformProject,
+  ValueBoard,
+  NewProject,
+  PageNotFound,
+} from "../pages";
 
 export const appRoutes = [
   {
@@ -8,20 +17,36 @@ export const appRoutes = [
     index: true,
   },
   {
-    element: <PrivateRoute />, // Protected routes
+    element: <PrivateRoute />,
     children: [
       {
         path: "/home",
         element: <HomePage />,
       },
       {
+        path: "/pmo-dashboard",
+        element: <PMODashboard />,
+      },
+      {
+        path: "/reports",
+        element: <Reports />,
+      },
+      {
         path: "/PlatformProject",
         element: <PlatformProject />,
+      },
+      {
+        path: "/value-board",
+        element: <ValueBoard />,
+      },
+      {
+        path: "/PlatformProject/NewProject",
+        element: <NewProject />,
       },
     ],
   },
   {
     path: "*",
-    element: <p>Page not found</p>, // Handling invalid routes
+    element: <PageNotFound />,
   },
 ];
