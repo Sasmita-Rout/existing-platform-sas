@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { Filter } from "../components/molecules/index";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { Stack } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 
 export default function FilterOptions({
   buhInput,
@@ -32,62 +31,70 @@ export default function FilterOptions({
   };
 
   useEffect(() => {
+    onDdChange(ddValue);
     onBuhChange(buhValue);
     onAccountChange(accountValue);
-    onDdChange(ddValue);
     onProjectChange(projectValue);
   }, [buhValue, accountValue, ddValue, projectValue]);
 
   return (
-    <Stack flexDirection="row">
+    <Grid container>
       {/* BUH Filter */}
-      <Filter
-        input={buhInput}
-        handleOnSelect={(event, newValue) => setBuhValue(newValue)} // Direct state update
-        selectedValues={buhValue}
-        isMultiSelect={false}
-        placeholder={buhFilterPlaceholder}
-      />
+      <Grid size={2.7}>
+        <Filter
+          input={buhInput}
+          handleOnSelect={(event, newValue) => setBuhValue(newValue)} // Direct state update
+          selectedValues={buhValue}
+          isMultiSelect={false}
+          placeholder={buhFilterPlaceholder}
+        />
+      </Grid>
 
       {/* Account Filter */}
-      <Filter
-        input={accountInput}
-        handleOnSelect={(event, newValue) => setAccountValue(newValue)} // Direct state update
-        selectedValues={accountValue}
-        isMultiSelect={false}
-        placeholder={accountFilterPlaceholder}
-      />
+      <Grid size={2.7}>
+        <Filter
+          input={accountInput}
+          handleOnSelect={(event, newValue) => setAccountValue(newValue)} // Direct state update
+          selectedValues={accountValue}
+          isMultiSelect={false}
+          placeholder={accountFilterPlaceholder}
+        />
+      </Grid>
 
       {/* DD Filter */}
-      <Filter
-        input={ddInput}
-        handleOnSelect={(event, newValue) => setDdValue(newValue)} // Direct state update
-        selectedValues={ddValue}
-        isMultiSelect={false}
-        placeholder={ddFilterPlaceholder}
-      />
+      <Grid size={2.7}>
+        <Filter
+          input={ddInput}
+          handleOnSelect={(event, newValue) => setDdValue(newValue)} // Direct state update
+          selectedValues={ddValue}
+          isMultiSelect={false}
+          placeholder={ddFilterPlaceholder}
+        />
+      </Grid>
 
       {/* Project Filter */}
-      <Filter
-        input={projectInput}
-        handleOnSelect={(event, newValue) => setProjectValue(newValue)} // Direct state update
-        selectedValues={projectValue}
-        isMultiSelect={false}
-        placeholder={projectFilterPlaceholder}
-      />
-      <Box ml="auto">
+      <Grid size={2.7}>
+        <Filter
+          input={projectInput}
+          handleOnSelect={(event, newValue) => setProjectValue(newValue)} // Direct state update
+          selectedValues={projectValue}
+          isMultiSelect={false}
+          placeholder={projectFilterPlaceholder}
+        />
+      </Grid>
+      <Grid size={1}>
         <Button
           style={{
             backgroundColor: "grey",
             color: "white",
-            width: "100%",
+            // width: "100px",
             height: "100%",
           }}
           onClick={handleClearAll}
         >
           Reset
         </Button>
-      </Box>
-    </Stack>
+      </Grid>
+    </Grid>
   );
 }
