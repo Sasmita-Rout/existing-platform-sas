@@ -10,6 +10,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useUserStore } from "../../zustand";
+import apiUrlConfig from "../../config/apiUrlConfig";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -57,7 +58,7 @@ export default function SectionOne(props) {
     const file = files[0];
     if (file) {
       setSelectedFile(file); // Store file info in state
-      const url = `http://192.168.168.50:8012/upload?user=${pmoUser}`;
+      const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser}`;
       uploadFile(url, file);
     } else {
       alert("Something went wrong");
