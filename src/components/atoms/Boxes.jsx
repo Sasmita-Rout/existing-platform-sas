@@ -1,20 +1,13 @@
-import { Box, Typography, Container, IconButton, Stack } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Typography } from "@mui/material";
 import theme from "../../modules/styles/theme";
+import Grid from "@mui/material/Grid2";
 
 export function Boxes({ boxes = [] }) {
-  const Div = styled("div")(({ theme }) => ({
-    ...theme.typography.button,
-  }));
-
-  const Btn = styled("div")(({ theme }) => ({
-    ...theme.typography.button,
-  }));
-
   return (
-    <Div sx={{ display: "flex" }}>
+    <Grid container sx={{ display: "flex" }}>
       {boxes?.map((label, i) => (
-        <Btn
+        <Grid
+          size={2}
           className="box-parent"
           sx={{
             height: "118px",
@@ -30,9 +23,9 @@ export function Boxes({ boxes = [] }) {
         >
           <Typography variant="h4">{label.titleNum}</Typography>
           <Typography>{label.title}</Typography>
-        </Btn>
+        </Grid>
       ))}
-    </Div>
+    </Grid>
   );
 }
 

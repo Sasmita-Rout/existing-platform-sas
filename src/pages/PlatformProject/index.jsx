@@ -11,8 +11,8 @@ import {
   fetchRecords,
 } from "../../components/apiServices/index";
 import apiUrlConfig from "../../config/apiUrlConfig";
-import { fetchFilterData, fetchColumnData } from "../../modules/FilterApiCall"
-import { RequestErrorLoader } from "../../components/organism";
+import { fetchFilterData, fetchColumnData } from "../../modules/FilterApiCall";
+import { RequestLoader } from "../../components/organism";
 
 const PlatformProject = () => {
   const navigate = useNavigate();
@@ -48,12 +48,15 @@ const PlatformProject = () => {
     total_pages: null,
     total_records: null,
     current_page: null,
-    page_size: 10
+    page_size: 10,
   });
   const [boxData, setBoxData] = useState({});
   const [handleOptions, setHandleOptions] = useState([]);
   const [loader, setLoader] = useState(false);
-  const [pageChangeValues, setPageChangeValues] = useState({ page: 1, pageSize: null })
+  const [pageChangeValues, setPageChangeValues] = useState({
+    page: 1,
+    pageSize: null,
+  });
 
   useEffect(() => {
     setState({
@@ -115,7 +118,15 @@ const PlatformProject = () => {
       }
     };
     setLoader(true);
-    fetchFilterData(apiUrl, typeOfDropdown, setLoader, setAccountName, setDdName, setProjectName, setBuhName);
+    fetchFilterData(
+      apiUrl,
+      typeOfDropdown,
+      setLoader,
+      setAccountName,
+      setDdName,
+      setProjectName,
+      setBuhName
+    );
   }, []);
 
   useEffect(() => {
@@ -206,7 +217,12 @@ const PlatformProject = () => {
   const handleSelectedValues = async (values) => {
     if (values === null) {
       setHandleOptions([]);
-      const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=1&page_size=10`, null, "GET");
+      const response = await createUpdateRecord(
+        null,
+        `platform_data/search_advanced?keywords=n&page=1&page_size=10`,
+        null,
+        "GET"
+      );
       const updatedData = response.records.map((item, index) => ({
         ...item,
         id: index,
@@ -216,8 +232,8 @@ const PlatformProject = () => {
         total_pages: response.total_pages,
         total_records: response.total_records,
         current_page: response.current_page,
-        page_size: 10
-      })
+        page_size: 10,
+      });
     } else setHandleOptions(() => values);
   };
 
@@ -241,7 +257,9 @@ const PlatformProject = () => {
             ...(state.filters.dd_name && { dd_name: state.filters.dd_name }),
             ...(keywords && { keywords }),
             page: pageChangeValues.page > 0 ? pageChangeValues.page : 1,
-            page_size: !!pageChangeValues.pageSize ? pageChangeValues.pageSize : 10,
+            page_size: !!pageChangeValues.pageSize
+              ? pageChangeValues.pageSize
+              : 10,
           });
           const response = await createUpdateRecord(
             null,
@@ -249,32 +267,39 @@ const PlatformProject = () => {
             null,
             "GET"
           );
-          if(response.records !== 0) {
+          if (response.records !== 0) {
             const updatedData = response.records.map((item, index) => ({
               ...item,
               id: index,
             }));
-  
+
             setTableData({
               records: updatedData,
               total_pages: response.total_pages,
               total_records: response.total_records,
               current_page: response.current_page,
-              page_size: 10
-            })
+              page_size: 10,
+            });
           } else {
             setTableData({
               records: updatedData,
               total_pages: response.total_pages,
               total_records: response.total_records,
               current_page: response.current_page,
-              page_size: 10
-            })
-          }    
+              page_size: 10,
+            });
+          }
         } else {
           const pages = pageChangeValues.page > 0 ? pageChangeValues.page : 1;
-          const page_size = !!pageChangeValues.pageSize ? pageChangeValues.pageSize : 10;
-          const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=${pages}&page_size=${page_size}`, null, "GET");
+          const page_size = !!pageChangeValues.pageSize
+            ? pageChangeValues.pageSize
+            : 10;
+          const response = await createUpdateRecord(
+            null,
+            `platform_data/search_advanced?keywords=n&page=${pages}&page_size=${page_size}`,
+            null,
+            "GET"
+          );
           const updatedData = response.records.map((item, index) => ({
             ...item,
             id: index,
@@ -285,8 +310,8 @@ const PlatformProject = () => {
             total_pages: response.total_pages,
             total_records: response.total_records,
             current_page: response.current_page,
-            page_size: 10
-          })
+            page_size: 10,
+          });
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -295,7 +320,6 @@ const PlatformProject = () => {
 
     fetchUpdateTable();
   }, [state, pageChangeValues]);
-
 
   const onPageChange = async (values) => {
     setPageChangeValues((prev) => {
@@ -338,20 +362,91 @@ const PlatformProject = () => {
   ];
 
   return (
-    // <RequestErrorLoader
-    //   hideBackground
-    //   body={{
-    //     data: true,
-    //     request: loader,
-    //   }}
-    // >
-    <Box p={2}>
+    <RequestLoader isLoading={loader}>
       <Box p={2}>
         <Box p={2}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
+          <Box p={2}>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography
+                ml={1}
+                variant="h4"
+                gutterBottom
+                sx={{ fontWeight: 600 }}
+              >
+                Platform Project Data
+              </Typography>
+              <PrimaryButton
+                startIcon={<Add />}
+                onClick={() => goToNewProjectPage()}
+              >
+                Add New Project
+              </PrimaryButton>
+            </Stack>
+            <Box p={2}>
+              <FilterOptions
+                buhInput={buhName}
+                accountInput={accountName}
+                projectInput={projectName}
+                ddInput={ddName}
+                onBuhChange={setBuhSelected} // callback for BUH change
+                onAccountChange={setAccountSelected} // callback for Account change
+                onDdChange={setDdSelected} // callback for DD change
+                onProjectChange={setProjectSelected} // callback for Project change
+              />
+              <Stack
+                mt={2}
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Boxes boxes={boxes} />
+                <Stack>
+                  <PrimaryButton
+                    startIcon={<PieChart />}
+                    sx={{ marginBottom: "4px" }}
+                    onClick={() => setPlatFormReport(true)}
+                  >
+                    Platform Related Data Reports
+                  </PrimaryButton>
+                  <PrimaryButton
+                    startIcon={<PieChart />}
+                    onClick={() => setPlatFormReport(true)}
+                  >
+                    Tools and Metrics Data Reports
+                  </PrimaryButton>
+                </Stack>
+              </Stack>
+              <Box mb={2}>
+                <FilterComponent
+                  technologyInput={technologyData}
+                  onValuesChange={handleSelectedValues}
+                />
+              </Box>
+
+              <DataGrid
+                pageSize={10}
+                height="526px"
+                rows={tableData.records}
+                count={tableData.total_records}
+                rowCount={tableData.total_records}
+                columns={columns}
+                pagination={true}
+                autoPageSize
+                paginationModelChange={onPageChange}
+                hideFooter={false}
+                sx={{ border: "none" }}
+                pageSizeOptions={[5, 10, 15, 20]}
+              />
+            </Box>
+          </Box>
+          <DialogBox
+            size="xl"
+            openDialog={openPlatFormReport}
+            closeDialog={() => setPlatFormReport(false)}
           >
             <Typography
               ml={1}
@@ -367,99 +462,27 @@ const PlatformProject = () => {
             >
               Add New Project
             </PrimaryButton>
-          </Stack>
-          <Box p={2}>
-            <FilterOptions
-              buhInput={buhName}
-              accountInput={accountName}
-              projectInput={projectName}
-              ddInput={ddName}
-              onBuhChange={setBuhSelected} // callback for BUH change
-              onAccountChange={setAccountSelected} // callback for Account change
-              onDdChange={setDdSelected} // callback for DD change
-              onProjectChange={setProjectSelected} // callback for Project change
-            />
-            <Stack mt={2} direction="row" justifyContent="space-between">
-              <Boxes boxes={boxes} />
-              <Stack width={200}>
-                <PrimaryButton
-                  startIcon={<PieChart />}
-                  sx={{ marginBottom: "4px" }}
-                  onClick={() => setPlatFormReport(true)}
-                >
-                  Platform Related Data Reports
-                </PrimaryButton>
-                <PrimaryButton
-                  startIcon={<PieChart />}
-                  onClick={() => setPlatFormReport(true)}
-                >
-                  Tools and Metrics Data Reports
-                </PrimaryButton>
-              </Stack>
-            </Stack>
-            <Box mb={2}>
-              <FilterComponent
-                technologyInput={technologyData}
-                onValuesChange={handleSelectedValues}
-              />
-            </Box>
-
-            {/* 
-            rowsPerPageOptions={[5, 10, 20]}
-            totalRowCount={data?.length || 0}
-            getRowId={params => params.opp_application_uuid} */}
-
-            <DataGrid
-              pageSize={10}
-              height="526px"
-              rows={tableData.records}
-              count={tableData.total_records}
-              rowCount={tableData.total_records}
-              columns={columns}
-              pagination={true}
-              autoPageSize
-              paginationModelChange={onPageChange}
-              hideFooter={false}
-              sx={{ border: "none" }}
-              pageSizeOptions={[5, 10, 15, 20]}
-            />
-          </Box>
+          </DialogBox>
         </Box>
         <DialogBox
           size="xl"
           openDialog={openPlatFormReport}
           closeDialog={() => setPlatFormReport(false)}
         >
-          <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-            Platform Project Data
-          </Typography>
-          <PrimaryButton
-            startIcon={<Add />}
-            onClick={() => goToNewProjectPage()}
-          >
-            Add New Project
-          </PrimaryButton>
+          <Box height={"60vh"}>
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_3bucp9nmjd?embedded=true"
+              frameborder="0"
+              style={{ border: "0" }}
+              allowfullscreen
+              sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+            ></iframe>
+          </Box>
         </DialogBox>
       </Box>
-      <DialogBox
-        size="xl"
-        openDialog={openPlatFormReport}
-        closeDialog={() => setPlatFormReport(false)}
-      >
-        <Box height={"60vh"}>
-          <iframe
-            width="100%"
-            height="100%"
-            src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_3bucp9nmjd?embedded=true"
-            frameborder="0"
-            style={{ border: "0" }}
-            allowfullscreen
-            sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-          ></iframe>
-        </Box>
-      </DialogBox>
-    </Box>
-    // </RequestErrorLoader>
+    </RequestLoader>
   );
 };
 
