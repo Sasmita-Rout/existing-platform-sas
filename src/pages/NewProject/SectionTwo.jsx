@@ -4,9 +4,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import EmergencyIcon from '@mui/icons-material/Emergency';
 
-export default function SectionTwo({ domainInput, applicationInput }) {
-    const [domainValue, selectDomainValue] = React.useState(null);
-    const [applicationValue, selectApplicationValue] = React.useState(null);
+export default function SectionTwo({ domainInput, applicationInput, domainValue, selectDomainValue, applicationValue, selectApplicationValue }) {
 
     const domainPlaceholder = 'Select Domain';
     const applicationClassPlaceholder = 'Feature Enhancements, New Production';

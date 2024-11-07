@@ -16,56 +16,219 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DialogBox } from "../../components/molecules";
 import {
+  Dialog,
+  DialogContentText,
   DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
-
+import { fetchFilterData, fetchColumnData, columnValues, addNewProject } from "../../modules/FilterApiCall"
+import apiUrlConfig from "../../config/apiUrlConfig";
 
 const NewProject = () => {
   const [openPlatFormReport, setPlatFormReport] = useState(false);
+  const [allSelectedValues, setAllSelectedValues] = useState({});
+  const [allSelectedValuesFour, setAllSelectedValuesFour] = useState({})
+  const [allSelectedValuesFive, setAllSelectedValuesFive] = useState({})
+  const [allSelectedValuesSix, setAllSelectedValuesSix] = useState({})
+  const [accountName, setAccountName] = useState([]);
+  const [buhName, setBuhName] = useState([]);
+  const [ddName, setDdName] = useState([]);
+  const [loader, setLoader] = useState(false);
+  const [technologyData, setTechnologyData] = useState([]);
+  const [domain, setDomain] = useState()
+  const [domainValue, selectDomainValue] = React.useState(null);
+  const [applicationValue, selectApplicationValue] = React.useState(null);
+  const [app, setApp] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [env, setEnv] = useState([]);
+  const [cloudTechnologies, setCloudTechnologies] = useState([]);
+  const [dataEngineeringEtlMdmTools, setDataEngineeringEtlMdmTools] = useState([]);
+  const [mobileCloudComputing, setMobileCloudComputing] = useState([]);
+  const [edgeComputing, setEdgeComputing] = useState([]);
+  const [enterprisePlatforms, setEnterprisePlatforms] = useState([]);
+  const [cmsApplications, setCmsApplications] = useState([]);
+  const [relationalDatabasesSql, setRelationalDatabasesSql] = useState([]);
+  const [noSqlDatabases, setNoSqlDatabases] = useState([]);
+  const [inMemoryDatabases, setInMemoryDatabases] = useState([]);
+  const [systemMonitoringPerformanceTools, setSystemMonitoringPerformanceTools] = useState([]);
+  const [ides, setIdes] = useState([]);
+  const [versionControlSystemVcs, setVersionControlSystemVcs] = useState([]);
+  const [frontendDevelopment, setFrontendDevelopment] = useState([]);
+  const [serverSideBackendFrameworks, setServerSideBackendFrameworks] = useState([]);
+  const [mobileDevelopment, setMobileDevelopment] = useState([]);
+  const [fullStackDevelopment, setFullStackDevelopment] = useState([]);
+  const [programmingLanguages, setProgrammingLanguages] = useState([]);
+  const [apiDevelopmentDataAccessTechnologies, setApiDevelopmentDataAccessTechnologies] = useState([]);
+  const [applicationIntegrationTools, setApplicationIntegrationTools] = useState([]);
+  const [analyticsReporting, setAnalyticsReporting] = useState([]);
+  const [testCoverage, setTestCoverage] = useState([]);
+  const [productivityMeasurement, setProductivityMeasurement] = useState([]);
+  const [tracing, setTracing] = useState([]);
+  const [unitTestingFrameworks, setUnitTestingFrameworks] = useState([]);
+  const [functionalIntegrationTesting, setFunctionalIntegrationTesting] = useState([]);
+  const [performanceLoadTestingTools, setPerformanceLoadTestingTools] = useState([]);
+  const [manualTestingManagementTools, setManualTestingManagementTools] = useState([]);
+  const [applicationSecurityTestingTools, setApplicationSecurityTestingTools] = useState([]);
+  const [devopsInfrastructureAsCodeIac, setDevopsInfrastructureAsCodeIac] = useState([]);
+  const [directoryServicesIdentityManagement, setDirectoryServicesIdentityManagement] = useState([]);
+  const [codeQualityTools, setCodeQualityTools] = useState([]);
+  const [ipaasIntegrationPlatformAsAService, setIpaasIntegrationPlatformAsAService] = useState([]);
+  const [aiMachineLearningTechnologies, setAiMachineLearningTechnologies] = useState([]);
+  const [userFeedbackAnalyticsTools, setUserFeedbackAnalyticsTools] = useState([]);
+  const [lowCodeEnvironments, setLowCodeEnvironments] = useState([]);
+  const [buhValue, selectBuhValue] = React.useState(null);
+  const [accountValue, selectAccountValue] = React.useState(null);
+  const [ddValue, selectDdValue] = React.useState(null);
+  const [projectName, setProjectName] = React.useState(null);
+  const [errorDailogBox, setErrorDailogBox] = useState(false);
   const form = useForm();
   const navigate = useNavigate();
+  const settersMap = {
+    "domains": setDomain,
+    "application_class": setApp,
+    "environment": setEnv,
+    "cloud_technologies": setCloudTechnologies,
+    "data_engineering_etl_mdm_tools": setDataEngineeringEtlMdmTools,
+    "mobile_cloud_computing": setMobileCloudComputing,
+    "edge_computing": setEdgeComputing,
+    "enterprise_platforms": setEnterprisePlatforms,
+    "cms_applications": setCmsApplications,
+    "relational_databases_sql": setRelationalDatabasesSql,
+    "nosql_databases": setNoSqlDatabases,
+    "in_memory_databases": setInMemoryDatabases,
+    "system_monitoring_performance_tools": setSystemMonitoringPerformanceTools,
+    "ides": setIdes,
+    "version_control_system_vcs": setVersionControlSystemVcs,
+    "frontend_development": setFrontendDevelopment,
+    "server_side_backend_frameworks": setServerSideBackendFrameworks,
+    "mobile_development": setMobileDevelopment,
+    "full_stack_development": setFullStackDevelopment,
+    "programming_languages": setProgrammingLanguages,
+    "api_development_data_access_technologies": setApiDevelopmentDataAccessTechnologies,
+    "application_integration_tools": setApplicationIntegrationTools,
+    "analytics_reporting": setAnalyticsReporting,
+    "test_coverage": setTestCoverage,
+    "productivity_measurement": setProductivityMeasurement,
+    "tracing": setTracing,
+    "unit_testing_frameworks": setUnitTestingFrameworks,
+    "functional_integration_testing": setFunctionalIntegrationTesting,
+    "performance_load_testing_tools": setPerformanceLoadTestingTools,
+    "manual_testing_management_tools": setManualTestingManagementTools,
+    "application_security_testing_tools": setApplicationSecurityTestingTools,
+    "devops_infrastructure_as_code_iac": setDevopsInfrastructureAsCodeIac,
+    "directory_services_identity_management": setDirectoryServicesIdentityManagement,
+    "code_quality_tools": setCodeQualityTools,
+    "ipaas_integration_platform_as_a_service": setIpaasIntegrationPlatformAsAService,
+    "ai_machine_learning_technologies": setAiMachineLearningTechnologies,
+    "user_feedback_analytics_tools": setUserFeedbackAnalyticsTools,
+    "low_code_environments": setLowCodeEnvironments,
+  };
+
+  const handleSelectedValuesChangeSectionThree = (selectedValues) => {
+    setAllSelectedValues(selectedValues);
+  };
+  const handleSelectedValuesChangeSectionFour = (selectedValues) => {
+    setAllSelectedValuesFour(selectedValues);
+  };
+  const handleSelectedValuesChangeSectionFive = (selectedValues) => {
+    setAllSelectedValuesFive(selectedValues);
+  };
+  const handleSelectedValuesChangeSectionSix = (selectedValues) => {
+    setAllSelectedValuesSix(selectedValues);
+  };
+
+  const handleOpenDialog = () => {
+    if (buhValue === null || accountValue === null || ddValue === null || projectName === null || domainValue === null || applicationValue === null) {
+      setErrorDailogBox(true);
+    } else {
+      setOpenDialog(true);
+    }
+  };
+
+  // Function to handle closing the dialog
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  // Function to handle confirm submission action
+  const handleConfirmSubmit = async () => {
+    console.log("Form submitted!");
+    const response = await createNewProject();
+    if (response.id) {
+      navigate("/PlatformProject");
+    }
+    setOpenDialog(false);
+  };
+
+
 
   const goToPlatformPage = () => {
     navigate("/PlatformProject");
   }
+  const { apiUrl } = apiUrlConfig;
+  const typeOfDropdown = [
+    "account_name",
+    "buh_name",
+    "dd_name",
+  ];
 
-  // Define inputs for various sections
-  const buhInput = {
-    values: ["Tony", "Ruby", "San", "DC"]
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchFilterData(apiUrl, typeOfDropdown, setLoader, setAccountName, setDdName, "", setBuhName);
+    };
+
+    fetchData();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchDropdownData = async () => {
+      const responseData = await fetchColumnData(apiUrl, setTechnologyData, setLoader);
+
+      responseData.map(async (data) => {
+        const result = await columnValues(apiUrl, data);
+
+        if(settersMap[data]) {
+          settersMap[data](result);
+        }
+      })
+    }
+
+    fetchDropdownData();
+  }, []);
+
+
+
+
+  const createNewProject = async () => {
+    const response = await addNewProject(apiUrl, accountValue, projectName, buhValue, ddValue, domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix)
+    return response;
   }
-  const accountInput = {
-    values: [
-      "American Water",
-      "Awana",
-      "CBC",
-      "Cision"
-    ]
-  }
-  const ddInput = {
-    values: [
-      "AnandShah",
-      "Sen",
-      "CBC",
-      "Cision",
-    ]
-  };
-
-  // Same input for all props in SectionThree
-  const cloudTechnologies = {
-    values: [
-      "AWS",
-      "Azure",
-      "GCP",
-    ]
-  };
-
   return (
     <>
+
+      <Dialog
+        open={errorDailogBox}
+        onClose={() => setErrorDailogBox(false)}
+        aria-labelledby="confirmation-dialog-title"
+        aria-describedby="confirmation-dialog-description"
+      >
+        <DialogTitle id="confirmation-dialog-title">{"Error Form Submission"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirmation-dialog-description">
+            Please fill up these fields as they are mandotory: BUH, Account, DD Name, Project Name, Domain, Application Class
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setErrorDailogBox(false)} color="primary" variant="contained" autoFocus>
+            Sure
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <DialogBox
         size="sm"
@@ -75,8 +238,8 @@ const NewProject = () => {
         closeDialog={() => setPlatFormReport(false)}
       >
         <DialogTitle sx={{ textAlign: "center", color: "#D94A56" }}>Cancel Alert</DialogTitle>
-        <DialogContent sx={{ alignItems: "center", marginLeft:8 }}>Are you sure you want to cancel adding this project?</DialogContent>
-        <Box sx={{ alignItems: "center", marginLeft:20 }}>
+        <DialogContent sx={{ alignItems: "center", marginLeft: 8 }}>Are you sure you want to cancel adding this project?</DialogContent>
+        <Box sx={{ alignItems: "center", marginLeft: 20 }}>
           <Button
             variant="outlined"
             sx={{
@@ -127,11 +290,34 @@ const NewProject = () => {
           <Button
             variant="contained"
             sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
+            onClick={handleOpenDialog}
           >
             Submit
           </Button>
         </Stack>
       </Stack>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="confirmation-dialog-title"
+        aria-describedby="confirmation-dialog-description"
+      >
+        <DialogTitle id="confirmation-dialog-title">{"Confirm Submission"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirmation-dialog-description">
+            Are you sure you want to submit the project details?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmSubmit} color="primary" variant="contained" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+
 
       <Accordion sx={{
         boxShadow: 'none', // Remove shadow
@@ -140,9 +326,11 @@ const NewProject = () => {
         }
       }}>
         <AccordionDetails>
-          <Section buhInput={buhInput.values}
-            accountInput={accountInput.values}
-            ddInput={ddInput.values} />
+          <Section buhInput={buhName}
+            accountInput={accountName}
+            ddInput={ddName}
+            selectBuhValue={selectBuhValue} selectAccountValue={selectAccountValue} selectDdValue={selectDdValue} setProjectName={setProjectName}
+            buhValue={buhValue} ddValue={ddValue} accountValue={accountValue} projectName={projectName} />
         </AccordionDetails>
       </Accordion>
       <Accordion defaultExpanded sx={{
@@ -193,8 +381,12 @@ const NewProject = () => {
         </AccordionSummary>
         <AccordionDetails>
           <SectionTwo
-            domainInput={buhInput.values}
-            applicationInput={accountInput.values}
+            domainInput={domain}
+            applicationInput={app}
+            domainValue={domainValue}
+            selectDomainValue={selectDomainValue}
+            applicationValue={applicationValue}
+            selectApplicationValue={selectApplicationValue}
           />
         </AccordionDetails>
       </Accordion>
@@ -224,35 +416,36 @@ const NewProject = () => {
         </AccordionSummary>
         <AccordionDetails>
           <SectionThree
-            environmentInput={cloudTechnologies.values}
-            cloudTechnologies={cloudTechnologies.values}
-            enterprisePlatforms={cloudTechnologies.values}
-            etlAndMdmTools={cloudTechnologies.values}
-            devops={cloudTechnologies.values}
-            lowCodeEnv={cloudTechnologies.values}
-            vcs={cloudTechnologies.values}
-            edgeComputing={cloudTechnologies.values}
-            relationalDb={cloudTechnologies.values}
-            nosqlDb={cloudTechnologies.values}
-            inMemoryDbs={cloudTechnologies.values}
-            mobileCloudComputing={cloudTechnologies.values}
-            systemMonitoringAndPerformance={cloudTechnologies.values}
-            directoryServices={cloudTechnologies.values}
-            ides={cloudTechnologies.values}
-            cmsApp={cloudTechnologies.values}
-            iPaas={cloudTechnologies.values}
-            frontendDevelopment={cloudTechnologies.values}
-            serverSide={cloudTechnologies.values}
-            fullStack={cloudTechnologies.values}
-            mobileDevelopment={cloudTechnologies.values}
-            apiDevelopment={cloudTechnologies.values}
-            applicationIntegrationTools={cloudTechnologies.values}
-            unitTestingFrameworks={cloudTechnologies.values}
-            programmingLanguages={cloudTechnologies.values}
-            codeQualityTools={cloudTechnologies.values}
-            testCoverage={cloudTechnologies.values}
-            productivityMeasurement={cloudTechnologies.values}
-            tracing={cloudTechnologies.values}
+            environmentInput={env}
+            cloudTechnologies={cloudTechnologies}
+            enterprisePlatforms={enterprisePlatforms}
+            etlAndMdmTools={dataEngineeringEtlMdmTools}
+            devops={devopsInfrastructureAsCodeIac}
+            lowCodeEnv={lowCodeEnvironments}
+            vcs={versionControlSystemVcs}
+            edgeComputing={edgeComputing}
+            relationalDb={relationalDatabasesSql}
+            nosqlDb={noSqlDatabases}
+            inMemoryDbs={inMemoryDatabases}
+            mobileCloudComputing={mobileCloudComputing}
+            systemMonitoringAndPerformance={systemMonitoringPerformanceTools}
+            directoryServices={directoryServicesIdentityManagement}
+            ides={ides}
+            cmsApp={cmsApplications}
+            iPaas={ipaasIntegrationPlatformAsAService}
+            frontendDevelopment={frontendDevelopment}
+            serverSide={serverSideBackendFrameworks}
+            fullStack={fullStackDevelopment}
+            mobileDevelopment={mobileDevelopment}
+            apiDevelopment={apiDevelopmentDataAccessTechnologies}
+            applicationIntegrationTools={applicationIntegrationTools}
+            unitTestingFrameworks={unitTestingFrameworks}
+            programmingLanguages={programmingLanguages}
+            codeQualityTools={codeQualityTools}
+            testCoverage={testCoverage}
+            productivityMeasurement={productivityMeasurement}
+            tracing={tracing}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionThree}
           />
         </AccordionDetails>
       </Accordion>
@@ -285,10 +478,12 @@ const NewProject = () => {
             // PerformanceandLoadTest={PerformanceandLoadTest}
             // ApplicationSecurityTesting={ApplicationSecurityTesting}
 
-            SelectManualTestingMgmt={cloudTechnologies.values}
-            FunctionalandIntegration={cloudTechnologies.values}
-            PerformanceandLoadTest={cloudTechnologies.values}
-            ApplicationSecurityTesting={cloudTechnologies.values}
+            SelectManualTestingMgmt={manualTestingManagementTools}
+            FunctionalandIntegration={functionalIntegrationTesting}
+            PerformanceandLoadTest={performanceLoadTestingTools}
+            ApplicationSecurityTesting={applicationSecurityTestingTools}
+            devopsInfrastructureAsCodeIac={devopsInfrastructureAsCodeIac}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionFour}
           />
         </AccordionDetails>
       </Accordion>
@@ -316,8 +511,9 @@ const NewProject = () => {
         </AccordionSummary>
         <AccordionDetails>
           <SectionFive
-            AnalyticsReporting={cloudTechnologies.values}
-            SelectUserFeedbackandAnalytics={cloudTechnologies.values} />
+            AnalyticsReporting={analyticsReporting}
+            SelectUserFeedbackandAnalytics={userFeedbackAnalyticsTools}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionFive} />
         </AccordionDetails>
       </Accordion>
       {/* Section Six */}
@@ -343,7 +539,9 @@ const NewProject = () => {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SectionSix inMemoryDbs={cloudTechnologies.values} />
+          <SectionSix aiAndMachineLearningTechnologies={aiMachineLearningTechnologies}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionSix}
+          />
         </AccordionDetails>
       </Accordion>
 

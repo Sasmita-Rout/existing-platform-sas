@@ -1,23 +1,21 @@
 import React from 'react';
 import { Filter } from "../../components/molecules/index";
-import { grey } from '@mui/material/colors';
 import Box from '@mui/material/Box';
-import { Avatar } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import EmergencyIcon from '@mui/icons-material/Emergency';
 
-export default function SectionThree(props) {
+
+export default function SectionSix({onSelectedValuesChange,...props}) {
     const [selectedValues, setSelectedValues] = React.useState({});
 
     const handleSelect = (key, newValue) => {
-        setSelectedValues((prevState) => ({
-            ...prevState,
-            [key]: newValue
-        }));
-    };
+        setSelectedValues((prevValues) => {
+          const updatedValues = { ...prevValues, [key]: newValue };
+          onSelectedValuesChange(updatedValues); // Call the callback with updated values
+          return updatedValues;
+        });
+      };
 
     const inputs = [
-        { key: 'environmentInput', labels: 'Select Domain' },
+        { key: 'aiAndMachineLearningTechnologies', labels: 'Select AI and Machine Learning' },
     ];
 
     return (

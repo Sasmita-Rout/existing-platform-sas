@@ -11,6 +11,7 @@ import {
   fetchRecords,
 } from "../../components/apiServices/index";
 import apiUrlConfig from "../../config/apiUrlConfig";
+import { fetchFilterData, fetchColumnData } from "../../modules/FilterApiCall"
 import { RequestErrorLoader } from "../../components/organism";
 
 const PlatformProject = () => {
@@ -114,7 +115,7 @@ const PlatformProject = () => {
       }
     };
     setLoader(true);
-    fetchData();
+    fetchFilterData(apiUrl, typeOfDropdown, setLoader, setAccountName, setDdName, setProjectName, setBuhName);
   }, []);
 
   useEffect(() => {
@@ -134,7 +135,7 @@ const PlatformProject = () => {
       }
     };
     setLoader(true);
-    fetchAdvanceFilterTechnologies();
+    fetchColumnData(apiUrl, setTechnologyData, setLoader);
   }, []);
 
   const columns = [
@@ -248,18 +249,28 @@ const PlatformProject = () => {
             null,
             "GET"
           );
-          const updatedData = response.records.map((item, index) => ({
-            ...item,
-            id: index,
-          }));
-
-          setTableData({
-            records: updatedData,
-            total_pages: response.total_pages,
-            total_records: response.total_records,
-            current_page: response.current_page,
-            page_size: 10
-          })
+          if(response.records !== 0) {
+            const updatedData = response.records.map((item, index) => ({
+              ...item,
+              id: index,
+            }));
+  
+            setTableData({
+              records: updatedData,
+              total_pages: response.total_pages,
+              total_records: response.total_records,
+              current_page: response.current_page,
+              page_size: 10
+            })
+          } else {
+            setTableData({
+              records: updatedData,
+              total_pages: response.total_pages,
+              total_records: response.total_records,
+              current_page: response.current_page,
+              page_size: 10
+            })
+          }    
         } else {
           const pages = pageChangeValues.page > 0 ? pageChangeValues.page : 1;
           const page_size = !!pageChangeValues.pageSize ? pageChangeValues.pageSize : 10;
