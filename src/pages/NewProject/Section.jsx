@@ -4,11 +4,7 @@ import TextField from '@mui/material/TextField';
 import { Box, Typography } from "@mui/material";
 import EmergencyIcon from '@mui/icons-material/Emergency';
 
-export default function Section({ buhInput, accountInput, ddInput }) {
-    const [buhValue, selectBuhValue] = React.useState(null);
-    const [accountValue, selectAccountValue] = React.useState(null);
-    const [ddValue, selectDdValue] = React.useState(null);
-    const [projectName, setProjectName] = React.useState(null);
+export default function Section({ buhInput, accountInput, ddInput, selectBuhValue, selectAccountValue, selectDdValue, setProjectName, buhValue, ddValue, accountValue, projectName }) {
 
     const buhFilterPlaceholder = 'Select BUH';
     const accountFilterPlaceholder = 'Select Account';

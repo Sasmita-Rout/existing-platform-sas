@@ -6,13 +6,15 @@ async function createUpdateRecord(token, endpoint, data, method) {
     const config = {
         method,
         mode: 'cors',
-        headers: token
-            ? Object.assign({}, JWT_HEADER(token), JSON_HEADER)
-            : Object.assign({}, JSON_HEADER),
+        headers: {
+            "Content-Type": "application/json"
+        },
         cache: 'default',
         body: data ? JSON.stringify(data) : null,
     };
-
+if (method === "GET") {
+    delete config["body"]
+}
     const url = `${apiUrl}/${endpoint}`
 
     try {

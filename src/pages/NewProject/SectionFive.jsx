@@ -2,17 +2,18 @@ import * as React from "react";
 import { Box, Typography } from "@mui/material";
 import { Filter } from "../../components/molecules/Filter";
 
-const SectionFive = (props) => {
+const SectionFive = ({onSelectedValuesChange,...props}) => {
 
   // Handler for single select autocomplete
   const [selectedValues, setSelectedValues] = React.useState({});
 
-    const handleSelect = (key, newValue) => {
-        setSelectedValues((prevState) => ({
-            ...prevState,
-            [key]: newValue
-        }));
-    };
+  const handleSelect = (key, newValue) => {
+    setSelectedValues((prevValues) => {
+      const updatedValues = { ...prevValues, [key]: newValue };
+      onSelectedValuesChange(updatedValues); // Call the callback with updated values
+      return updatedValues;
+    });
+  };
   const inputs = [
     { key: 'AnalyticsReporting', labels: 'Select Analytics & Reporting' },
     { key: 'SelectUserFeedbackandAnalytics', labels: 'Select User Feedback and Analytics' },
