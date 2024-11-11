@@ -264,10 +264,10 @@ const PlatformProject = () => {
             })
           } else {
             setTableData({
-              records: updatedData,
-              total_pages: response.total_pages,
-              total_records: response.total_records,
-              current_page: response.current_page,
+              records: 0,
+              total_pages: 0,
+              total_records: 0,
+              current_page: 0,
               page_size: 10
             })
           }    
