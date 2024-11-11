@@ -41,7 +41,7 @@ export const fetchColumnData = async (apiUrl, setTechnologyData, setLoader) => {
         const url = `${apiUrl}/platform_data/columns`;
         const result = await fetchRecords(url, false, false, false);
         if (result && result["columns"]) {
-            const data = result["columns"];
+            const data = result["columns"].sort();
             setTechnologyData(data);
             return data;
         } else {
@@ -61,11 +61,11 @@ export const columnValues = async (apiUrl, value) => {
         false,
         false
     );
-    return (response && response["values"] ? response["values"] : [])
+    return (response && response["values"] ? response["values"].sort() : [])
 }
 
 export const addNewProject = async (
-    apiUrl,
+    pmoUser,
     accountName,
     projectName,
     buhName,
@@ -73,11 +73,15 @@ export const addNewProject = async (
     domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix
 
 ) => {
+    const date = new Date();
+
+    const formattedDateTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T` +
+        `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
     const url = `platform_data/create_project/`;
     const data = {
-        submitter_email_id: "example@example.com", // Consider passing this as a parameter for flexibility
-        submitting_time: "2024-10-15T12:34:56", // Get the current timestamp in ISO format
-        account_name: accountName || "", // Default to an empty string if not provided
+        submitter_email_id: pmoUser["email"],
+        submitting_time: formattedDateTime,
+        account_name: accountName || "",
         project_name: projectName || "",
         buh_name: buhName || "",
         dd_name: ddName || "",

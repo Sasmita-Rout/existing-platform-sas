@@ -23,10 +23,8 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-export default function SectionOne() {
-  const [startDate, setStartDate] = React.useState(null);
-  const [endDate, setEndDate] = React.useState(null);
-  const [selectedFile, setSelectedFile] = React.useState(null);
+export default function SectionOne(props) {
+  const {startDate, endDate, setStartDate, setEndDate, selectedFile, setSelectedFile} = props
   const { pmoUser } = useUserStore();
 
   async function uploadFile(endpoint, file) {

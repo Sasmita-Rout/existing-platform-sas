@@ -146,7 +146,7 @@ const PlatformProject = () => {
     },
     {
       flex: 0.3,
-      headerName: "Program Name",
+      headerName: "Project Name",
       field: "project_name",
     },
     {
