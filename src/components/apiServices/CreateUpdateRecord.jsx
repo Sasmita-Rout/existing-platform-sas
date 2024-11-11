@@ -12,9 +12,9 @@ async function createUpdateRecord(token, endpoint, data, method) {
         cache: 'default',
         body: data ? JSON.stringify(data) : null,
     };
-if (method === "GET") {
-    delete config["body"]
-}
+    if (method === "GET") {
+        delete config["body"]
+    }
     const url = `${apiUrl}/${endpoint}`
 
     try {

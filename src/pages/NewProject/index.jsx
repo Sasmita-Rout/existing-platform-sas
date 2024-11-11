@@ -1,7 +1,8 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Stack, Button } from "@mui/material";
+import { Box, Typography, Stack, Button, Snackbar, SnackbarContent } from "@mui/material";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { grey } from '@mui/material/colors';
 import { Avatar } from '@mui/material';
 import EmergencyIcon from '@mui/icons-material/Emergency';
@@ -27,8 +28,13 @@ import {
 } from "@mui/material";
 import { fetchFilterData, fetchColumnData, columnValues, addNewProject } from "../../modules/FilterApiCall"
 import apiUrlConfig from "../../config/apiUrlConfig";
+import { useUserStore } from "../../zustand";
+
 
 const NewProject = () => {
+  const [state, setState] = useState({
+    open: false
+  });
   const [openPlatFormReport, setPlatFormReport] = useState(false);
   const [allSelectedValues, setAllSelectedValues] = useState({});
   const [allSelectedValuesFour, setAllSelectedValuesFour] = useState({})
@@ -85,6 +91,10 @@ const NewProject = () => {
   const [ddValue, selectDdValue] = React.useState(null);
   const [projectName, setProjectName] = React.useState(null);
   const [errorDailogBox, setErrorDailogBox] = useState(false);
+  const [message, setMessage] = useState('');
+  const [sowStartDate, setSowStartDate] = React.useState(null);
+  const [sowEndDate, setSowEndDate] = React.useState(null);
+  const [sowSelectedFile, setSowSelectedFile] = React.useState(null);
   const form = useForm();
   const navigate = useNavigate();
   const settersMap = {
@@ -127,6 +137,13 @@ const NewProject = () => {
     "user_feedback_analytics_tools": setUserFeedbackAnalyticsTools,
     "low_code_environments": setLowCodeEnvironments,
   };
+  const { open } = state;
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
+  const { pmoUser } = useUserStore();
+
 
   const handleSelectedValuesChangeSectionThree = (selectedValues) => {
     setAllSelectedValues(selectedValues);
@@ -142,7 +159,7 @@ const NewProject = () => {
   };
 
   const handleOpenDialog = () => {
-    if (buhValue === null || accountValue === null || ddValue === null || projectName === null || domainValue === null || applicationValue === null) {
+    if (buhValue === null || accountValue === null || ddValue === null || ((projectName === null)||(projectName === "")) || domainValue === null || applicationValue === null || sowStartDate === null || sowEndDate === null || sowSelectedFile=== null) {
       setErrorDailogBox(true);
     } else {
       setOpenDialog(true);
@@ -159,7 +176,11 @@ const NewProject = () => {
     console.log("Form submitted!");
     const response = await createNewProject();
     if (response.id) {
-      navigate("/PlatformProject");
+      setMessage(`Your Project "${projectName}" Created Successfully`);
+      setState({ vertical: 'top', horizontal: 'right', open: true });
+      setTimeout(() => {
+        navigate("/PlatformProject"); // Redirect after Snackbar
+      }, 1500); // Wait 1.5 seconds for Snackbar to display before navigating
     }
     setOpenDialog(false);
   };
@@ -192,7 +213,7 @@ const NewProject = () => {
       responseData.map(async (data) => {
         const result = await columnValues(apiUrl, data);
 
-        if(settersMap[data]) {
+        if (settersMap[data]) {
           settersMap[data](result);
         }
       })
@@ -205,11 +226,34 @@ const NewProject = () => {
 
 
   const createNewProject = async () => {
-    const response = await addNewProject(apiUrl, accountValue, projectName, buhValue, ddValue, domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix)
+    const response = await addNewProject(pmoUser, accountValue, projectName, buhValue, ddValue, domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix)
     return response;
   }
   return (
     <>
+      <Snackbar
+        open={open}
+        autoHideDuration={8000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <SnackbarContent
+          sx={{
+            backgroundColor: "white",
+            color: "black",
+          }}
+          message={
+            <Box>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <CheckCircleIcon sx={{ color: 'green', marginRight: '8px' }} />
+                Success
+              </Box>
+              <Box>{message}</Box>
+            </Box>
+
+          }
+        />
+      </Snackbar>
 
       <Dialog
         open={errorDailogBox}
@@ -219,13 +263,14 @@ const NewProject = () => {
       >
         <DialogTitle id="confirmation-dialog-title">{"Error Form Submission"}</DialogTitle>
         <DialogContent>
-          <DialogContentText id="confirmation-dialog-description">
-            Please fill up these fields as they are mandotory: BUH, Account, DD Name, Project Name, Domain, Application Class
+          <DialogContentText id="confirmation-dialog-description"
+          sx={{color:"red"}}>
+            Please fill up these fields as they are mandotory: BUH, Account, DD, Project Name, Upload Sow, Domain, Application Class
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setErrorDailogBox(false)} color="primary" variant="contained" autoFocus>
-            Sure
+            Ok
           </Button>
         </DialogActions>
       </Dialog>
@@ -302,17 +347,26 @@ const NewProject = () => {
         aria-labelledby="confirmation-dialog-title"
         aria-describedby="confirmation-dialog-description"
       >
-        <DialogTitle id="confirmation-dialog-title">{"Confirm Submission"}</DialogTitle>
+        <DialogTitle id="confirmation-dialog-title" sx={{ marginLeft: "100px" }}>{"Confirm Submission"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="confirmation-dialog-description">
             Are you sure you want to submit the project details?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
+          <Button onClick={handleCloseDialog} color="primary" sx={{
+            fontWeight: "bold",
+            marginBottom: "20px",
+            textTransform: "none"
+          }}>
             Cancel
           </Button>
-          <Button onClick={handleConfirmSubmit} color="primary" variant="contained" autoFocus>
+          <Button onClick={handleConfirmSubmit} color="primary" variant="contained" sx={{
+            fontWeight: "bold",
+            marginRight: "120px",
+            marginBottom: "20px",
+            textTransform: "none"
+          }}>
             Confirm
           </Button>
         </DialogActions>
@@ -355,7 +409,14 @@ const NewProject = () => {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SectionOne />
+          <SectionOne
+          startDate={sowStartDate}
+          endDate={sowEndDate}
+          setStartDate={setSowStartDate}
+          setEndDate={setSowEndDate}
+          selectedFile={sowSelectedFile}
+          setSelectedFile={setSowSelectedFile}
+           />
         </AccordionDetails>
       </Accordion>
       {/* Section Two */}
