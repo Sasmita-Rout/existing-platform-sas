@@ -25,7 +25,14 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export default function SectionOne(props) {
-  const {startDate, endDate, setStartDate, setEndDate, selectedFile, setSelectedFile} = props
+  const {
+    startDate,
+    endDate,
+    setStartDate,
+    setEndDate,
+    selectedFile,
+    setSelectedFile,
+  } = props;
   const { pmoUser } = useUserStore();
 
   async function uploadFile(endpoint, file) {
@@ -114,14 +121,15 @@ export default function SectionOne(props) {
             Browse
             <VisuallyHiddenInput
               type="file"
+              accept=".pdf, .jpg, .jpeg, .docx"
               onChange={(event) => callUpload(event?.target?.files)}
               multiple
             />
           </Button>
           {selectedFile && (
             <Typography sx={{ marginTop: "10px", color: `${grey[600]}` }}>
-              Selected file: {selectedFile.name} (
-              {(selectedFile.size / 1024).toFixed(2)} KB)
+              Selected file: {selectedFile?.name} (
+              {(selectedFile?.size / 1024).toFixed(2)} KB)
             </Typography>
           )}
         </Box>
