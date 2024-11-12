@@ -23,6 +23,7 @@ const PlatformProject = () => {
   const { apiUrl } = apiUrlConfig;
 
   const [openPlatFormReport, setPlatFormReport] = useState(false);
+  const [openToolsAndMetricsReport, setToolsAndMetricsReport] = useState(false);
   const [accountName, setAccountName] = useState([]);
   const [projectName, setProjectName] = useState([]);
   const [buhName, setBuhName] = useState([]);
@@ -157,7 +158,7 @@ const PlatformProject = () => {
     },
     {
       flex: 0.3,
-      headerName: "Program Name",
+      headerName: "Project Name",
       field: "project_name",
     },
     {
@@ -282,10 +283,10 @@ const PlatformProject = () => {
             });
           } else {
             setTableData({
-              records: updatedData,
-              total_pages: response.total_pages,
-              total_records: response.total_records,
-              current_page: response.current_page,
+              records: 0,
+              total_pages: 0,
+              total_records: 0,
+              current_page: 0,
               page_size: 10,
             });
           }
@@ -414,7 +415,7 @@ const PlatformProject = () => {
                   </PrimaryButton>
                   <PrimaryButton
                     startIcon={<PieChart />}
-                    onClick={() => setPlatFormReport(true)}
+                    onClick={() => setToolsAndMetricsReport(true)}
                   >
                     Tools and Metrics Data Reports
                   </PrimaryButton>
@@ -443,33 +444,30 @@ const PlatformProject = () => {
               />
             </Box>
           </Box>
-          <DialogBox
-            size="xl"
-            openDialog={openPlatFormReport}
-            closeDialog={() => setPlatFormReport(false)}
-          >
-            <Typography
-              ml={1}
-              variant="h4"
-              gutterBottom
-              sx={{ fontWeight: 600 }}
-            >
-              Platform Project Data
-            </Typography>
-            <PrimaryButton
-              startIcon={<Add />}
-              onClick={() => goToNewProjectPage()}
-            >
-              Add New Project
-            </PrimaryButton>
-          </DialogBox>
         </Box>
         <DialogBox
           size="xl"
           openDialog={openPlatFormReport}
           closeDialog={() => setPlatFormReport(false)}
         >
-          <Box height={"60vh"}>
+          <Box height={"85vh"}>
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_yo18qdanid"
+              frameborder="0"
+              style={{ border: "0" }}
+              allowfullscreen
+              sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+            ></iframe>
+          </Box>
+        </DialogBox>
+        <DialogBox
+          size="xl"
+          openDialog={openToolsAndMetricsReport}
+          closeDialog={() => setToolsAndMetricsReport(false)}
+        >
+          <Box height={"85vh"}>
             <iframe
               width="100%"
               height="100%"
