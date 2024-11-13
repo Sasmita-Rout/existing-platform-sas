@@ -19,7 +19,7 @@ const LoginPage = () => {
       );
       if (userData.name) {
         setUser(userData);
-        navigate("/home");
+        navigate("/PlatformProject");
       } else {
         navigate("/");
       }
@@ -43,10 +43,15 @@ const LoginPage = () => {
         sx={{ padding: 4, textAlign: "center", maxWidth: 400 }}
       >
         <Box display="flex" justifyContent="center" alignItems="center" mb={3}>
-          <img src={GoogleIcon} alt="Google Icon" width={40} style={{ marginRight: 8 }}/>
+          <img
+            src={GoogleIcon}
+            alt="Google Icon"
+            width={40}
+            style={{ marginRight: 8 }}
+          />
           <Typography variant="h6" gutterBottom>
-          Sign in with Google
-        </Typography>
+            Sign in with Google
+          </Typography>
         </Box>
 
         <Typography variant="body1" color="textSecondary" gutterBottom>
@@ -54,7 +59,13 @@ const LoginPage = () => {
         </Typography>
 
         <Typography variant="body2" color="textSecondary" gutterBottom>
-          to continue to <Typography component="span" sx={{ fontWeight: 'bold', color: theme.palette.highlight.main }}>PMO Intranet</Typography>
+          to continue to{" "}
+          <Typography
+            component="span"
+            sx={{ fontWeight: "bold", color: theme.palette.highlight.main }}
+          >
+            PMO Intranet
+          </Typography>
         </Typography>
 
         <GoogleLogin
