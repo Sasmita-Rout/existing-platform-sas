@@ -95,6 +95,7 @@ const NewProject = () => {
   const [sowStartDate, setSowStartDate] = React.useState(null);
   const [sowEndDate, setSowEndDate] = React.useState(null);
   const [sowSelectedFile, setSowSelectedFile] = React.useState(null);
+  const [errorDisplay, setErrorDisplay] = useState([])
   const form = useForm();
   const navigate = useNavigate();
   const settersMap = {
@@ -159,6 +160,35 @@ const NewProject = () => {
   };
 
   const handleOpenDialog = () => {
+    const requiredFields = [
+      buhValue, accountValue, ddValue, projectName,
+      domainValue, applicationValue, sowStartDate, sowEndDate, sowSelectedFile
+    ];
+    
+    const fieldNames = {
+      buhValue: "BUH",
+      accountValue: "Account",
+      ddValue: "DD",
+      projectName: "Project Name",
+      domainValue: "Domain",
+      applicationValue: "Application",
+      sowStartDate: "Upload SOW Start Date",
+      sowEndDate: "Upload SOW End Date",
+      sowSelectedFile: "Upload SOW Select File"
+    };
+  
+    // Identify missing required fields
+    const nullValues = requiredFields
+      .map((field, index) => (field ? null : Object.keys(fieldNames)[index]))
+      .filter(Boolean);
+  
+    // Map missing fields to their display names
+    const formattedNullValues = nullValues.map(field => fieldNames[field]);
+  
+    // Set error display for missing fields
+    setErrorDisplay(formattedNullValues);
+  
+    // Check if there are missing fields to determine dialog display
     if (buhValue === null || accountValue === null || ddValue === null || ((projectName === null)||(projectName === "")) || domainValue === null || applicationValue === null || sowStartDate === null || sowEndDate === null || sowSelectedFile=== null) {
       setErrorDailogBox(true);
     } else {
@@ -229,6 +259,8 @@ const NewProject = () => {
     const response = await addNewProject(pmoUser, accountValue, projectName, buhValue, ddValue, domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix)
     return response;
   }
+  const errorMessage = `Please fill up these fields as they are mandotory: ${errorDisplay}`.replace(/,/g, ", ")
+
   return (
     <>
       <Snackbar
@@ -265,7 +297,7 @@ const NewProject = () => {
         <DialogContent>
           <DialogContentText id="confirmation-dialog-description"
           sx={{color:"red"}}>
-            Please fill up these fields as they are mandotory: BUH, Account, DD, Project Name, Upload Sow, Domain, Application Class
+            {errorMessage}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
