@@ -1,3 +1,4 @@
 import RequestErrorLoader from "./RequestErrorLoader";
+import RequestLoader from "./RequestLoader";
 
-export { RequestErrorLoader };
+export { RequestErrorLoader, RequestLoader };

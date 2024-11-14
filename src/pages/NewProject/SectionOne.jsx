@@ -10,6 +10,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useUserStore } from "../../zustand";
+import apiUrlConfig from "../../config/apiUrlConfig";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -57,7 +58,7 @@ export default function SectionOne(props) {
     const file = files[0];
     if (file) {
       setValue("sowSelectedFile",file); // Store file info in state
-      const url = `http://192.168.168.50:8012/upload?user=${pmoUser}`;
+      const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser}`;
       uploadFile(url, file);
     } else {
       alert("Something went wrong");
@@ -113,14 +114,15 @@ export default function SectionOne(props) {
             Browse
             <VisuallyHiddenInput
               type="file"
+              accept=".pdf, .jpg, .jpeg, .docx"
               onChange={(event) => callUpload(event?.target?.files)}
               multiple
             />
           </Button>
           {selectedFile && (
             <Typography sx={{ marginTop: "10px", color: `${grey[600]}` }}>
-              Selected file: {selectedFile.name} (
-              {(selectedFile.size / 1024).toFixed(2)} KB)
+              Selected file: {selectedFile?.name} (
+              {(selectedFile?.size / 1024).toFixed(2)} KB)
             </Typography>
           )}
         </Box>
