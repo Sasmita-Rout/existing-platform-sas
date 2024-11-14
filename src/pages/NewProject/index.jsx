@@ -255,25 +255,26 @@ const NewProject = () => {
         />
       </Snackbar>
 
-      <Dialog
-        open={errorDailogBox}
-        onClose={() => setErrorDailogBox(false)}
+      <DialogBox
+        size="sm"
+        openDialog={errorDailogBox}
+        closeDialog={() => setErrorDailogBox(false)}
         aria-labelledby="confirmation-dialog-title"
         aria-describedby="confirmation-dialog-description"
       >
-        <DialogTitle id="confirmation-dialog-title">{"Error Form Submission"}</DialogTitle>
+        <DialogTitle id="confirmation-dialog-title" sx={{ textAlign: "center" }}>{"Error Form Submission"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="confirmation-dialog-description"
-          sx={{color:"red"}}>
+          sx={{color:"red", textAlign: "center"}}>
             Please fill up these fields as they are mandotory: BUH, Account, DD, Project Name, Upload Sow, Domain, Application Class
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setErrorDailogBox(false)} sx={{marginRight:"270px", marginBottom:"20px",  textTransform: "none" }} color="primary" variant="contained" autoFocus>
+          <Button onClick={() => setErrorDailogBox(false)} sx={{marginRight:"240px", textTransform: "none", backgroundColor: "#0E5FD9" }} color="primary" variant="contained" autoFocus>
             Ok
           </Button>
         </DialogActions>
-      </Dialog>
+      </DialogBox>
 
       <DialogBox
         size="sm"
@@ -324,7 +325,9 @@ const NewProject = () => {
               color: `${grey[600]}`,
               borderColor: `${grey[400]}`,
               fontWeight: "bold",
-              textTransform: "none"
+              textTransform: "none",
+              alignItems: "center",
+              marginRight: "15px"
             }}
             onClick={() => setPlatFormReport(true)}
 
@@ -341,36 +344,40 @@ const NewProject = () => {
           </Button>
         </Stack>
       </Stack>
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
+      <DialogBox
+        size="sm"
+        openDialog={openDialog}
+        closeDialog={handleCloseDialog}
         aria-labelledby="confirmation-dialog-title"
         aria-describedby="confirmation-dialog-description"
       >
-        <DialogTitle id="confirmation-dialog-title" sx={{ marginLeft: "100px" }}>{"Confirm Submission"}</DialogTitle>
-        <DialogContent>
+        <DialogTitle id="confirmation-dialog-title" sx={{ textAlign: "center", }}>{"Confirm Submission"}</DialogTitle>
+        <DialogContent sx={{textAlign: "center",}}>
           <DialogContentText id="confirmation-dialog-description">
             Are you sure you want to submit the project details?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary" sx={{
+          <Button onClick={handleCloseDialog} variant="outlined" sx={{
+            color: `${grey[600]}`,
+            borderColor: `${grey[400]}`,
             fontWeight: "bold",
-            marginBottom: "20px",
-            textTransform: "none"
+            textTransform: "none",
+            alignItems: "center",
+            marginRight: "15px"
           }}>
             Cancel
           </Button>
-          <Button onClick={handleConfirmSubmit} color="primary" variant="contained" sx={{
+          <Button onClick={handleConfirmSubmit} variant="contained" sx={{
             fontWeight: "bold",
-            marginRight: "120px",
-            marginBottom: "20px",
-            textTransform: "none"
+            marginRight: "170px",
+            textTransform: "none",
+            backgroundColor: "#0E5FD9"
           }}>
             Confirm
           </Button>
         </DialogActions>
-      </Dialog>
+      </DialogBox>
 
 
       <Accordion sx={{
