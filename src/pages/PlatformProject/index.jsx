@@ -1,5 +1,6 @@
 import { Box, Typography, Container, IconButton, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { Boxes, PrimaryButton } from "../../components/atoms";
 import FilterComponent from "../../modules/FilterComponent";
 import FilterOptions from "../../modules/FilterOptions";
@@ -23,11 +24,19 @@ const PlatformProject = () => {
   const { apiUrl } = apiUrlConfig;
 
   const [openPlatFormReport, setPlatFormReport] = useState(false);
-  const [accountName, setAccountName] = useState([]);
-  const [projectName, setProjectName] = useState([]);
-  const [buhName, setBuhName] = useState([]);
-  const [ddName, setDdName] = useState([]);
-  const [technologyData, setTechnologyData] = useState([]);
+  const {
+    setValue,
+    watch
+  } = useForm({
+    defaultValues: {
+      accountName: [],
+      buhName: [],
+      ddName: [],
+      projectName: [],
+      loader: false,
+      technologyData: []
+    }
+  })
 
   const [buhSelected, setBuhSelected] = useState(null);
   const [accountSelected, setAccountSelected] = useState(null);
@@ -98,13 +107,13 @@ const PlatformProject = () => {
         // Process each result and set the corresponding state
         results.forEach(({ filterName, response }) => {
           if (filterName === "account_name") {
-            setAccountName(response.values);
+            setValue("accountName", response.values);
           } else if (filterName === "project_name") {
-            setProjectName(response.values);
+            setValue("projectName", response.values);
           } else if (filterName === "buh_name") {
-            setBuhName(response.values);
+            setValue("buhName", response.values);
           } else if (filterName === "dd_name") {
-            setDdName(response.values);
+            setValue("ddName", response.values);
           }
         });
 
@@ -115,7 +124,7 @@ const PlatformProject = () => {
       }
     };
     setLoader(true);
-    fetchFilterData(apiUrl, typeOfDropdown, setLoader, setAccountName, setDdName, setProjectName, setBuhName);
+    fetchFilterData(apiUrl, typeOfDropdown, setValue);
   }, []);
 
   useEffect(() => {
@@ -123,19 +132,20 @@ const PlatformProject = () => {
       try {
         const techUrl = `${apiUrl}/platform_data/columns`;
         const result = await fetchRecords(techUrl, false, false, false);
-        const technologyData =
+        console.log(result, "Res")
+        const data =
           result !== null && result["columns"]
-            ? setTechnologyData(result["columns"])
+            ? setValue(technologyData, (result["columns"]))
             : "";
-        setLoader(false);
-        return technologyData;
+        watch("loader", false);
+        return data;
       } catch (error) {
         console.error("Error fetching data:", error);
-        setLoader(false);
+        watch("loader", false);
       }
     };
-    setLoader(true);
-    fetchColumnData(apiUrl, setTechnologyData, setLoader);
+    watch("loader", true);
+    fetchColumnData(apiUrl, setValue);
   }, []);
 
   const columns = [
@@ -175,7 +185,7 @@ const PlatformProject = () => {
           <IconButton
             sx={{ padding: 0 }}
             aria-label="edit"
-            // onClick={() => console.log("Action")}
+          // onClick={() => console.log("Action")}
           >
             <Edit />
           </IconButton>
@@ -249,12 +259,12 @@ const PlatformProject = () => {
             null,
             "GET"
           );
-          if(response.records !== 0) {
+          if (response.records !== 0) {
             const updatedData = response.records.map((item, index) => ({
               ...item,
               id: index,
             }));
-  
+
             setTableData({
               records: updatedData,
               total_pages: response.total_pages,
@@ -270,7 +280,7 @@ const PlatformProject = () => {
               current_page: 0,
               page_size: 10
             })
-          }    
+          }
         } else {
           const pages = pageChangeValues.page > 0 ? pageChangeValues.page : 1;
           const page_size = !!pageChangeValues.pageSize ? pageChangeValues.pageSize : 10;
@@ -370,10 +380,10 @@ const PlatformProject = () => {
           </Stack>
           <Box p={2}>
             <FilterOptions
-              buhInput={buhName}
-              accountInput={accountName}
-              projectInput={projectName}
-              ddInput={ddName}
+              buhInput={watch("buhName")}
+              accountInput={watch("accountName")}
+              projectInput={watch("projectName")}
+              ddInput={watch("ddName")}
               onBuhChange={setBuhSelected} // callback for BUH change
               onAccountChange={setAccountSelected} // callback for Account change
               onDdChange={setDdSelected} // callback for DD change
@@ -399,7 +409,7 @@ const PlatformProject = () => {
             </Stack>
             <Box mb={2}>
               <FilterComponent
-                technologyInput={technologyData}
+                technologyInput={watch("technologyData")}
                 onValuesChange={handleSelectedValues}
               />
             </Box>

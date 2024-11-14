@@ -24,7 +24,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export default function SectionOne(props) {
-  const {startDate, endDate, setStartDate, setEndDate, selectedFile, setSelectedFile} = props
+  const {startDate, endDate, setValue, selectedFile} = props
   const { pmoUser } = useUserStore();
 
   async function uploadFile(endpoint, file) {
@@ -56,7 +56,7 @@ export default function SectionOne(props) {
   const callUpload = (files) => {
     const file = files[0];
     if (file) {
-      setSelectedFile(file); // Store file info in state
+      setValue("sowSelectedFile",file); // Store file info in state
       const url = `http://192.168.168.50:8012/upload?user=${pmoUser}`;
       uploadFile(url, file);
     } else {
@@ -140,14 +140,14 @@ export default function SectionOne(props) {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               value={startDate}
-              onChange={(newValue) => setStartDate(newValue)}
+              onChange={(newValue) => setValue("sowStartDate",newValue)}
               inputFormat="DD-MM-YYYY"
               renderInput={(params) => <TextField {...params} />}
             />
             <Typography variant="subtitle1">SOW End Date</Typography>
             <DatePicker
               value={endDate}
-              onChange={(newValue) => setEndDate(newValue)}
+              onChange={(newValue) => setValue("sowEndDate",newValue)}
               inputFormat="DD-MM-YYYY"
               renderInput={(params) => <TextField {...params} />}
             />
