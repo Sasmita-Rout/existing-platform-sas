@@ -159,7 +159,7 @@ const NewProject = () => {
   };
 
   const handleOpenDialog = () => {
-    if (buhValue === null || accountValue === null || ddValue === null || ((projectName === null)||(projectName === "")) || domainValue === null || applicationValue === null || sowStartDate === null || sowEndDate === null || sowSelectedFile=== null) {
+    if (buhValue === null || accountValue === null || ddValue === null || ((projectName.trim() === null)||(projectName.trim() == "")) || domainValue === null || applicationValue === null || sowStartDate === null || sowEndDate === null || sowSelectedFile=== null) {
       setErrorDailogBox(true);
     } else {
       setOpenDialog(true);
@@ -173,8 +173,8 @@ const NewProject = () => {
 
   // Function to handle confirm submission action
   const handleConfirmSubmit = async () => {
-    console.log("Form submitted!");
     const response = await createNewProject();
+    console.log("Form submitted!", response);
     if (response.id) {
       setMessage(`Your Project "${projectName}" Created Successfully`);
       setState({ vertical: 'top', horizontal: 'right', open: true });
@@ -226,7 +226,7 @@ const NewProject = () => {
 
 
   const createNewProject = async () => {
-    const response = await addNewProject(pmoUser, accountValue, projectName, buhValue, ddValue, domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix)
+    const response = await addNewProject(pmoUser, accountValue, projectName.trim(), buhValue, ddValue, domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix)
     return response;
   }
   return (
