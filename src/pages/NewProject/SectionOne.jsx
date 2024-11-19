@@ -144,6 +144,7 @@ export default function SectionOne(props) {
               value={startDate}
               onChange={(newValue) => setValue("sowStartDate",newValue)}
               inputFormat="DD-MM-YYYY"
+              
               renderInput={(params) => <TextField {...params} />}
             />
             <Typography variant="subtitle1">SOW End Date</Typography>

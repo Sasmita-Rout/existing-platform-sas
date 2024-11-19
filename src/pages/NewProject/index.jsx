@@ -180,8 +180,8 @@ const NewProject = () => {
   };
 
   const handleConfirmSubmit = async () => {
-    console.log("Form submitted!");
     const response = await createNewProject();
+    console.log("Form submitted!", response);
     if (response.id) {
       setValue("message", `Your Project "${watch("projectName")}" Created Successfully`);
       setValue("open", true);
@@ -269,7 +269,7 @@ const NewProject = () => {
         aria-labelledby="confirmation-dialog-title"
         aria-describedby="confirmation-dialog-description"
       >
-        <DialogTitle id="confirmation-dialog-title">{"Error Form Submission"}</DialogTitle>
+        <DialogTitle id="confirmation-dialog-title" sx={{ textAlign: "center" }}>{"Error Form Submission"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="confirmation-dialog-description"
             sx={{ color: "red" }}>
@@ -332,7 +332,9 @@ const NewProject = () => {
               color: `${grey[600]}`,
               borderColor: `${grey[400]}`,
               fontWeight: "bold",
-              textTransform: "none"
+              textTransform: "none",
+              alignItems: "center",
+              marginRight: "15px"
             }}
             onClick={() => setValue("openPlatFormReport", true)}
 
@@ -355,25 +357,28 @@ const NewProject = () => {
         aria-labelledby="confirmation-dialog-title"
         aria-describedby="confirmation-dialog-description"
       >
-        <DialogTitle id="confirmation-dialog-title" sx={{ marginLeft: "100px" }}>{"Confirm Submission"}</DialogTitle>
-        <DialogContent>
+        <DialogTitle id="confirmation-dialog-title" sx={{ textAlign: "center", }}>{"Confirm Submission"}</DialogTitle>
+        <DialogContent sx={{textAlign: "center",}}>
           <DialogContentText id="confirmation-dialog-description">
             Are you sure you want to submit the project details?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary" sx={{
+          <Button onClick={handleCloseDialog} variant="outlined" sx={{
+            color: `${grey[600]}`,
+            borderColor: `${grey[400]}`,
             fontWeight: "bold",
-            marginBottom: "20px",
-            textTransform: "none"
+            textTransform: "none",
+            alignItems: "center",
+            marginRight: "15px"
           }}>
             Cancel
           </Button>
-          <Button onClick={handleConfirmSubmit} color="primary" variant="contained" sx={{
+          <Button onClick={handleConfirmSubmit} variant="contained" sx={{
             fontWeight: "bold",
-            marginRight: "120px",
-            marginBottom: "20px",
-            textTransform: "none"
+            marginRight: "170px",
+            textTransform: "none",
+            backgroundColor: "#0E5FD9"
           }}>
             Confirm
           </Button>
