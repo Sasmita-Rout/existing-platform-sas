@@ -161,19 +161,41 @@ const NewProject = () => {
   };
 
   const handleOpenDialog = () => {
-    const values = watch();
     const requiredFields = [
-      "buhValue", "accountValue", "ddValue", "projectName",
-      "domainValue", "applicationValue", "sowStartDate", "sowEndDate", "sowSelectedFile"
+      watch("buhValue"), watch("accountValue"), watch("ddValue"), watch("projectName"),
+      watch("domainValue"), watch("applicationValue"), watch("sowStartDate"), watch("sowEndDate"), watch("sowSelectedFile")
     ];
-
-    const hasError = requiredFields.some((field) => !values[field]);
-    if (hasError) {
-      setValue("errorDailogBox", true);
+    
+    const fieldNames = {
+      buhValue: "BUH",
+      accountValue: "Account",
+      ddValue: "DD",
+      projectName: "Project Name",
+      domainValue: "Domain",
+      applicationValue: "Application",
+      sowStartDate: "Upload SOW Start Date",
+      sowEndDate: "Upload SOW End Date",
+      sowSelectedFile: "Upload SOW Select File"
+    };
+  
+    // Identify missing required fields
+    const nullValues = requiredFields
+      .map((field, index) => (field ? null : Object.keys(fieldNames)[index]))
+      .filter(Boolean);
+  
+    // Map missing fields to their display names
+    const formattedNullValues = nullValues.map(field => fieldNames[field]);
+  
+    // Set error display for missing fields
+    setValue("errorDisplay",formattedNullValues);
+  
+    // Check if there are missing fields to determine dialog display
+    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || ((watch("projectName").trim() === null)||(watch("projectName").trim() === "")) || watch("domainValue") === null || watch("applicationValue") === null || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile")=== null) {
+      setValue("errorDailogBox",true);
     } else {
-      setValue("openDialog", true);
-    }
-  };
+      setValue("openDialog",true);
+  }
+};
 
   const handleCloseDialog = () => {
     setValue("openDialog", false);
