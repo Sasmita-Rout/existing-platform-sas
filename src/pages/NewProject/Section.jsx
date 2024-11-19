@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import { Box, Typography } from "@mui/material";
 import EmergencyIcon from '@mui/icons-material/Emergency';
 
-export default function Section({ buhInput, accountInput, ddInput, selectBuhValue, selectAccountValue, selectDdValue, setProjectName, buhValue, ddValue, accountValue, projectName }) {
+export default function Section({ buhInput, accountInput, ddInput, setValue, buhValue, ddValue, accountValue, projectName }) {
 
     const buhFilterPlaceholder = 'Select BUH';
     const accountFilterPlaceholder = 'Select Account';
@@ -23,7 +23,7 @@ export default function Section({ buhInput, accountInput, ddInput, selectBuhValu
                         input={buhInput}
                         onFocus='Select...'
                         onBlur={buhFilterPlaceholder}
-                        handleOnSelect={(event, newValue) => selectBuhValue(newValue)}
+                        handleOnSelect={(event, newValue) => setValue("buhValue",newValue)}
                         selectedValues={buhValue}
                         isMultiSelect={false}
                         placeholder={buhFilterPlaceholder}
@@ -40,7 +40,7 @@ export default function Section({ buhInput, accountInput, ddInput, selectBuhValu
                         input={accountInput}
                         onFocus="Select..."
                         onBlur={accountFilterPlaceholder}
-                        handleOnSelect={(event, newValue) => selectAccountValue(newValue)}
+                        handleOnSelect={(event, newValue) => setValue("accountValue",newValue)}
                         selectedValues={accountValue}
                         isMultiSelect={false}
                         placeholder={accountFilterPlaceholder}
@@ -57,7 +57,7 @@ export default function Section({ buhInput, accountInput, ddInput, selectBuhValu
                         input={ddInput}
                         onFocus='Select...'
                         onBlur={ddFilterPlaceholder}
-                        handleOnSelect={(event, newValue) => selectDdValue(newValue)}
+                        handleOnSelect={(event, newValue) => setValue("ddValue",newValue)}
                         selectedValues={ddValue}
                         isMultiSelect={false}
                         placeholder={ddFilterPlaceholder}
@@ -70,7 +70,7 @@ export default function Section({ buhInput, accountInput, ddInput, selectBuhValu
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Project Name
                     </Typography>
                     <Box component="form" sx={{ '& > :not(style)': { m: 1, width: '360px' } }} noValidate autoComplete="off">
-                        <TextField id="outlined-basic" placeholder={projectFilterPlaceholder} variant="outlined" onChange={(e) => setProjectName(e.target.value)} />
+                        <TextField id="outlined-basic" placeholder={projectFilterPlaceholder} variant="outlined" onChange={(e) => setValue("projectName",e.target.value)} />
                     </Box>
                 </Box>
             </Box>
