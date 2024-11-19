@@ -190,7 +190,7 @@ const NewProject = () => {
     setValue("errorDisplay",formattedNullValues);
   
     // Check if there are missing fields to determine dialog display
-    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || ((watch("projectName").trim() === null)||(watch("projectName").trim() === "")) || watch("domainValue") === null || watch("applicationValue") === null || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile")=== null) {
+    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || ((watch("projectName") === null)||(watch("projectName") === "")) || watch("domainValue") === null || watch("applicationValue") === null || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile")=== null) {
       setValue("errorDailogBox",true);
     } else {
       setValue("openDialog",true);
@@ -259,6 +259,8 @@ const NewProject = () => {
     );
     return response;
   };
+
+  const errorMessage = `Please fill up these fields as they are mandotory: ${watch("errorDisplay")}`.replace(/,/g, ", ")
   return (
     <>
       <Snackbar
@@ -295,7 +297,7 @@ const NewProject = () => {
         <DialogContent>
           <DialogContentText id="confirmation-dialog-description"
             sx={{ color: "red" }}>
-            Please fill up these fields as they are mandotory: BUH, Account, DD, Project Name, Upload Sow, Domain, Application Class
+            {errorMessage}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
