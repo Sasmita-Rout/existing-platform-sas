@@ -4,7 +4,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import EmergencyIcon from '@mui/icons-material/Emergency';
 
-export default function SectionTwo({ domainInput, applicationInput, domainValue, selectDomainValue, applicationValue, selectApplicationValue }) {
+export default function SectionTwo(props) {
+    const { domainInput, applicationInput, domainValue , applicationValue, setValue } = props
 
     const domainPlaceholder = 'Select Domain';
     const applicationClassPlaceholder = 'Feature Enhancements, New Production';
@@ -20,7 +21,7 @@ export default function SectionTwo({ domainInput, applicationInput, domainValue,
                         input={domainInput}
                         onFocus="Select..."
                         onBlur={domainPlaceholder}
-                        handleOnSelect={(event, newValue) => selectDomainValue(newValue)}
+                        handleOnSelect={(event, newValue) => setValue("domainValue", newValue)}
                         selectedValues={domainValue}
                         isMultiSelect={false}
                         placeholder={domainPlaceholder}
@@ -36,7 +37,7 @@ export default function SectionTwo({ domainInput, applicationInput, domainValue,
                         input={applicationInput}
                         onFocus="Select..."
                         onBlur={applicationClassPlaceholder}
-                        handleOnSelect={(event, newValue) => selectApplicationValue(newValue)}
+                        handleOnSelect={(event, newValue) => setValue("applicationValue", newValue)}
                         selectedValues={applicationValue}
                         isMultiSelect={false}
                         placeholder={applicationClassPlaceholder}
@@ -44,8 +45,6 @@ export default function SectionTwo({ domainInput, applicationInput, domainValue,
                     />
                 </Box>
             </Box>
-
-
         </div>
     );
 }

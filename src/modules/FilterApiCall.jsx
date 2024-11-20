@@ -1,7 +1,7 @@
 import { fetchRecords, createUpdateRecord } from "../components/apiServices";
 
-export const fetchFilterData = async (apiUrl, typeOfDropdown, setLoader, setAccountName, setDdName, setProjectName, setBuhName) => {
-    setLoader(true);
+export const fetchFilterData = async (apiUrl, typeOfDropdown, setValue) => {
+    // setLoader(true);
 
     try {
         const promises = typeOfDropdown.map(async (filterName) => {
@@ -18,38 +18,38 @@ export const fetchFilterData = async (apiUrl, typeOfDropdown, setLoader, setAcco
         results.forEach(({ filterName, response }) => {
 
             if (filterName === "account_name") {
-                setAccountName(response.values);
+                setValue("accountName", response.values);
             } else if (filterName === "project_name") {
-                setProjectName(response.values);
+                setValue("projectName", response.values);
             } else if (filterName === "buh_name") {
-                setBuhName(response.values);
+                setValue("buhName", response.values);
             } else if (filterName === "dd_name") {
-                setDdName(response.values);
+                setValue("ddName", response.values);
             }
         });
 
-        setLoader(false);
+        // setLoader(false);
     } catch (error) {
         console.error("Error fetching data:", error);
-        setLoader(false);
+        // setLoader(false);
     }
 };
 
 
-export const fetchColumnData = async (apiUrl, setTechnologyData, setLoader) => {
+export const fetchColumnData = async (apiUrl, setValue) => {
     try {
         const url = `${apiUrl}/platform_data/columns`;
         const result = await fetchRecords(url, false, false, false);
         if (result && result["columns"]) {
             const data = result["columns"].sort();
-            setTechnologyData(data);
+            setValue("technologyData", data);
             return data;
         } else {
             return null;
         }
     } catch (error) {
         console.error("Error fetching data:", error);
-        setLoader(false);
+        // setValue("loader",false);
     }
 };
 
