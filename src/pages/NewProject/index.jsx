@@ -165,7 +165,7 @@ const NewProject = () => {
       watch("buhValue"), watch("accountValue"), watch("ddValue"), watch("projectName"),
       watch("domainValue"), watch("applicationValue"), watch("sowStartDate"), watch("sowEndDate"), watch("sowSelectedFile")
     ];
-    
+
     const fieldNames = {
       buhValue: "BUH",
       accountValue: "Account",
@@ -177,25 +177,25 @@ const NewProject = () => {
       sowEndDate: "Upload SOW End Date",
       sowSelectedFile: "Upload SOW Select File"
     };
-  
+
     // Identify missing required fields
     const nullValues = requiredFields
       .map((field, index) => (field ? null : Object.keys(fieldNames)[index]))
       .filter(Boolean);
-  
+
     // Map missing fields to their display names
     const formattedNullValues = nullValues.map(field => fieldNames[field]);
-  
+
     // Set error display for missing fields
-    setValue("errorDisplay",formattedNullValues);
-  
+    setValue("errorDisplay", formattedNullValues);
+
     // Check if there are missing fields to determine dialog display
-    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || ((watch("projectName") === null)||(watch("projectName") === "")) || watch("domainValue") === null || watch("applicationValue") === null || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile")=== null) {
-      setValue("errorDailogBox",true);
+    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || ((watch("projectName") === null) || (watch("projectName") === "")) || watch("domainValue") === null || watch("applicationValue") === null || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile") === null) {
+      setValue("errorDailogBox", true);
     } else {
-      setValue("openDialog",true);
-  }
-};
+      setValue("openDialog", true);
+    }
+  };
 
   const handleCloseDialog = () => {
     setValue("openDialog", false);
@@ -301,7 +301,9 @@ const NewProject = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setValue("errorDailogBox", false)} color="primary" variant="contained" autoFocus>
+          <Button onClick={() => setValue("errorDailogBox", false)} sx={{
+            marginRight: "250px"
+          }} color="primary" variant="contained" autoFocus>
             Ok
           </Button>
         </DialogActions>
@@ -382,7 +384,7 @@ const NewProject = () => {
         aria-describedby="confirmation-dialog-description"
       >
         <DialogTitle id="confirmation-dialog-title" sx={{ textAlign: "center", }}>{"Confirm Submission"}</DialogTitle>
-        <DialogContent sx={{textAlign: "center",}}>
+        <DialogContent sx={{ textAlign: "center", }}>
           <DialogContentText id="confirmation-dialog-description">
             Are you sure you want to submit the project details?
           </DialogContentText>
@@ -394,15 +396,17 @@ const NewProject = () => {
             fontWeight: "bold",
             textTransform: "none",
             alignItems: "center",
-            marginRight: "15px"
+            marginRight: "15px",
+            marginBottom:"15px"
           }}>
             Cancel
           </Button>
           <Button onClick={handleConfirmSubmit} variant="contained" sx={{
             fontWeight: "bold",
-            marginRight: "170px",
+            marginRight: "120px",
             textTransform: "none",
-            backgroundColor: "#0E5FD9"
+            backgroundColor: "#0E5FD9",
+            marginBottom:"15px"
           }}>
             Confirm
           </Button>
