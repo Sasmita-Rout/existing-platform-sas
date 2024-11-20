@@ -302,7 +302,8 @@ const NewProject = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setValue("errorDailogBox", false)} sx={{
-            marginRight: "180px"
+            marginTop:"10px",
+            marginRight: "260px"
           }} color="primary" variant="contained" autoFocus>
             Ok
           </Button>
