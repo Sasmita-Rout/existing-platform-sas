@@ -30,11 +30,11 @@ import { grey } from "@mui/material/colors";
 import theme from "../styles/theme";
 
 const NAVIGATION = [
-  { title: "Home", icon: <HomeIcon />, path: "/home" },
-  { title: "PMO Dashboard", icon: <DashboardIcon />, path: "/pmo-dashboard" },
-  { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
+  // { title: "Home", icon: <HomeIcon />, path: "/home" },
+  // { title: "PMO Dashboard", icon: <DashboardIcon />, path: "/pmo-dashboard" },
+  // { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
   { title: "Platform Data", icon: <LayersIcon />, path: "/PlatformProject" },
-  { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" },
+  // { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" },
 ];
 
 const NavBar = ({ setIsExpanded, isExpanded }) => {
