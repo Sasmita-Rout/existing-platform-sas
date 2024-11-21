@@ -162,7 +162,7 @@ const NewProject = () => {
 
   const handleOpenDialog = () => {
     const requiredFields = [
-      watch("buhValue"), watch("accountValue"), watch("ddValue"), watch("projectName"),
+      watch("buhValue"), watch("accountValue"), watch("ddValue"), watch("projectName").trim(),
       watch("domainValue"), watch("applicationValue"), watch("sowStartDate"), watch("sowEndDate"), watch("sowSelectedFile")
     ];
 
@@ -180,7 +180,7 @@ const NewProject = () => {
 
     // Identify missing required fields
     const nullValues = requiredFields
-      .map((field, index) => (field ? null : Object.keys(fieldNames)[index]))
+      .map((field, index) => (((field === null) || (field === "")) ? Object.keys(fieldNames)[index] : ""))
       .filter(Boolean);
 
     // Map missing fields to their display names
@@ -190,7 +190,7 @@ const NewProject = () => {
     setValue("errorDisplay", formattedNullValues);
 
     // Check if there are missing fields to determine dialog display
-    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || ((watch("projectName") === null) || (watch("projectName") === "")) || watch("domainValue") === null || watch("applicationValue") === null || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile") === null) {
+    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || (watch("projectName").trim() === "") || (watch("projectName").trim() === null) || watch("domainValue") === null || watch("applicationValue") === null || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile") === null) {
       setValue("errorDailogBox", true);
     } else {
       setValue("openDialog", true);
@@ -205,7 +205,7 @@ const NewProject = () => {
     const response = await createNewProject();
     console.log("Form submitted!", response);
     if (response.id) {
-      setValue("message", `Your Project "${watch("projectName")}" Created Successfully`);
+      setValue("message", `Your Project "${watch("projectName").trim()}" Created Successfully`);
       setValue("open", true);
       setTimeout(() => {
         navigate("/PlatformProject");
@@ -247,7 +247,7 @@ const NewProject = () => {
     const response = await addNewProject(
       pmoUser,
       watch("accountValue"),
-      watch("projectName"),
+      watch("projectName").trim(),
       watch("buhValue"),
       watch("ddValue"),
       watch("domainValue"),
@@ -302,7 +302,7 @@ const NewProject = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setValue("errorDailogBox", false)} sx={{
-            marginTop:"10px",
+            marginTop: "10px",
             marginRight: "260px"
           }} color="primary" variant="contained" autoFocus>
             Ok
@@ -398,7 +398,7 @@ const NewProject = () => {
             textTransform: "none",
             alignItems: "center",
             marginRight: "15px",
-            marginBottom:"15px"
+            marginBottom: "15px"
           }}>
             Cancel
           </Button>
@@ -407,7 +407,7 @@ const NewProject = () => {
             marginRight: "120px",
             textTransform: "none",
             backgroundColor: "#0E5FD9",
-            marginBottom:"15px"
+            marginBottom: "15px"
           }}>
             Confirm
           </Button>
