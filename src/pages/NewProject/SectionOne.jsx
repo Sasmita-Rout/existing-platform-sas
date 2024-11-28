@@ -150,6 +150,7 @@ export default function SectionOne(props) {
             <Typography variant="subtitle1">SOW End Date</Typography>
             <DatePicker
               value={endDate}
+              minDate={startDate}
               onChange={(newValue) => setValue("sowEndDate",newValue)}
               inputFormat="DD-MM-YYYY"
               renderInput={(params) => <TextField {...params} />}
