@@ -238,7 +238,8 @@ const PlatformProject = () => {
           Object.values(state.filters).some(Boolean)
         ) {
           const filterValues = [...(state.keywords || [])];
-          const keywords = encodeURIComponent(filterValues);
+          const keywords = filterValues;
+          // const keywords = encodeURIComponent(filterValues);
           const queryParams = new URLSearchParams({
             ...(state.filters.account_name && {
               account_name: state.filters.account_name,
