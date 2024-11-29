@@ -5,7 +5,7 @@ import { Boxes, PrimaryButton } from "../../components/atoms";
 import FilterComponent from "../../modules/FilterComponent";
 import FilterOptions from "../../modules/FilterOptions";
 import { DataGrid, DialogBox } from "../../components/molecules";
-import { Add, Edit, PieChart } from "@mui/icons-material";
+import { Add, Edit, PieChart, Visibility } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import {
   createUpdateRecord,
@@ -179,14 +179,16 @@ const PlatformProject = () => {
       align: "center",
       headerName: "Action",
       headerAlign: "center",
-      renderCell: () => {
+      renderCell: (i) => {
         return (
           <IconButton
             sx={{ padding: 0 }}
             aria-label="edit"
-            // onClick={() => console.log("Action")}
+            onClick={() => {
+              navigate("/PlatformProject/NewProject", { state: { row: i.row } });
+              }}
           >
-            <Edit />
+            <Visibility />
           </IconButton>
         );
       },

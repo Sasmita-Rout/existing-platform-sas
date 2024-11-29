@@ -26,12 +26,19 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import {useLocation} from 'react-router-dom';
 import { fetchFilterData, fetchColumnData, columnValues, addNewProject } from "../../modules/FilterApiCall"
 import apiUrlConfig from "../../config/apiUrlConfig";
 import { useUserStore } from "../../zustand";
 
 
 const NewProject = () => {
+  const location = useLocation();
+  console.log(location)
+  if(location.state) {
+    const row = location.state?.row;
+    console.log("row", row)
+  }
   const {
     setValue,
     watch
