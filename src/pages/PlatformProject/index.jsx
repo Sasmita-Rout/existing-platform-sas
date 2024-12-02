@@ -185,7 +185,7 @@ const PlatformProject = () => {
             sx={{ padding: 0 }}
             aria-label="edit"
             onClick={() => {
-              navigate("/PlatformProject/NewProject", { state: { row: i.row } });
+              navigate("/PlatformProject/NewProject", { state: { row: i.row, onClick:true } });
               }}
           >
             <Visibility />

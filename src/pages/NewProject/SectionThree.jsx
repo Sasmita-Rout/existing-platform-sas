@@ -1,17 +1,38 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Filter } from "../../components/molecules/index";
 import Box from '@mui/material/Box';
 
-export default function SectionThree({onSelectedValuesChange,...props}) {
+export default function SectionThree({ row, viewProject, onSelectedValuesChange, ...props }) {
     const [selectedValues, setSelectedValues] = React.useState({});
+    const [viewValues, setViewValues] = React.useState({});
 
     const handleSelect = (key, newValue) => {
         setSelectedValues((prevValues) => {
-          const updatedValues = { ...prevValues, [key]: newValue };
-          onSelectedValuesChange(updatedValues); // Call the callback with updated values
-          return updatedValues;
+            const updatedValues = { ...prevValues, [key]: newValue };
+            if (onSelectedValuesChange) {
+                onSelectedValuesChange(updatedValues);
+            }
+            return updatedValues;
         });
-      };
+    };
+
+    useEffect(() => {
+        if (viewProject) {
+            const updatedValues = {
+                environmentInput: row["environment"], cloudTechnologies: row["cloud_technologies"],
+                enterprisePlatforms: row["enterprise_platforms"], etlAndMdmTools: row["data_engineering_etl_mdm_tools"], devops: row["devops_infrastructure_as_code_iac"],
+                lowCodeEnv: row["low_code_environments"], vcs: row["version_control_system_vcs"], edgeComputing: row["edge_computing"], relationalDb: row["relational_databases_sql"],
+                nosqlDb: row["nosql_databases"], inMemoryDbs: row["in_memory_databases"], mobileCloudComputing: row["mobile_cloud_computing"], systemMonitoringAndPerformance: row["system_monitoring_performance_tools"],
+                directoryServices: row["directory_services_identity_management"], ides: row["ides"], cmsApp: row["cms_applications"],
+                iPaas: row["ipaas_integration_platform_as_a_service"], frontendDevelopment: row["frontend_development"], serverSide: row["server_side_backend_frameworks"], fullStack: row["full_stack_development"],
+                mobileDevelopment: row["mobile_development"], apiDevelopment: row["api_development_data_access_technologies"],
+                applicationIntegrationTools: row["application_integration_tools"], unitTestingFrameworks: row["unit_testing_frameworks"], programmingLanguages: row["programming_languages"], codeQualityTools: row["code_quality_tools"],
+                testCoverage: row["test_coverage"], productivityMeasurement: row["productivity_measurement"],
+                tracing: row["tracing"]
+            };
+            setViewValues(updatedValues);
+        }
+    }, [])
 
     const inputs = [
         { key: 'environmentInput', labels: 'Select Environment' },
@@ -52,10 +73,10 @@ export default function SectionThree({onSelectedValuesChange,...props}) {
                     <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
                         <Filter
                             input={props[key] || []}
-                            onFocus="Select..."
-                            onBlur={labels}
-                            handleOnSelect={(event, newValue) => handleSelect(key, newValue)}
-                            selectedValues={selectedValues[key]}
+                            handleOnSelect={(event, newValue) =>
+                                handleSelect(key, newValue)
+                            }
+                            selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
                             isMultiSelect={false}
                             placeholder={labels}
                             showIcon={false}
