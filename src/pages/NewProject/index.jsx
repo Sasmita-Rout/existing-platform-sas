@@ -599,7 +599,8 @@ const NewProject = () => {
             // FunctionalandIntegration={FunctionalandIntegration}
             // PerformanceandLoadTest={PerformanceandLoadTest}
             // ApplicationSecurityTesting={ApplicationSecurityTesting}
-
+            viewProject={onClick}
+            row={row}
             SelectManualTestingMgmt={watch("manualTestingManagementTools")}
             FunctionalandIntegration={watch("functionalIntegrationTesting")}
             PerformanceandLoadTest={watch("performanceLoadTestingTools")}
@@ -633,6 +634,8 @@ const NewProject = () => {
         </AccordionSummary>
         <AccordionDetails>
           <SectionFive
+            viewProject={onClick}
+            row={row}
             AnalyticsReporting={watch("analyticsReporting")}
             SelectUserFeedbackandAnalytics={watch("userFeedbackAnalyticsTools")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionFive} />
@@ -661,7 +664,10 @@ const NewProject = () => {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SectionSix aiAndMachineLearningTechnologies={watch("aiMachineLearningTechnologies")}
+          <SectionSix
+            viewProject={onClick}
+            row={row}
+            aiAndMachineLearningTechnologies={watch("aiMachineLearningTechnologies")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionSix}
           />
         </AccordionDetails>

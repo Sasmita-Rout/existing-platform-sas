@@ -1,17 +1,30 @@
-import * as React from "react";
+import React, { useEffect } from 'react';
 import { Box } from "@mui/material";
 import { Filter } from "../../components/molecules/Filter";
 
-const SectionFour = ({ onSelectedValuesChange, ...props }) => {
+const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => {
   const [selectedValues, setSelectedValues] = React.useState({});
+  const [viewValues, setViewValues] = React.useState({});
 
   const handleSelect = (key, newValue) => {
     setSelectedValues((prevValues) => {
       const updatedValues = { ...prevValues, [key]: newValue };
-      onSelectedValuesChange(updatedValues); // Call the callback with updated values
+      if (onSelectedValuesChange) {
+        onSelectedValuesChange(updatedValues);
+      }
       return updatedValues;
     });
   };
+
+  useEffect(() => {
+    if (viewProject) {
+      const updatedValues = {
+        SelectManualTestingMgmt: row["manual_testing_management_tools"], FunctionalandIntegration: row["functional_integration_testing"],
+        PerformanceandLoadTest: row["performance_load_testing_tools"], ApplicationSecurityTesting: row["application_security_testing_tools"], devopsInfrastructureAsCodeIac: row["devops_infrastructure_as_code_iac"]
+      };
+      setViewValues(updatedValues);
+    }
+  }, [])
 
   const inputs = [
     { key: 'SelectManualTestingMgmt', labels: 'Select Manual Testing & Mgmt' },
@@ -22,24 +35,24 @@ const SectionFour = ({ onSelectedValuesChange, ...props }) => {
   ];
   return (
     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
-        <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-            {inputs.map(({ key, labels }) => (
-                <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
-                    <Filter
-                        input={props[key] || []}
-                        onFocus="Select..."
-                        onBlur={labels}
-                        handleOnSelect={(event, newValue) => handleSelect(key, newValue)}
-                        selectedValues={selectedValues[key]}
-                        isMultiSelect={false}
-                        placeholder={labels}
-                        showIcon={false}
-                    />
-                </Box>
-            ))}
-        </Box>
+      <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+        {inputs.map(({ key, labels }) => (
+          <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
+            <Filter
+              input={props[key] || []}
+              onFocus="Select..."
+              onBlur={labels}
+              handleOnSelect={(event, newValue) => handleSelect(key, newValue)}
+              selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
+              isMultiSelect={false}
+              placeholder={labels}
+              showIcon={false}
+            />
+          </Box>
+        ))}
+      </Box>
     </div>
-);
+  );
 };
 
 export default SectionFour;
