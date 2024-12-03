@@ -446,7 +446,8 @@ const NewProject = () => {
             accountInput={watch("accountName")}
             ddInput={watch("ddName")}
             setValue={setValue}
-            buhValue={watch("buhValue")} ddValue={watch("ddValue")} accountValue={watch("accountValue")} projectName={watch("projectName")} />
+            buhValue={watch("buhValue")} ddValue={watch("ddValue")} accountValue={watch("accountValue")} projectName={watch("projectName")}
+            viewProject={onClick} />
         </AccordionDetails>
       </Accordion>
       <Accordion defaultExpanded sx={{
