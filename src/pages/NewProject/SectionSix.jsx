@@ -1,18 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Filter } from "../../components/molecules/index";
 import Box from '@mui/material/Box';
 
 
-export default function SectionSix({onSelectedValuesChange,...props}) {
+export default function SectionSix({ row, viewProject, onSelectedValuesChange, ...props }) {
     const [selectedValues, setSelectedValues] = React.useState({});
+    const [viewValues, setViewValues] = React.useState({});
 
     const handleSelect = (key, newValue) => {
         setSelectedValues((prevValues) => {
-          const updatedValues = { ...prevValues, [key]: newValue };
-          onSelectedValuesChange(updatedValues); // Call the callback with updated values
-          return updatedValues;
+            const updatedValues = { ...prevValues, [key]: newValue };
+            if (onSelectedValuesChange) {
+                onSelectedValuesChange(updatedValues);
+            }
+            return updatedValues;
         });
-      };
+    };
+
+    useEffect(() => {
+        if (viewProject) {
+            console.log(row, 'row')
+            const updatedValues = {
+                aiAndMachineLearningTechnologies: row["ai_machine_learning_technologies"]
+            };
+            setViewValues(updatedValues);
+        }
+    }, [])
 
     const inputs = [
         { key: 'aiAndMachineLearningTechnologies', labels: 'Select AI and Machine Learning' },
@@ -28,7 +41,7 @@ export default function SectionSix({onSelectedValuesChange,...props}) {
                             onFocus="Select..."
                             onBlur={labels}
                             handleOnSelect={(event, newValue) => handleSelect(key, newValue)}
-                            selectedValues={selectedValues[key]}
+                            selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
                             isMultiSelect={false}
                             placeholder={labels}
                             showIcon={false}

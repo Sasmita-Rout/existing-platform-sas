@@ -26,12 +26,16 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import { useLocation } from 'react-router-dom';
 import { fetchFilterData, fetchColumnData, columnValues, addNewProject } from "../../modules/FilterApiCall"
 import apiUrlConfig from "../../config/apiUrlConfig";
 import { useUserStore } from "../../zustand";
 
 
 const NewProject = () => {
+  const location = useLocation();
+  const row = location.state?.row;
+  const onClick = location.state?.onClick;
   const {
     setValue,
     watch
@@ -143,6 +147,19 @@ const NewProject = () => {
     "user_feedback_analytics_tools": (value) => setValue("userFeedbackAnalyticsTools", value),
     "low_code_environments": (value) => setValue("lowCodeEnvironments", value),
   };
+  useEffect(() => {
+    if (onClick) {
+      console.log("Setting values", row);
+      setValue("accountValue", row["account_name"]);
+      setValue("buhValue", row["buh_name"]);
+      setValue("ddValue", row["dd_name"]);
+      setValue("projectName", row["project_name"])
+      setValue("domainValue", row["domains"])
+      setValue("applicationValue", row["application_class"])
+
+    }
+  }, [onClick]);
+
   const handleClose = () => {
     setValue("open", false);
   };
@@ -348,10 +365,13 @@ const NewProject = () => {
 
       </DialogBox>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-          New Project
-        </Typography>
-
+        {!onClick ?
+          <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
+            New Project
+          </Typography>
+          : <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
+            View Project
+          </Typography>}
         <Stack direction="row" spacing={2} alignItems="center" sx={{ marginRight: 30 }}>
           <Button
             variant="outlined"
@@ -368,14 +388,14 @@ const NewProject = () => {
           >
             Cancel
           </Button>
-
-          <Button
-            variant="contained"
-            sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
-            onClick={handleOpenDialog}
-          >
-            Submit
-          </Button>
+          {!onClick &&
+            <Button
+              variant="contained"
+              sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
+              onClick={handleOpenDialog}
+            >
+              Submit
+            </Button>}
         </Stack>
       </Stack>
       <Dialog
@@ -426,7 +446,8 @@ const NewProject = () => {
             accountInput={watch("accountName")}
             ddInput={watch("ddName")}
             setValue={setValue}
-            buhValue={watch("buhValue")} ddValue={watch("ddValue")} accountValue={watch("accountValue")} projectName={watch("projectName")} />
+            buhValue={watch("buhValue")} ddValue={watch("ddValue")} accountValue={watch("accountValue")} projectName={watch("projectName")}
+            viewProject={onClick} />
         </AccordionDetails>
       </Accordion>
       <Accordion defaultExpanded sx={{
@@ -516,6 +537,8 @@ const NewProject = () => {
         </AccordionSummary>
         <AccordionDetails>
           <SectionThree
+            viewProject={onClick}
+            row={row}
             environmentInput={watch("env")}
             cloudTechnologies={watch("cloudTechnologies")}
             enterprisePlatforms={watch("enterprisePlatforms")}
@@ -577,7 +600,8 @@ const NewProject = () => {
             // FunctionalandIntegration={FunctionalandIntegration}
             // PerformanceandLoadTest={PerformanceandLoadTest}
             // ApplicationSecurityTesting={ApplicationSecurityTesting}
-
+            viewProject={onClick}
+            row={row}
             SelectManualTestingMgmt={watch("manualTestingManagementTools")}
             FunctionalandIntegration={watch("functionalIntegrationTesting")}
             PerformanceandLoadTest={watch("performanceLoadTestingTools")}
@@ -611,6 +635,8 @@ const NewProject = () => {
         </AccordionSummary>
         <AccordionDetails>
           <SectionFive
+            viewProject={onClick}
+            row={row}
             AnalyticsReporting={watch("analyticsReporting")}
             SelectUserFeedbackandAnalytics={watch("userFeedbackAnalyticsTools")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionFive} />
@@ -639,7 +665,10 @@ const NewProject = () => {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SectionSix aiAndMachineLearningTechnologies={watch("aiMachineLearningTechnologies")}
+          <SectionSix
+            viewProject={onClick}
+            row={row}
+            aiAndMachineLearningTechnologies={watch("aiMachineLearningTechnologies")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionSix}
           />
         </AccordionDetails>
