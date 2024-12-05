@@ -132,3 +132,26 @@ export const addNewProject = async (
         console.error("Error adding new project:", error);
     }
 };
+
+export const getUploadSowFileDetails = async (apiUrl) => {
+    const url = `${apiUrl}/get_files`;
+
+    try {
+        const response = await fetchRecords(url, false, false, false)
+        return response
+    } catch (err) {
+        console.error("Error fetching data:", err);
+    }
+}
+
+export const downloadSowFile = async (apiUrl, fileName) => {
+
+    const url = `${apiUrl}/download/${fileName}`
+
+    try {
+        const response = await fetchRecords(url, false, false, true)
+        return response
+    } catch (err) {
+        console.error("Error fetching data:", err);
+    }
+}

@@ -36,6 +36,8 @@ const NewProject = () => {
   const location = useLocation();
   const row = location.state?.row;
   const onClick = location.state?.onClick;
+  const recordId = row ? row["id"] : null
+
   const {
     setValue,
     watch
@@ -473,6 +475,9 @@ const NewProject = () => {
         </AccordionSummary>
         <AccordionDetails>
           <SectionOne
+            recordId={recordId}
+            apiUrl={apiUrl}
+            viewProject={onClick}
             startDate={watch("sowStartDate")}
             endDate={watch("sowEndDate")}
             setValue={setValue}
