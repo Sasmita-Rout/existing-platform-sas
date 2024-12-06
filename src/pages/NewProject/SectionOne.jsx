@@ -27,7 +27,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export default function SectionOne(props) {
-  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, recordId, disableButton } = props
+  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, disableButton, accountName } = props
   const { pmoUser } = useUserStore();
 
   async function uploadFile(endpoint, file) {
@@ -58,26 +58,30 @@ export default function SectionOne(props) {
 
   const downloadFile = async () => {
     const result = await getUploadSowFileDetails(apiUrl)
-    const details = result ? result["files"] : null
-    const projectDetails = details.filter((item) => (
-      item.id === recordId
+    const details = result && Array.isArray(result["files"]) ? result["files"] : [];
+    const projectDetails = details.find((item) => (
+      item["project_name"] === projectName && item["account_name"] === accountName
     ))
-    const fileName = projectDetails[0]["filename"]
-    const startDate = projectDetails[0]["start_date"]
-    const endDate = projectDetails[0]["end_date"]
-    const file = await downloadSowFile(apiUrl, fileName)
-    const url = URL.createObjectURL(file);
+    const fileName = projectDetails ? projectDetails["filename"] : null
 
-    // Trigger download
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName; // Set desired file name
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const startDate = projectDetails ? projectDetails["start_date"] : ""
+    const endDate = projectDetails ? projectDetails["end_date"] : ""
+    if (fileName) {
+      const file = await downloadSowFile(apiUrl, fileName)
 
-    // Clean up URL
-    URL.revokeObjectURL(url);
+      const url = URL.createObjectURL(file);
+
+      // Trigger download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName; // Set desired file name
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clean up URL
+      URL.revokeObjectURL(url);
+    }
   }
 
   const callUpload = (files) => {
@@ -154,27 +158,27 @@ export default function SectionOne(props) {
             )}
           </Box> :
           <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            borderRadius: "5px",
-            padding: "20px",
-            gap: 1,
-            width: "60%",
-            border: `3px solid ${grey[400]}`,
-            borderStyle: "dotted",
-          }}
-        >
-           <Typography style={{fontSize: "15px", marginTop:"50px" }}>
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              borderRadius: "5px",
+              padding: "20px",
+              gap: 1,
+              width: "60%",
+              border: `3px solid ${grey[400]}`,
+              borderStyle: "dotted",
+            }}
+          >
+            <Typography style={{ fontSize: "15px", marginTop: "50px" }}>
               Download the Uploaded File here...
             </Typography>
-            <FileDownloadIcon/>
-          <Button
-            onClick={downloadFile}
-            variant="contained">Download File</Button>
+            <FileDownloadIcon />
+            <Button
+              onClick={downloadFile}
+              variant="contained">Download File</Button>
           </Box>
-            }
+        }
 
         {/* Date Pickers Section */}
         <Box
