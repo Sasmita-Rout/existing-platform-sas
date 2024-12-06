@@ -449,7 +449,8 @@ const NewProject = () => {
             ddInput={watch("ddName")}
             setValue={setValue}
             buhValue={watch("buhValue")} ddValue={watch("ddValue")} accountValue={watch("accountValue")} projectName={watch("projectName")}
-            viewProject={onClick} />
+            viewProject={onClick}
+            disableButton={!onClick} />
         </AccordionDetails>
       </Accordion>
       <Accordion defaultExpanded sx={{
@@ -478,11 +479,11 @@ const NewProject = () => {
             recordId={recordId}
             apiUrl={apiUrl}
             viewProject={onClick}
+            disableButton={!onClick}
             startDate={watch("sowStartDate")}
             endDate={watch("sowEndDate")}
             setValue={setValue}
             selectedFile={watch("sowSelectedFile")}
-            disableButton={!onClick}
           />
         </AccordionDetails>
       </Accordion>
@@ -546,6 +547,7 @@ const NewProject = () => {
           <SectionThree
             viewProject={onClick}
             row={row}
+            disableButton={!onClick}
             environmentInput={watch("env")}
             cloudTechnologies={watch("cloudTechnologies")}
             enterprisePlatforms={watch("enterprisePlatforms")}
@@ -609,6 +611,7 @@ const NewProject = () => {
             // ApplicationSecurityTesting={ApplicationSecurityTesting}
             viewProject={onClick}
             row={row}
+            disableButton={!onClick}
             SelectManualTestingMgmt={watch("manualTestingManagementTools")}
             FunctionalandIntegration={watch("functionalIntegrationTesting")}
             PerformanceandLoadTest={watch("performanceLoadTestingTools")}
@@ -644,6 +647,7 @@ const NewProject = () => {
           <SectionFive
             viewProject={onClick}
             row={row}
+            disableButton={!onClick}
             AnalyticsReporting={watch("analyticsReporting")}
             SelectUserFeedbackandAnalytics={watch("userFeedbackAnalyticsTools")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionFive} />
@@ -675,6 +679,7 @@ const NewProject = () => {
           <SectionSix
             viewProject={onClick}
             row={row}
+            disableButton={!onClick}
             aiAndMachineLearningTechnologies={watch("aiMachineLearningTechnologies")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionSix}
           />

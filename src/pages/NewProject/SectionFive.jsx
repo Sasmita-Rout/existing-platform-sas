@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Box, Typography } from "@mui/material";
 import { Filter } from "../../components/molecules/Filter";
 
-const SectionFive = ({ row, viewProject, onSelectedValuesChange, ...props }) => {
+const SectionFive = ({ row, viewProject,disableButton, onSelectedValuesChange, ...props }) => {
 
   // Handler for single select autocomplete
   const [selectedValues, setSelectedValues] = React.useState({});
@@ -46,6 +46,7 @@ const SectionFive = ({ row, viewProject, onSelectedValuesChange, ...props }) => 
               isMultiSelect={false}
               placeholder={labels}
               showIcon={false}
+              disabled={!disableButton}
             />
           </Box>
         ))}

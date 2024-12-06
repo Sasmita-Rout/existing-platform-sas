@@ -26,7 +26,7 @@ export default function SectionTwo(props) {
                         isMultiSelect={false}
                         placeholder={domainPlaceholder}
                         showIcon={false}
-                        disabled={disableButton}
+                        disabled={!disableButton}
                     />
                 </Box>
 
@@ -43,6 +43,7 @@ export default function SectionTwo(props) {
                         isMultiSelect={false}
                         placeholder={applicationClassPlaceholder}
                         showIcon={false}
+                        disabled={!disableButton}
                     />
                 </Box>
             </Box>

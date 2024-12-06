@@ -191,8 +191,8 @@ export default function SectionOne(props) {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               value={startDate}
-              onChange={(newValue) => setValue("sowStartDate",newValue)}
               disabled={!disableButton}
+              onChange={(newValue) => setValue("sowStartDate", newValue)}
               inputFormat="DD-MM-YYYY"
 
               renderInput={(params) => <TextField {...params} />}
@@ -202,7 +202,7 @@ export default function SectionOne(props) {
               value={endDate}
               minDate={startDate}
               disabled={!disableButton}
-              onChange={(newValue) => setValue("sowEndDate",newValue)}
+              onChange={(newValue) => setValue("sowEndDate", newValue)}
               inputFormat="DD-MM-YYYY"
               renderInput={(params) => <TextField {...params} />}
             />

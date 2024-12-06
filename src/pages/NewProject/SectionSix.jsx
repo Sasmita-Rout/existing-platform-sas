@@ -3,7 +3,7 @@ import { Filter } from "../../components/molecules/index";
 import Box from '@mui/material/Box';
 
 
-export default function SectionSix({ row, viewProject, onSelectedValuesChange, ...props }) {
+export default function SectionSix({ row, viewProject,disableButton, onSelectedValuesChange, ...props }) {
     const [selectedValues, setSelectedValues] = React.useState({});
     const [viewValues, setViewValues] = React.useState({});
 
@@ -45,6 +45,7 @@ export default function SectionSix({ row, viewProject, onSelectedValuesChange, .
                             isMultiSelect={false}
                             placeholder={labels}
                             showIcon={false}
+                            disabled={!disableButton}
                         />
                     </Box>
                 ))}

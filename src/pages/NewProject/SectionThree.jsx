@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Filter } from "../../components/molecules/index";
 import Box from '@mui/material/Box';
 
-export default function SectionThree({ row, viewProject, onSelectedValuesChange, ...props }) {
+export default function SectionThree({ row, viewProject, disableButton, onSelectedValuesChange, ...props }) {
     const [selectedValues, setSelectedValues] = React.useState({});
     const [viewValues, setViewValues] = React.useState({});
 
@@ -80,6 +80,7 @@ export default function SectionThree({ row, viewProject, onSelectedValuesChange,
                             isMultiSelect={false}
                             placeholder={labels}
                             showIcon={false}
+                            disabled={!disableButton}
                         />
                     </Box>
                 ))}

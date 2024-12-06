@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import { Box, Typography } from "@mui/material";
 import EmergencyIcon from '@mui/icons-material/Emergency';
 
-export default function Section({ buhInput, accountInput, ddInput, setValue, buhValue, ddValue, accountValue, projectName, viewProject }) {
+export default function Section({ buhInput, accountInput, ddInput, setValue, buhValue, ddValue, accountValue, projectName, viewProject, disableButton }) {
 
     const buhFilterPlaceholder = 'Select BUH';
     const accountFilterPlaceholder = 'Select Account';
@@ -28,6 +28,7 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                         isMultiSelect={false}
                         placeholder={buhFilterPlaceholder}
                         showIcon={false}
+                        disabled={!disableButton}
                     />
                 </Box>
 
@@ -45,6 +46,7 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                         isMultiSelect={false}
                         placeholder={accountFilterPlaceholder}
                         showIcon={false}
+                        disabled={!disableButton}
                     />
                 </Box>
 
@@ -61,6 +63,7 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                         selectedValues={ddValue}
                         isMultiSelect={false}
                         placeholder={ddFilterPlaceholder}
+                        disabled={!disableButton}
                     />
                 </Box>
 
@@ -70,7 +73,7 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Project Name
                     </Typography>
                     <Box component="form" sx={{ '& > :not(style)': { m: 1, width: '360px' } }} noValidate autoComplete="off">
-                        <TextField id="outlined-basic" placeholder={projectFilterPlaceholder} variant="outlined" value={!viewProject?null:projectName} onChange={(e) => setValue("projectName",e.target.value)} />
+                        <TextField id="outlined-basic" disabled={!disableButton} placeholder={projectFilterPlaceholder} variant="outlined" value={!viewProject?null:projectName} onChange={(e) => setValue("projectName",e.target.value)} />
                     </Box>
                 </Box>
             </Box>
