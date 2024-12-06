@@ -482,6 +482,7 @@ const NewProject = () => {
             endDate={watch("sowEndDate")}
             setValue={setValue}
             selectedFile={watch("sowSelectedFile")}
+            disableButton={!onClick}
           />
         </AccordionDetails>
       </Accordion>
@@ -513,6 +514,7 @@ const NewProject = () => {
             domainValue={watch("domainValue")}
             applicationValue={watch("applicationValue")}
             setValue={setValue}
+            disableButton={!onClick}
           />
         </AccordionDetails>
       </Accordion>

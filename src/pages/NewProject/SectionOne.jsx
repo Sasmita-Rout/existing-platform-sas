@@ -27,7 +27,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export default function SectionOne(props) {
-  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, recordId } = props
+  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, recordId, disableButton } = props
   const { pmoUser } = useUserStore();
 
   async function uploadFile(endpoint, file) {
@@ -191,7 +191,8 @@ export default function SectionOne(props) {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               value={startDate}
-              onChange={(newValue) => setValue("sowStartDate", newValue)}
+              onChange={(newValue) => setValue("sowStartDate",newValue)}
+              disabled={!disableButton}
               inputFormat="DD-MM-YYYY"
 
               renderInput={(params) => <TextField {...params} />}
@@ -200,7 +201,8 @@ export default function SectionOne(props) {
             <DatePicker
               value={endDate}
               minDate={startDate}
-              onChange={(newValue) => setValue("sowEndDate", newValue)}
+              disabled={!disableButton}
+              onChange={(newValue) => setValue("sowEndDate",newValue)}
               inputFormat="DD-MM-YYYY"
               renderInput={(params) => <TextField {...params} />}
             />
