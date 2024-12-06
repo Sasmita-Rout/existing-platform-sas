@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import EmergencyIcon from '@mui/icons-material/Emergency';
 
 export default function SectionTwo(props) {
-    const { domainInput, applicationInput, domainValue , applicationValue, setValue } = props
+    const { domainInput, applicationInput, domainValue , applicationValue, setValue, disableButton } = props
 
     const domainPlaceholder = 'Select Domain';
     const applicationClassPlaceholder = 'Feature Enhancements, New Production';
@@ -26,6 +26,7 @@ export default function SectionTwo(props) {
                         isMultiSelect={false}
                         placeholder={domainPlaceholder}
                         showIcon={false}
+                        disabled={!disableButton}
                     />
                 </Box>
 
@@ -42,6 +43,7 @@ export default function SectionTwo(props) {
                         isMultiSelect={false}
                         placeholder={applicationClassPlaceholder}
                         showIcon={false}
+                        disabled={!disableButton}
                     />
                 </Box>
             </Box>
