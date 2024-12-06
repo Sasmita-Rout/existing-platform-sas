@@ -25,7 +25,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export default function SectionOne(props) {
-  const {startDate, endDate, setValue, selectedFile} = props
+  const {startDate, endDate, setValue, selectedFile, disableButton} = props;
   const { pmoUser } = useUserStore();
 
   async function uploadFile(endpoint, file) {
@@ -143,6 +143,7 @@ export default function SectionOne(props) {
             <DatePicker
               value={startDate}
               onChange={(newValue) => setValue("sowStartDate",newValue)}
+              disabled={!disableButton}
               inputFormat="DD-MM-YYYY"
               
               renderInput={(params) => <TextField {...params} />}
@@ -151,6 +152,7 @@ export default function SectionOne(props) {
             <DatePicker
               value={endDate}
               minDate={startDate}
+              disabled={!disableButton}
               onChange={(newValue) => setValue("sowEndDate",newValue)}
               inputFormat="DD-MM-YYYY"
               renderInput={(params) => <TextField {...params} />}

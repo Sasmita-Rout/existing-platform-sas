@@ -13,6 +13,7 @@ export function Filter({
     placeholder = 'Select...', // Default placeholder
     onFocus,
     onBlur,
+    disabled,
     showIcon = false,
     ...rest
 }) {
@@ -23,6 +24,7 @@ export function Filter({
                 multiple={isMultiSelect} // Toggle between multi-select and single-select
                 disableCloseOnSelect={isMultiSelect}
                 options={input}
+                disabled={!disabled}
                 getOptionLabel={(option) => option.toString() || ''} // Ensure option has title
                 onChange={handleOnSelect} // Pass the handler function
                 value={selectedValues} // Selected values dynamically passed
