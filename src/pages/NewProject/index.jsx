@@ -476,8 +476,10 @@ const NewProject = () => {
         </AccordionSummary>
         <AccordionDetails>
           <SectionOne
+            projectValue={projectName}
+            accountValue={watch("accountValue")}
             accountName={accountName}
-            projectName={projectName}
+            projectName={watch("projectName")}
             apiUrl={apiUrl}
             viewProject={onClick}
             disableButton={!onClick}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from "react";
+import React, { useState, useEffect } from "react";
 import { grey } from "@mui/material/colors";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -13,6 +13,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useUserStore } from "../../zustand";
 import apiUrlConfig from "../../config/apiUrlConfig";
 import { getUploadSowFileDetails, downloadSowFile } from "../../modules/FilterApiCall";
+import FileDownloadOffIcon from '@mui/icons-material/FileDownloadOff';
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -27,10 +28,11 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export default function SectionOne(props) {
-  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, disableButton, accountName } = props
+  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, disableButton, accountValue, accountName, projectValue } = props
   const { pmoUser } = useUserStore();
   const [uploadFiles, setUploadFiles] = useState();
   const [fileName, setFileName] = useState();
+  const [isFileFound, setIsFileFound] = useState(true)
 
   async function uploadFile(endpoint, file) {
     const formData = new FormData();
@@ -45,7 +47,6 @@ export default function SectionOne(props) {
 
     try {
       const response = await fetch(endpoint, config);
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -57,6 +58,24 @@ export default function SectionOne(props) {
       throw error;
     }
   }
+  useEffect(() => {
+    async function viewProjectDates() {
+      const result = await getUploadSowFileDetails(apiUrl);
+      setUploadFiles(result);
+      const details = uploadFiles && Array.isArray(uploadFiles["files"]) ? uploadFiles["files"] : [];
+      const projectDetails = details.find((item) => (
+        item["project_name"] === projectValue && item["account_name"] === accountName
+      ))
+      // const fileName = projectDetails ? projectDetails["filename"] : null
+      projectDetails["filename"]&&setFileName(projectDetails["filename"])
+
+      const startDate = projectDetails ? projectDetails["start_date"] : ""
+      const endDate = projectDetails ? projectDetails["end_date"] : ""
+
+      console.log(fileName, startDate, endDate, '123');
+    }
+    viewProjectDates();
+  }, [viewProject])
 
   const downloadFile = async () => {
     // const result = await getUploadSowFileDetails(apiUrl)
@@ -70,6 +89,9 @@ export default function SectionOne(props) {
     // const endDate = projectDetails ? projectDetails["end_date"] : ""
 
     // console.log(fileName, startDate, endDate, '456');
+    if(!fileName) {
+      setIsFileFound(false)
+      }
     if (fileName) {
       const file = await downloadSowFile(apiUrl, fileName)
 
@@ -88,31 +110,11 @@ export default function SectionOne(props) {
     }
   }
 
-  useEffect(() => {
-    async function viewProjectDates () {
-      const result = await getUploadSowFileDetails(apiUrl);
-      setUploadFiles(result);
-      const details = uploadFiles && Array.isArray(uploadFiles["files"]) ? uploadFiles["files"] : [];
-      const projectDetails = details.find((item) => (
-        item["project_name"] === projectName && item["account_name"] === accountName
-      ))
-      // const fileName = projectDetails ? projectDetails["filename"] : null
-      setFileName(projectDetails["filename"]);
-  
-      const startDate = projectDetails ? projectDetails["start_date"] : ""
-      const endDate = projectDetails ? projectDetails["end_date"] : ""
-
-      console.log(fileName, startDate, endDate, '123');
-    }
-    viewProjectDates();
-  }, [viewProject])
-  
-
   const callUpload = (files) => {
     const file = files[0];
     if (file) {
       setValue("sowSelectedFile", file); // Store file info in state
-      const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser}`;
+      const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&start_date=${startDate}&end_date=${endDate}&account_name=${accountValue}&project_name=${projectName}`;
       uploadFile(url, file);
     } else {
       alert("Something went wrong");
@@ -201,6 +203,14 @@ export default function SectionOne(props) {
             <Button
               onClick={downloadFile}
               variant="contained">Download File</Button>
+              {!isFileFound &&
+              <>
+              <Typography style={{ fontSize: "15px", marginTop: "20px", color:"red" }}>
+              No File Found to Download
+            </Typography>
+            <FileDownloadOffIcon/>
+            </>
+              }
           </Box>
         }
 
