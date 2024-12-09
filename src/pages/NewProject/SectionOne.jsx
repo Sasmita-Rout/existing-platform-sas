@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect }  from "react";
 import { grey } from "@mui/material/colors";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -29,6 +29,8 @@ const VisuallyHiddenInput = styled("input")({
 export default function SectionOne(props) {
   const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, disableButton, accountName } = props
   const { pmoUser } = useUserStore();
+  const [uploadFiles, setUploadFiles] = useState();
+  const [fileName, setFileName] = useState();
 
   async function uploadFile(endpoint, file) {
     const formData = new FormData();
@@ -57,15 +59,17 @@ export default function SectionOne(props) {
   }
 
   const downloadFile = async () => {
-    const result = await getUploadSowFileDetails(apiUrl)
-    const details = result && Array.isArray(result["files"]) ? result["files"] : [];
-    const projectDetails = details.find((item) => (
-      item["project_name"] === projectName && item["account_name"] === accountName
-    ))
-    const fileName = projectDetails ? projectDetails["filename"] : null
+    // const result = await getUploadSowFileDetails(apiUrl)
+    // const details = result && Array.isArray(result["files"]) ? result["files"] : [];
+    // const projectDetails = details.find((item) => (
+    //   item["project_name"] === projectName && item["account_name"] === accountName
+    // ))
+    // const fileName = projectDetails ? projectDetails["filename"] : null
 
-    const startDate = projectDetails ? projectDetails["start_date"] : ""
-    const endDate = projectDetails ? projectDetails["end_date"] : ""
+    // const startDate = projectDetails ? projectDetails["start_date"] : ""
+    // const endDate = projectDetails ? projectDetails["end_date"] : ""
+
+    // console.log(fileName, startDate, endDate, '456');
     if (fileName) {
       const file = await downloadSowFile(apiUrl, fileName)
 
@@ -83,6 +87,26 @@ export default function SectionOne(props) {
       URL.revokeObjectURL(url);
     }
   }
+
+  useEffect(() => {
+    async function viewProjectDates () {
+      const result = await getUploadSowFileDetails(apiUrl);
+      setUploadFiles(result);
+      const details = uploadFiles && Array.isArray(uploadFiles["files"]) ? uploadFiles["files"] : [];
+      const projectDetails = details.find((item) => (
+        item["project_name"] === projectName && item["account_name"] === accountName
+      ))
+      // const fileName = projectDetails ? projectDetails["filename"] : null
+      setFileName(projectDetails["filename"]);
+  
+      const startDate = projectDetails ? projectDetails["start_date"] : ""
+      const endDate = projectDetails ? projectDetails["end_date"] : ""
+
+      console.log(fileName, startDate, endDate, '123');
+    }
+    viewProjectDates();
+  }, [viewProject])
+  
 
   const callUpload = (files) => {
     const file = files[0];
