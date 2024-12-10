@@ -64,16 +64,14 @@ export default function SectionOne(props) {
     async function viewProjectDates() {
       const result = await getUploadSowFileDetails(apiUrl);
 
-      console.log(result, 'result')
       setUploadFiles(result);
       // const details = uploadFiles && Array.isArray(uploadFiles["files"]) ? uploadFiles["files"] : [];
       // console.log(details, 'details');
       const projectDetails = result.files.find((item) => (
         item["project_name"] === projectValue && item["account_name"] === accountName
       ))
-      console.log(projectDetails, 'projectDetails');
       // const fileName = projectDetails ? projectDetails["filename"] : null
-      projectDetails["filename"]&&setFileName(projectDetails["filename"])
+      projectDetails["filename"] && setFileName(projectDetails["filename"])
 
       const startDate = projectDetails ? projectDetails["start_date"] : ""
       const endDate = projectDetails ? projectDetails["end_date"] : ""
@@ -97,9 +95,9 @@ export default function SectionOne(props) {
     // const startDate = projectDetails ? projectDetails["start_date"] : ""
     // const endDate = projectDetails ? projectDetails["end_date"] : ""
 
-    if(!fileName) {
+    if (!fileName) {
       setIsFileFound(false)
-      }
+    }
     if (fileName) {
       const file = await downloadSowFile(apiUrl, fileName)
 
@@ -117,19 +115,26 @@ export default function SectionOne(props) {
       URL.revokeObjectURL(url);
     }
   }
+  useEffect(() => {
+    if (startDate && endDate && accountValue && projectName && selectedFile) {
+      console.log(accountValue, projectName, "DET")
 
-  const callUpload = (files) => {
-    const file = files[0];
-    if (file) {
-      setValue("sowSelectedFile", file); // Store file info in state
-      const sowEnd = endDate ? (endDate).toISOString() : null;
-      const sowStart = startDate ? (startDate).toISOString() : null;
-      const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&start_date=${sowStart}&end_date=${sowEnd}&account_name=${accountValue}&project_name=${projectName}`;
-      uploadFile(url, file);
-    } else {
-      alert("Something went wrong");
+
+      const callUpload = async () => {
+        const file = selectedFile;
+        if (file[0]) {
+          setValue("sowSelectedFile", file[0]); // Store file info in state
+          const sowEnd = endDate ? (endDate).toISOString() : null;
+          const sowStart = startDate ? (startDate).toISOString() : null;
+          const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&start_date=${sowStart}&end_date=${sowEnd}&account_name=${accountValue}&project_name=${projectName}`;
+          await uploadFile(url, file[0]);
+        } else {
+          alert("Something went wrong");
+        }
+      };
+      callUpload()
     }
-  };
+  }, [startDate, endDate, projectName, accountValue, selectedFile])
 
   return (
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -182,7 +187,7 @@ export default function SectionOne(props) {
               <VisuallyHiddenInput
                 type="file"
                 accept=".pdf, .jpg, .jpeg, .docx"
-                onChange={(event) => callUpload(event?.target?.files)}
+                onChange={(event) => setValue("sowSelectedFile", event?.target?.files)}
                 multiple
               />
             </Button>
@@ -213,14 +218,14 @@ export default function SectionOne(props) {
             <Button
               onClick={downloadFile}
               variant="contained">Download File</Button>
-              {!isFileFound &&
+            {!isFileFound &&
               <>
-              <Typography style={{ fontSize: "15px", marginTop: "20px", color:"red" }}>
-              No File Found to Download
-            </Typography>
-            <FileDownloadOffIcon/>
-            </>
-              }
+                <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red" }}>
+                  No File Found to Download
+                </Typography>
+                <FileDownloadOffIcon />
+              </>
+            }
           </Box>
         }
 
@@ -238,7 +243,7 @@ export default function SectionOne(props) {
           <Typography variant="subtitle1">SOW Start Date</Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             {/* {startsowDate} {endsowDate} */}
-            {viewProject &&  startsowDate}
+            {viewProject && startsowDate}
             {!viewProject && <DatePicker
               value={startDate}
               disabled={!disableButton}
