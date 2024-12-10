@@ -63,11 +63,15 @@ export default function SectionOne(props) {
   useEffect(() => {
     async function viewProjectDates() {
       const result = await getUploadSowFileDetails(apiUrl);
+
+      console.log(result, 'result')
       setUploadFiles(result);
-      const details = uploadFiles && Array.isArray(uploadFiles["files"]) ? uploadFiles["files"] : [];
-      const projectDetails = details.find((item) => (
+      // const details = uploadFiles && Array.isArray(uploadFiles["files"]) ? uploadFiles["files"] : [];
+      // console.log(details, 'details');
+      const projectDetails = result.files.find((item) => (
         item["project_name"] === projectValue && item["account_name"] === accountName
       ))
+      console.log(projectDetails, 'projectDetails');
       // const fileName = projectDetails ? projectDetails["filename"] : null
       projectDetails["filename"]&&setFileName(projectDetails["filename"])
 
@@ -77,10 +81,10 @@ export default function SectionOne(props) {
       setStartsowDate(startDate);
       setEndsowDate(endDate);
 
-      console.log(fileName, startDate, endDate, '123');
+      console.log(fileName, startsowDate, endDate, endsowDate, '123');
     }
     viewProjectDates();
-  }, [viewProject])
+  }, [])
 
   const downloadFile = async () => {
     // const result = await getUploadSowFileDetails(apiUrl)
@@ -93,7 +97,6 @@ export default function SectionOne(props) {
     // const startDate = projectDetails ? projectDetails["start_date"] : ""
     // const endDate = projectDetails ? projectDetails["end_date"] : ""
 
-    // console.log(fileName, startDate, endDate, '456');
     if(!fileName) {
       setIsFileFound(false)
       }
@@ -234,16 +237,19 @@ export default function SectionOne(props) {
         >
           <Typography variant="subtitle1">SOW Start Date</Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
+            {/* {startsowDate} {endsowDate} */}
+            {viewProject &&  startsowDate}
+            {!viewProject && <DatePicker
               value={startDate}
               disabled={!disableButton}
               onChange={(newValue) => setValue("sowStartDate", newValue)}
               inputFormat="DD-MM-YYYY"
               format="DD-MM-YYYY"
               renderInput={(params) => <TextField {...params} />}
-            />
+            />}
             <Typography variant="subtitle1">SOW End Date</Typography>
-            <DatePicker
+            {viewProject && endsowDate}
+            {!viewProject && <DatePicker
               value={endDate}
               minDate={startDate}
               disabled={!disableButton}
@@ -251,7 +257,7 @@ export default function SectionOne(props) {
               inputFormat="DD-MM-YYYY"
               format="DD-MM-YYYY"
               renderInput={(params) => <TextField {...params} />}
-            />
+            />}
           </LocalizationProvider>
         </Box>
       </Box>
