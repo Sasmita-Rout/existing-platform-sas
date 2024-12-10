@@ -32,7 +32,9 @@ export default function SectionOne(props) {
   const { pmoUser } = useUserStore();
   const [uploadFiles, setUploadFiles] = useState();
   const [fileName, setFileName] = useState();
-  const [isFileFound, setIsFileFound] = useState(true)
+  const [isFileFound, setIsFileFound] = useState(true);
+  const [startsowDate, setStartsowDate] = useState()
+  const [endsowDate, setEndsowDate] = useState()
 
   async function uploadFile(endpoint, file) {
     const formData = new FormData();
@@ -71,6 +73,9 @@ export default function SectionOne(props) {
 
       const startDate = projectDetails ? projectDetails["start_date"] : ""
       const endDate = projectDetails ? projectDetails["end_date"] : ""
+
+      setStartsowDate(startDate);
+      setEndsowDate(endDate);
 
       console.log(fileName, startDate, endDate, '123');
     }
@@ -114,7 +119,9 @@ export default function SectionOne(props) {
     const file = files[0];
     if (file) {
       setValue("sowSelectedFile", file); // Store file info in state
-      const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&start_date=${startDate}&end_date=${endDate}&account_name=${accountValue}&project_name=${projectName}`;
+      const sowEnd = endDate ? (endDate).toISOString() : null;
+      const sowStart = startDate ? (startDate).toISOString() : null;
+      const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&start_date=${sowStart}&end_date=${sowEnd}&account_name=${accountValue}&project_name=${projectName}`;
       uploadFile(url, file);
     } else {
       alert("Something went wrong");
@@ -232,7 +239,7 @@ export default function SectionOne(props) {
               disabled={!disableButton}
               onChange={(newValue) => setValue("sowStartDate", newValue)}
               inputFormat="DD-MM-YYYY"
-
+              format="DD-MM-YYYY"
               renderInput={(params) => <TextField {...params} />}
             />
             <Typography variant="subtitle1">SOW End Date</Typography>
@@ -242,6 +249,7 @@ export default function SectionOne(props) {
               disabled={!disableButton}
               onChange={(newValue) => setValue("sowEndDate", newValue)}
               inputFormat="DD-MM-YYYY"
+              format="DD-MM-YYYY"
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
