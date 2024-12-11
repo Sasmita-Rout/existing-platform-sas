@@ -19,7 +19,6 @@ export default function SectionSix({ row, viewProject,disableButton, onSelectedV
 
     useEffect(() => {
         if (viewProject) {
-            console.log(row, 'row')
             const updatedValues = {
                 aiAndMachineLearningTechnologies: row["ai_machine_learning_technologies"]
             };

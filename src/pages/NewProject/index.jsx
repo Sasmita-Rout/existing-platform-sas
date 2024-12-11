@@ -151,7 +151,6 @@ const NewProject = () => {
   };
   useEffect(() => {
     if (onClick) {
-      console.log("Setting values", row);
       setValue("accountValue", row["account_name"]);
       setValue("buhValue", row["buh_name"]);
       setValue("ddValue", row["dd_name"]);

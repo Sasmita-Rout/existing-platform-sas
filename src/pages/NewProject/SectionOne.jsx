@@ -79,7 +79,6 @@ export default function SectionOne(props) {
       setStartsowDate(startDate);
       setEndsowDate(endDate);
 
-      console.log(fileName, startsowDate, endDate, endsowDate, '123');
     }
     viewProjectDates();
   }, [])
@@ -117,19 +116,16 @@ export default function SectionOne(props) {
   }
   useEffect(() => {
     if (startDate && endDate && accountValue && projectName && selectedFile) {
-      console.log(accountValue, projectName, "DET")
 
 
       const callUpload = async () => {
         const file = selectedFile;
         if (file[0]) {
           setValue("sowSelectedFile", file[0]); // Store file info in state
-          const sowEnd = endDate ? (endDate).toISOString() : null;
-          const sowStart = startDate ? (startDate).toISOString() : null;
+          const sowEnd = endDate ? (endDate).toString() : null;
+          const sowStart = startDate ? (startDate).toString() : null;
           const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&start_date=${sowStart}&end_date=${sowEnd}&account_name=${accountValue}&project_name=${projectName}`;
           await uploadFile(url, file[0]);
-        } else {
-          alert("Something went wrong");
         }
       };
       callUpload()
