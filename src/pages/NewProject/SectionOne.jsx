@@ -28,7 +28,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export default function SectionOne(props) {
-  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, disableButton, accountValue, accountName, projectValue } = props
+  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, disableButton, accountValue, accountName, projectValue, onSubmit } = props
   const { pmoUser } = useUserStore();
   const [uploadFiles, setUploadFiles] = useState();
   const [fileName, setFileName] = useState();
@@ -115,22 +115,23 @@ export default function SectionOne(props) {
     }
   }
   useEffect(() => {
-    if (startDate && endDate && accountValue && projectName && selectedFile) {
+    console.log(startDate)
+    if (startDate && endDate && accountValue && projectName && selectedFile && onSubmit) {
 
 
       const callUpload = async () => {
         const file = selectedFile;
         if (file[0]) {
           setValue("sowSelectedFile", file[0]); // Store file info in state
-          const sowEnd = endDate ? (endDate).toString() : null;
-          const sowStart = startDate ? (startDate).toString() : null;
+          const sowEnd = endDate ? (endDate).toISOString() : null;
+          const sowStart = startDate ? (startDate).toISOString() : null;
           const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&start_date=${sowStart}&end_date=${sowEnd}&account_name=${accountValue}&project_name=${projectName}`;
           await uploadFile(url, file[0]);
         }
       };
       callUpload()
     }
-  }, [startDate, endDate, projectName, accountValue, selectedFile])
+  }, [startDate, endDate, projectName, accountValue, selectedFile, onSubmit])
 
   return (
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>

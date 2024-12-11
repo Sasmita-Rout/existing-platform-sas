@@ -104,6 +104,7 @@ const NewProject = () => {
       sowStartDate: null,
       sowEndDate: null,
       sowSelectedFile: null,
+      onSubmit:false
     }
   });
   const navigate = useNavigate();
@@ -220,6 +221,7 @@ const NewProject = () => {
   };
 
   const handleConfirmSubmit = async () => {
+    setValue("onSubmit",true)
     const response = await createNewProject();
     console.log("Form submitted!", response);
     if (response.id) {
@@ -486,6 +488,7 @@ const NewProject = () => {
             endDate={watch("sowEndDate")}
             setValue={setValue}
             selectedFile={watch("sowSelectedFile")}
+            onSubmit= {watch('onSubmit')}
           />
         </AccordionDetails>
       </Accordion>
