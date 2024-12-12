@@ -24,7 +24,7 @@ export function Filter({
                 multiple={isMultiSelect} // Toggle between multi-select and single-select
                 disableCloseOnSelect={isMultiSelect}
                 options={input}
-                disabled={!disabled}
+                disabled={disabled}
                 getOptionLabel={(option) => option.toString() || ''} // Ensure option has title
                 onChange={handleOnSelect} // Pass the handler function
                 value={selectedValues} // Selected values dynamically passed

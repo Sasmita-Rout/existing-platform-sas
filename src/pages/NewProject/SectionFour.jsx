@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Box } from "@mui/material";
 import { Filter } from "../../components/molecules/Filter";
 
-const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => {
+const SectionFour = ({ row, viewProject,disableButton, onSelectedValuesChange, ...props }) => {
   const [selectedValues, setSelectedValues] = React.useState({});
   const [viewValues, setViewValues] = React.useState({});
 
@@ -47,6 +47,7 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => 
               isMultiSelect={false}
               placeholder={labels}
               showIcon={false}
+              disabled={!disableButton}
             />
           </Box>
         ))}

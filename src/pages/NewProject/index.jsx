@@ -36,6 +36,8 @@ const NewProject = () => {
   const location = useLocation();
   const row = location.state?.row;
   const onClick = location.state?.onClick;
+  const projectName = row ? row["project_name"] : null
+  const accountName = row ? row["account_name"] : null
   const {
     setValue,
     watch
@@ -102,6 +104,7 @@ const NewProject = () => {
       sowStartDate: null,
       sowEndDate: null,
       sowSelectedFile: null,
+      onSubmit:false
     }
   });
   const navigate = useNavigate();
@@ -149,7 +152,6 @@ const NewProject = () => {
   };
   useEffect(() => {
     if (onClick) {
-      console.log("Setting values", row);
       setValue("accountValue", row["account_name"]);
       setValue("buhValue", row["buh_name"]);
       setValue("ddValue", row["dd_name"]);
@@ -219,6 +221,7 @@ const NewProject = () => {
   };
 
   const handleConfirmSubmit = async () => {
+    setValue("onSubmit",true)
     const response = await createNewProject();
     console.log("Form submitted!", response);
     if (response.id) {
@@ -447,7 +450,8 @@ const NewProject = () => {
             ddInput={watch("ddName")}
             setValue={setValue}
             buhValue={watch("buhValue")} ddValue={watch("ddValue")} accountValue={watch("accountValue")} projectName={watch("projectName")}
-            viewProject={onClick} />
+            viewProject={onClick}
+            disableButton={!onClick} />
         </AccordionDetails>
       </Accordion>
       <Accordion defaultExpanded sx={{
@@ -473,11 +477,18 @@ const NewProject = () => {
         </AccordionSummary>
         <AccordionDetails>
           <SectionOne
+            projectValue={projectName}
+            accountValue={watch("accountValue")}
+            accountName={accountName}
+            projectName={watch("projectName")}
+            apiUrl={apiUrl}
+            viewProject={onClick}
+            disableButton={!onClick}
             startDate={watch("sowStartDate")}
             endDate={watch("sowEndDate")}
             setValue={setValue}
             selectedFile={watch("sowSelectedFile")}
-            disableButton={!onClick}
+            onSubmit= {watch('onSubmit')}
           />
         </AccordionDetails>
       </Accordion>
@@ -541,6 +552,7 @@ const NewProject = () => {
           <SectionThree
             viewProject={onClick}
             row={row}
+            disableButton={!onClick}
             environmentInput={watch("env")}
             cloudTechnologies={watch("cloudTechnologies")}
             enterprisePlatforms={watch("enterprisePlatforms")}
@@ -604,6 +616,7 @@ const NewProject = () => {
             // ApplicationSecurityTesting={ApplicationSecurityTesting}
             viewProject={onClick}
             row={row}
+            disableButton={!onClick}
             SelectManualTestingMgmt={watch("manualTestingManagementTools")}
             FunctionalandIntegration={watch("functionalIntegrationTesting")}
             PerformanceandLoadTest={watch("performanceLoadTestingTools")}
@@ -639,6 +652,7 @@ const NewProject = () => {
           <SectionFive
             viewProject={onClick}
             row={row}
+            disableButton={!onClick}
             AnalyticsReporting={watch("analyticsReporting")}
             SelectUserFeedbackandAnalytics={watch("userFeedbackAnalyticsTools")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionFive} />
@@ -670,6 +684,7 @@ const NewProject = () => {
           <SectionSix
             viewProject={onClick}
             row={row}
+            disableButton={!onClick}
             aiAndMachineLearningTechnologies={watch("aiMachineLearningTechnologies")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionSix}
           />
