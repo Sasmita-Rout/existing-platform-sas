@@ -32,10 +32,11 @@ const PlatformProject = () => {
       accountName: [],
       buhName: [],
       ddName: [],
-      projectName:[],
+      projectName: [],
       loader: false,
-      technologyData:[]
-    }})
+      technologyData: []
+    }
+  })
 
   const [buhSelected, setBuhSelected] = useState(null);
   const [accountSelected, setAccountSelected] = useState(null);
@@ -48,7 +49,7 @@ const PlatformProject = () => {
       dd_name: "",
       project_name: "",
       account_name: "",
-      loader:""
+      loader: ""
     },
     keywords: "",
   });
@@ -90,7 +91,7 @@ const PlatformProject = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      watch("loader",true)
+      watch("loader", true)
 
       try {
         const promises = typeOfDropdown.map(async (filterName) => {
@@ -106,45 +107,51 @@ const PlatformProject = () => {
         // Process each result and set the corresponding state
         results.forEach(({ filterName, response }) => {
           if (filterName === "account_name") {
-            setValue("accountName",response.values);
+            setValue("accountName", response.values);
           } else if (filterName === "project_name") {
-            setValue("projectName",response.values);
+            setValue("projectName", response.values);
           } else if (filterName === "buh_name") {
-            setValue("buhName",response.values);
+            setValue("buhName", response.values);
           } else if (filterName === "dd_name") {
-            setValue("ddName",response.values);
+            setValue("ddName", response.values);
           }
         });
 
-        watch("loader",false)
+        watch("loader", false)
 
       } catch (error) {
         console.error("Error fetching data:", error);
-        watch("loader",false)
+        watch("loader", false)
       }
     };
-    watch("loader",true)
+    watch("loader", true)
     fetchFilterData(apiUrl, typeOfDropdown, setValue);
   }, []);
 
   useEffect(() => {
-    const fetchAdvanceFilterTechnologies = async () => {
+    const fetchAdvanceFilterTechnologies = async (apiUrl, setValue) => {
       try {
-        const techUrl = `${apiUrl}/platform_data/columns`;
-        const result = await fetchRecords(techUrl, false, false, false);
-        const data =
-          result !== null && result["columns"]
-            ? setValue(technologyData,(result["columns"]))
-            : "";
-        watch("loader",false);
-        return data;
+        const data = await fetchColumnData(apiUrl, setValue);
+
+        if (data) {
+          setValue("technologyData", data);
+
+          // Convert to normal case
+          const toNormalCase = (str) => {
+            return str
+              .split('_')
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+              .join(' ');
+          };
+
+          const normalCaseList = data.map(toNormalCase);
+          setValue("technologyData", normalCaseList); // Save normalized data
+        }
       } catch (error) {
-        console.error("Error fetching data:", error);
-        watch("loader",false);
+        console.error("Error fetching technology data:", error);
       }
     };
-    watch("loader",true);
-    fetchColumnData(apiUrl, setValue);
+    fetchAdvanceFilterTechnologies(apiUrl, setValue);
   }, []);
 
   const columns = [
@@ -185,8 +192,8 @@ const PlatformProject = () => {
             sx={{ padding: 0 }}
             aria-label="edit"
             onClick={() => {
-              navigate("/PlatformProject/NewProject", { state: { row: i.row, onClick:true } });
-              }}
+              navigate("/PlatformProject/NewProject", { state: { row: i.row, onClick: true } });
+            }}
           >
             <Visibility />
           </IconButton>
@@ -261,12 +268,12 @@ const PlatformProject = () => {
             null,
             "GET"
           );
-          if(response.records !== 0) {
+          if (response.records !== 0) {
             const updatedData = response.records.map((item, index) => ({
               ...item,
               id: index,
             }));
-  
+
             setTableData({
               records: updatedData,
               total_pages: response.total_pages,
@@ -282,7 +289,7 @@ const PlatformProject = () => {
               current_page: 0,
               page_size: 10
             })
-          }    
+          }
         } else {
           const pages = pageChangeValues.page > 0 ? pageChangeValues.page : 1;
           const page_size = !!pageChangeValues.pageSize ? pageChangeValues.pageSize : 10;
