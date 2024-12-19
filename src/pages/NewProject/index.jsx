@@ -104,7 +104,7 @@ const NewProject = () => {
       sowStartDate: null,
       sowEndDate: null,
       sowSelectedFile: null,
-      onSubmit:false
+      onSubmit: false
     }
   });
   const navigate = useNavigate();
@@ -182,7 +182,8 @@ const NewProject = () => {
   const handleOpenDialog = () => {
     const requiredFields = [
       watch("buhValue"), watch("accountValue"), watch("ddValue"), watch("projectName").trim(),
-      watch("domainValue"), watch("applicationValue"), watch("sowStartDate"), watch("sowEndDate"), watch("sowSelectedFile")
+      watch("domainValue"), watch("applicationValue")
+      // , watch("sowStartDate"), watch("sowEndDate"), watch("sowSelectedFile")
     ];
 
     const fieldNames = {
@@ -192,9 +193,9 @@ const NewProject = () => {
       projectName: "Project Name",
       domainValue: "Domain",
       applicationValue: "Application",
-      sowStartDate: "Upload SOW Start Date",
-      sowEndDate: "Upload SOW End Date",
-      sowSelectedFile: "Upload SOW Select File"
+      // sowStartDate: "Upload SOW Start Date",
+      // sowEndDate: "Upload SOW End Date",
+      // sowSelectedFile: "Upload SOW Select File"
     };
 
     // Identify missing required fields
@@ -209,7 +210,8 @@ const NewProject = () => {
     setValue("errorDisplay", formattedNullValues);
 
     // Check if there are missing fields to determine dialog display
-    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || (watch("projectName").trim() === "") || (watch("projectName").trim() === null) || watch("domainValue") === null || watch("applicationValue") === null || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile") === null) {
+    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || (watch("projectName").trim() === "") || (watch("projectName").trim() === null) || watch("domainValue") === null || watch("applicationValue") === null) {
+      //  || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile") === null) {
       setValue("errorDailogBox", true);
     } else {
       setValue("openDialog", true);
@@ -221,7 +223,7 @@ const NewProject = () => {
   };
 
   const handleConfirmSubmit = async () => {
-    setValue("onSubmit",true)
+    setValue("onSubmit", true)
     const response = await createNewProject();
     console.log("Form submitted!", response);
     if (response.id) {
@@ -450,8 +452,7 @@ const NewProject = () => {
             ddInput={watch("ddName")}
             setValue={setValue}
             buhValue={watch("buhValue")} ddValue={watch("ddValue")} accountValue={watch("accountValue")} projectName={watch("projectName")}
-            viewProject={onClick}
-            disableButton={!onClick} />
+            viewProject={onClick} />
         </AccordionDetails>
       </Accordion>
       <Accordion defaultExpanded sx={{
@@ -470,7 +471,7 @@ const NewProject = () => {
               <Typography variant="body" color="white">1</Typography>
             </Avatar>
             <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
-              <EmergencyIcon style={{ fontSize: "small", color: "red" }} />
+              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
               Upload SOW
             </Typography>
           </Box>
@@ -483,12 +484,12 @@ const NewProject = () => {
             projectName={watch("projectName")}
             apiUrl={apiUrl}
             viewProject={onClick}
-            disableButton={!onClick}
+            // disableButton={!onClick}
             startDate={watch("sowStartDate")}
             endDate={watch("sowEndDate")}
             setValue={setValue}
             selectedFile={watch("sowSelectedFile")}
-            onSubmit= {watch('onSubmit')}
+            onSubmit={watch('onSubmit')}
           />
         </AccordionDetails>
       </Accordion>
@@ -520,7 +521,7 @@ const NewProject = () => {
             domainValue={watch("domainValue")}
             applicationValue={watch("applicationValue")}
             setValue={setValue}
-            disableButton={!onClick}
+            // disableButton={!onClick}
           />
         </AccordionDetails>
       </Accordion>
@@ -552,7 +553,7 @@ const NewProject = () => {
           <SectionThree
             viewProject={onClick}
             row={row}
-            disableButton={!onClick}
+            // disableButton={!onClick}
             environmentInput={watch("env")}
             cloudTechnologies={watch("cloudTechnologies")}
             enterprisePlatforms={watch("enterprisePlatforms")}
@@ -616,7 +617,7 @@ const NewProject = () => {
             // ApplicationSecurityTesting={ApplicationSecurityTesting}
             viewProject={onClick}
             row={row}
-            disableButton={!onClick}
+            // disableButton={!onClick}
             SelectManualTestingMgmt={watch("manualTestingManagementTools")}
             FunctionalandIntegration={watch("functionalIntegrationTesting")}
             PerformanceandLoadTest={watch("performanceLoadTestingTools")}
@@ -652,7 +653,7 @@ const NewProject = () => {
           <SectionFive
             viewProject={onClick}
             row={row}
-            disableButton={!onClick}
+            // disableButton={!onClick}
             AnalyticsReporting={watch("analyticsReporting")}
             SelectUserFeedbackandAnalytics={watch("userFeedbackAnalyticsTools")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionFive} />
@@ -684,7 +685,7 @@ const NewProject = () => {
           <SectionSix
             viewProject={onClick}
             row={row}
-            disableButton={!onClick}
+            // disableButton={!onClick}
             aiAndMachineLearningTechnologies={watch("aiMachineLearningTechnologies")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionSix}
           />
