@@ -67,10 +67,12 @@ export default function SectionOne(props) {
       setUploadFiles(result);
       // const details = uploadFiles && Array.isArray(uploadFiles["files"]) ? uploadFiles["files"] : [];
       // console.log(details, 'details');
-      const projectDetails = result.files.find((item) => (
+      const projectDetails = result && result.files.find((item) => (
         item["project_name"] === projectValue && item["account_name"] === accountName
       ))
       // const fileName = projectDetails ? projectDetails["filename"] : null
+      if (projectDetails) {
+      
       projectDetails["filename"] && setFileName(projectDetails["filename"])
 
       const startDate = projectDetails ? projectDetails["start_date"] : ""
@@ -78,6 +80,7 @@ export default function SectionOne(props) {
 
       setStartsowDate(startDate);
       setEndsowDate(endDate);
+      }
 
     }
     viewProjectDates();

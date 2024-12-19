@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Stack, Button, Snackbar, SnackbarContent } from "@mui/material";
+import { Box, Typography, Stack, Button, Snackbar, SnackbarContent, Switch } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { grey } from '@mui/material/colors';
 import { Avatar } from '@mui/material';
@@ -19,6 +19,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useEffect } from "react";
 import { DialogBox } from "../../components/molecules";
+import FormControlLabel from '@mui/material/FormControlLabel';
 import {
   Dialog,
   DialogContentText,
@@ -33,6 +34,7 @@ import { useUserStore } from "../../zustand";
 
 
 const NewProject = () => {
+  const [checked, setChecked] = React.useState(false);
   const location = useLocation();
   const row = location.state?.row;
   const onClick = location.state?.onClick;
@@ -181,7 +183,7 @@ const NewProject = () => {
 
   const handleOpenDialog = () => {
     const requiredFields = [
-      watch("buhValue"), watch("accountValue"), watch("ddValue"), watch("projectName").trim(),
+      watch("buhValue"), watch("accountValue"), watch("ddValue"), watch("projectName") && watch("projectName").trim(),
       watch("domainValue"), watch("applicationValue")
       // , watch("sowStartDate"), watch("sowEndDate"), watch("sowSelectedFile")
     ];
@@ -210,7 +212,8 @@ const NewProject = () => {
     setValue("errorDisplay", formattedNullValues);
 
     // Check if there are missing fields to determine dialog display
-    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || (watch("projectName").trim() === "") || (watch("projectName").trim() === null) || watch("domainValue") === null || watch("applicationValue") === null) {
+    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || (watch("projectName").trim() === "") || 
+    (watch("projectName").trim() === null) || watch("domainValue") === null || watch("applicationValue") === null) {
       //  || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile") === null) {
       setValue("errorDailogBox", true);
     } else {
@@ -277,12 +280,20 @@ const NewProject = () => {
       watch("allSelectedValues"),
       watch("allSelectedValuesFour"),
       watch("allSelectedValuesFive"),
-      watch("allSelectedValuesSix")
+      watch("allSelectedValuesSix"),
+      checked
     );
     return response;
   };
 
-  const errorMessage = `Please fill up these fields as they are mandotory: ${watch("errorDisplay")}`.replace(/,/g, ", ")
+  const errorMessage = `Please fill up these fields as they are mandotory: ${watch("errorDisplay")}`.replace(/,/g, ", ");
+
+
+  const toggleChecked = () => {
+    setChecked((prev) => !prev);
+  };
+
+
   return (
     <>
       <Snackbar
@@ -378,6 +389,11 @@ const NewProject = () => {
             View Project
           </Typography>}
         <Stack direction="row" spacing={2} alignItems="center" sx={{ marginRight: 30 }}>
+          <FormControlLabel
+            label={`${checked ? 'Active' : 'Inactive'}`}
+            control={<Switch size="small" checked={checked} defaultChecked onChange={toggleChecked} />}
+
+          />
           <Button
             variant="outlined"
             sx={{
