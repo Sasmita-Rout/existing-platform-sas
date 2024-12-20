@@ -16,64 +16,65 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
             <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
                 {/* BUH Filter */}
                 <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" gutterBottom>
+                    <Typography variant="subtitle1" gutterBottom sx={{ fontSize: 14 }}>
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />BUH
                     </Typography>
                     <Filter
                         input={buhInput}
                         onFocus='Select...'
                         onBlur={buhFilterPlaceholder}
-                        handleOnSelect={(event, newValue) => setValue("buhValue",newValue)}
+                        handleOnSelect={(event, newValue) => setValue("buhValue", newValue)}
                         selectedValues={buhValue}
                         isMultiSelect={false}
                         placeholder={buhFilterPlaceholder}
                         showIcon={false}
-                        disabled={!disableButton}
+                        // disabled={!disableButton}
                     />
                 </Box>
 
                 {/* Account Filter */}
                 <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" gutterBottom>
+                    <Typography variant="subtitle1" gutterBottom sx={{ fontSize: 14 }}>
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Account
                     </Typography>
                     <Filter
                         input={accountInput}
                         onFocus="Select..."
                         onBlur={accountFilterPlaceholder}
-                        handleOnSelect={(event, newValue) => setValue("accountValue",newValue)}
+                        handleOnSelect={(event, newValue) => setValue("accountValue", newValue)}
                         selectedValues={accountValue}
                         isMultiSelect={false}
                         placeholder={accountFilterPlaceholder}
                         showIcon={false}
-                        disabled={!disableButton}
+                        // disabled={!disableButton}
                     />
                 </Box>
 
                 {/* DD Filter */}
                 <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" gutterBottom>
+                    <Typography variant="subtitle1" gutterBottom sx={{ fontSize: 14 }}>
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />DD
                     </Typography>
                     <Filter
                         input={ddInput}
                         onFocus='Select...'
                         onBlur={ddFilterPlaceholder}
-                        handleOnSelect={(event, newValue) => setValue("ddValue",newValue)}
+                        handleOnSelect={(event, newValue) => setValue("ddValue", newValue)}
                         selectedValues={ddValue}
                         isMultiSelect={false}
                         placeholder={ddFilterPlaceholder}
-                        disabled={!disableButton}
+                        // disabled={!disableButton}
                     />
                 </Box>
 
                 {/* Project Name Filter */}
                 <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" gutterBottom>
+                    <Typography variant="subtitle1" gutterBottom sx={{ fontSize: 14 }}>
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Project Name
                     </Typography>
-                    <Box component="form" sx={{ '& > :not(style)': { m: 1, width: '360px' } }} noValidate autoComplete="off">
-                        <TextField id="outlined-basic" disabled={!disableButton} placeholder={projectFilterPlaceholder} variant="outlined" value={!viewProject?null:projectName} onChange={(e) => setValue("projectName",e.target.value)} />
+                    <Box component="form" sx={{ '& > :not(style)': { width: '360px' } }} noValidate autoComplete="off">
+                    {/* disabled={!disableButton} */}
+                        <TextField id="outlined-basic" placeholder={projectFilterPlaceholder} variant="outlined" value={!viewProject ? null : projectName} onChange={(e) => setValue("projectName", e.target.value)} />
                     </Box>
                 </Box>
             </Box>

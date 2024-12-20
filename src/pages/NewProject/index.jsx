@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Stack, Button, Snackbar, SnackbarContent } from "@mui/material";
+import { Box, Typography, Stack, Button, Snackbar, SnackbarContent, Switch } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { grey } from '@mui/material/colors';
 import { Avatar } from '@mui/material';
@@ -19,6 +19,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useEffect } from "react";
 import { DialogBox } from "../../components/molecules";
+import FormControlLabel from '@mui/material/FormControlLabel';
 import {
   Dialog,
   DialogContentText,
@@ -33,6 +34,7 @@ import { useUserStore } from "../../zustand";
 
 
 const NewProject = () => {
+  const [checked, setChecked] = React.useState(false);
   const location = useLocation();
   const row = location.state?.row;
   const onClick = location.state?.onClick;
@@ -104,7 +106,7 @@ const NewProject = () => {
       sowStartDate: null,
       sowEndDate: null,
       sowSelectedFile: null,
-      onSubmit:false
+      onSubmit: false
     }
   });
   const navigate = useNavigate();
@@ -181,8 +183,9 @@ const NewProject = () => {
 
   const handleOpenDialog = () => {
     const requiredFields = [
-      watch("buhValue"), watch("accountValue"), watch("ddValue"), watch("projectName").trim(),
-      watch("domainValue"), watch("applicationValue"), watch("sowStartDate"), watch("sowEndDate"), watch("sowSelectedFile")
+      watch("buhValue"), watch("accountValue"), watch("ddValue"), watch("projectName") && watch("projectName").trim(),
+      watch("domainValue"), watch("applicationValue")
+      // , watch("sowStartDate"), watch("sowEndDate"), watch("sowSelectedFile")
     ];
 
     const fieldNames = {
@@ -192,9 +195,9 @@ const NewProject = () => {
       projectName: "Project Name",
       domainValue: "Domain",
       applicationValue: "Application",
-      sowStartDate: "Upload SOW Start Date",
-      sowEndDate: "Upload SOW End Date",
-      sowSelectedFile: "Upload SOW Select File"
+      // sowStartDate: "Upload SOW Start Date",
+      // sowEndDate: "Upload SOW End Date",
+      // sowSelectedFile: "Upload SOW Select File"
     };
 
     // Identify missing required fields
@@ -209,7 +212,9 @@ const NewProject = () => {
     setValue("errorDisplay", formattedNullValues);
 
     // Check if there are missing fields to determine dialog display
-    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || (watch("projectName").trim() === "") || (watch("projectName").trim() === null) || watch("domainValue") === null || watch("applicationValue") === null || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile") === null) {
+    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || (watch("projectName").trim() === "") || 
+    (watch("projectName").trim() === null) || watch("domainValue") === null || watch("applicationValue") === null) {
+      //  || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile") === null) {
       setValue("errorDailogBox", true);
     } else {
       setValue("openDialog", true);
@@ -221,7 +226,7 @@ const NewProject = () => {
   };
 
   const handleConfirmSubmit = async () => {
-    setValue("onSubmit",true)
+    setValue("onSubmit", true)
     const response = await createNewProject();
     console.log("Form submitted!", response);
     if (response.id) {
@@ -275,12 +280,20 @@ const NewProject = () => {
       watch("allSelectedValues"),
       watch("allSelectedValuesFour"),
       watch("allSelectedValuesFive"),
-      watch("allSelectedValuesSix")
+      watch("allSelectedValuesSix"),
+      checked
     );
     return response;
   };
 
-  const errorMessage = `Please fill up these fields as they are mandotory: ${watch("errorDisplay")}`.replace(/,/g, ", ")
+  const errorMessage = `Please fill up these fields as they are mandotory: ${watch("errorDisplay")}`.replace(/,/g, ", ");
+
+
+  const toggleChecked = () => {
+    setChecked((prev) => !prev);
+  };
+
+
   return (
     <>
       <Snackbar
@@ -376,6 +389,11 @@ const NewProject = () => {
             View Project
           </Typography>}
         <Stack direction="row" spacing={2} alignItems="center" sx={{ marginRight: 30 }}>
+          <FormControlLabel
+            label={`${checked ? 'Active' : 'Inactive'}`}
+            control={<Switch size="small" checked={checked} defaultChecked onChange={toggleChecked} />}
+
+          />
           <Button
             variant="outlined"
             sx={{
@@ -450,8 +468,7 @@ const NewProject = () => {
             ddInput={watch("ddName")}
             setValue={setValue}
             buhValue={watch("buhValue")} ddValue={watch("ddValue")} accountValue={watch("accountValue")} projectName={watch("projectName")}
-            viewProject={onClick}
-            disableButton={!onClick} />
+            viewProject={onClick} />
         </AccordionDetails>
       </Accordion>
       <Accordion defaultExpanded sx={{
@@ -470,7 +487,7 @@ const NewProject = () => {
               <Typography variant="body" color="white">1</Typography>
             </Avatar>
             <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
-              <EmergencyIcon style={{ fontSize: "small", color: "red" }} />
+              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
               Upload SOW
             </Typography>
           </Box>
@@ -483,12 +500,12 @@ const NewProject = () => {
             projectName={watch("projectName")}
             apiUrl={apiUrl}
             viewProject={onClick}
-            disableButton={!onClick}
+            // disableButton={!onClick}
             startDate={watch("sowStartDate")}
             endDate={watch("sowEndDate")}
             setValue={setValue}
             selectedFile={watch("sowSelectedFile")}
-            onSubmit= {watch('onSubmit')}
+            onSubmit={watch('onSubmit')}
           />
         </AccordionDetails>
       </Accordion>
@@ -520,7 +537,7 @@ const NewProject = () => {
             domainValue={watch("domainValue")}
             applicationValue={watch("applicationValue")}
             setValue={setValue}
-            disableButton={!onClick}
+            // disableButton={!onClick}
           />
         </AccordionDetails>
       </Accordion>
@@ -552,7 +569,7 @@ const NewProject = () => {
           <SectionThree
             viewProject={onClick}
             row={row}
-            disableButton={!onClick}
+            // disableButton={!onClick}
             environmentInput={watch("env")}
             cloudTechnologies={watch("cloudTechnologies")}
             enterprisePlatforms={watch("enterprisePlatforms")}
@@ -616,7 +633,7 @@ const NewProject = () => {
             // ApplicationSecurityTesting={ApplicationSecurityTesting}
             viewProject={onClick}
             row={row}
-            disableButton={!onClick}
+            // disableButton={!onClick}
             SelectManualTestingMgmt={watch("manualTestingManagementTools")}
             FunctionalandIntegration={watch("functionalIntegrationTesting")}
             PerformanceandLoadTest={watch("performanceLoadTestingTools")}
@@ -652,7 +669,7 @@ const NewProject = () => {
           <SectionFive
             viewProject={onClick}
             row={row}
-            disableButton={!onClick}
+            // disableButton={!onClick}
             AnalyticsReporting={watch("analyticsReporting")}
             SelectUserFeedbackandAnalytics={watch("userFeedbackAnalyticsTools")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionFive} />
@@ -684,7 +701,7 @@ const NewProject = () => {
           <SectionSix
             viewProject={onClick}
             row={row}
-            disableButton={!onClick}
+            // disableButton={!onClick}
             aiAndMachineLearningTechnologies={watch("aiMachineLearningTechnologies")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionSix}
           />
