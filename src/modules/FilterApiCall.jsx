@@ -70,7 +70,7 @@ export const addNewProject = async (
     projectName,
     buhName,
     ddName,
-    domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix
+    domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix, checked
 
 ) => {
     const date = new Date();
@@ -122,7 +122,7 @@ export const addNewProject = async (
         ai_machine_learning_technologies: [allSelectedValuesSix.aiAndMachineLearningTechnologies].filter(Boolean),
         user_feedback_analytics_tools: [allSelectedValuesFive.SelectUserFeedbackandAnalytics].filter(Boolean),
         low_code_environments: [allSelectedValues.lowCodeEnv].filter(Boolean),
-        status: "Active" // Set the status to Active by default
+        status: checked // Set the status to Active by default
     };
 
     try {

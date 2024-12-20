@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Filter } from "../../components/molecules/Filter";
 
-const SectionFour = ({ row, viewProject,disableButton, onSelectedValuesChange, ...props }) => {
+const SectionFour = ({ row, viewProject, disableButton, onSelectedValuesChange, ...props }) => {
   const [selectedValues, setSelectedValues] = React.useState({});
   const [viewValues, setViewValues] = React.useState({});
 
@@ -38,6 +38,9 @@ const SectionFour = ({ row, viewProject,disableButton, onSelectedValuesChange, .
       <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
         {inputs.map(({ key, labels }) => (
           <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
+            <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
+              {labels}
+            </Typography>
             <Filter
               input={props[key] || []}
               onFocus="Select..."
@@ -47,7 +50,7 @@ const SectionFour = ({ row, viewProject,disableButton, onSelectedValuesChange, .
               isMultiSelect={false}
               placeholder={labels}
               showIcon={false}
-              disabled={!disableButton}
+              // disabled={!disableButton}
             />
           </Box>
         ))}
