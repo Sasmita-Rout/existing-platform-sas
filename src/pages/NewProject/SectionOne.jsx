@@ -28,23 +28,35 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export default function SectionOne(props) {
-  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, disableButton, accountValue, accountName, projectValue, onSubmit } = props
+  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, disableButton, accountValue, accountName, projectValue, onSubmit, architectureSelectedFile } = props
   const { pmoUser } = useUserStore();
   const [uploadFiles, setUploadFiles] = useState();
-  const [fileName, setFileName] = useState();
+  const [sowFileName, setsowFileName] = useState();
+  const [archFileName, setArchFileName] = useState()
   const [isFileFound, setIsFileFound] = useState(true);
+  const [isArchFileFOund, setIsArchFileFound] = useState(true)
   const [startsowDate, setStartsowDate] = useState()
   const [endsowDate, setEndsowDate] = useState()
 
-  async function uploadFile(endpoint, file) {
+  async function uploadFile(endpoint, sowFile, archFile) {
     const formData = new FormData();
-    formData.append("file", file, file.name);
+    // Append sow_file (either with a file or as empty)
+    if (sowFile) {
+      formData.append("sow_file", sowFile, sowFile.name); // With file
+    } else {
+      formData.append("sow_file", ""); // Empty field
+    }
+    // Append architecture_file (either with a file or as empty)
+    if (archFile) {
+      formData.append("architecture_file", archFile, archFile.name); // With file
+    } else {
+      formData.append("architecture_file", ""); // Empty field
+    }
 
     const config = {
       method: "POST",
       mode: "cors",
       body: formData,
-      cache: "default",
     };
 
     try {
@@ -65,21 +77,18 @@ export default function SectionOne(props) {
       const result = await getUploadSowFileDetails(apiUrl);
 
       setUploadFiles(result);
-      // const details = uploadFiles && Array.isArray(uploadFiles["files"]) ? uploadFiles["files"] : [];
-      // console.log(details, 'details');
       const projectDetails = result && result.files.find((item) => (
         item["project_name"] === projectValue && item["account_name"] === accountName
       ))
-      // const fileName = projectDetails ? projectDetails["filename"] : null
       if (projectDetails) {
-      
-      projectDetails["filename"] && setFileName(projectDetails["filename"])
+        projectDetails["sow_filename"] && setsowFileName(projectDetails["sow_filename"])
+        projectDetails["ad_filename"] && setArchFileName(projectDetails["ad_filename"])
 
-      const startDate = projectDetails ? projectDetails["start_date"] : ""
-      const endDate = projectDetails ? projectDetails["end_date"] : ""
+        const startDate = projectDetails ? projectDetails["start_date"] : ""
+        const endDate = projectDetails ? projectDetails["end_date"] : ""
 
-      setStartsowDate(startDate);
-      setEndsowDate(endDate);
+        setStartsowDate(startDate);
+        setEndsowDate(endDate);
       }
 
     }
@@ -87,54 +96,71 @@ export default function SectionOne(props) {
   }, [])
 
   const downloadFile = async () => {
-    // const result = await getUploadSowFileDetails(apiUrl)
-    // const details = result && Array.isArray(result["files"]) ? result["files"] : [];
-    // const projectDetails = details.find((item) => (
-    //   item["project_name"] === projectName && item["account_name"] === accountName
-    // ))
-    // const fileName = projectDetails ? projectDetails["filename"] : null
-
-    // const startDate = projectDetails ? projectDetails["start_date"] : ""
-    // const endDate = projectDetails ? projectDetails["end_date"] : ""
-
-    if (!fileName) {
+    if (!sowFileName) {
       setIsFileFound(false)
+      return
     }
-    if (fileName) {
-      const file = await downloadSowFile(apiUrl, fileName)
+    const file = await downloadSowFile(apiUrl, sowFileName)
 
-      const url = URL.createObjectURL(file);
+    const url = URL.createObjectURL(file);
 
-      // Trigger download
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = fileName; // Set desired file name
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    // Trigger download
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = sowFileName; // Set desired file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-      // Clean up URL
-      URL.revokeObjectURL(url);
+    // Clean up URL
+    URL.revokeObjectURL(url);
+  }
+
+  const downloadArchFile = async () => {
+    if (!archFileName) {
+      setIsArchFileFound(false)
+      return
     }
+    const file = await downloadSowFile(apiUrl, archFileName)
+
+    const url = URL.createObjectURL(file);
+
+    // Trigger download
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = archFileName; // Set desired file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Clean up URL
+    URL.revokeObjectURL(url);
   }
   useEffect(() => {
-    console.log(startDate)
-    if (startDate && endDate && accountValue && projectName && selectedFile && onSubmit) {
-
-
+    if (onSubmit) {
       const callUpload = async () => {
-        const file = selectedFile;
-        if (file[0]) {
+        const file = selectedFile ? selectedFile : null;
+        const archFile = architectureSelectedFile ? architectureSelectedFile : null;
+        const sowEnd = endDate ? (endDate).toISOString() : "";
+        const sowStart = startDate ? (startDate).toISOString() : "";
+        const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&start_date=${sowStart}&end_date=${sowEnd}&account_name=${accountValue}&project_name=${projectName}`;
+
+        if (file) {
           setValue("sowSelectedFile", file[0]); // Store file info in state
-          const sowEnd = endDate ? (endDate).toISOString() : null;
-          const sowStart = startDate ? (startDate).toISOString() : null;
-          const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&start_date=${sowStart}&end_date=${sowEnd}&account_name=${accountValue}&project_name=${projectName}`;
-          await uploadFile(url, file[0]);
+          if (architectureSelectedFile) {
+            setValue("architectureSelectedFile", archFile[0]); // Store file info in state
+
+            // await uploadFile(url, file[0], archFile[0]);
+          }
+          // await uploadFile(url, file[0], null);
         }
+        await uploadFile(url, file ? file[0] : null, archFile ? archFile[0] : null);
+
       };
+
       callUpload()
     }
-  }, [startDate, endDate, projectName, accountValue, selectedFile, onSubmit])
+  }, [onSubmit])
 
   return (
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
@@ -150,85 +176,178 @@ export default function SectionOne(props) {
       >
         {/* Browse Button Section */}
         {!viewProject ?
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              borderRadius: "5px",
-              padding: "20px",
-              gap: 1,
-              width: "60%",
-              border: `3px solid ${grey[400]}`,
-              borderStyle: "dotted",
-            }}
-          >
-            <CloudUploadOutlinedIcon
-              style={{ marginBottom: "10px", fontSize: "40px", color: `red` }}
-            />
-            <Typography style={{ marginBottom: "3px", fontSize: "15px" }}>
-              Select your file or drag and drop
-            </Typography>
-            <Typography
-              style={{
-                marginBottom: "10px",
-                fontSize: "15px",
-                color: `${grey[500]}`,
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                borderRadius: "5px",
+                padding: "20px",
+                gap: 1,
+                width: "60%",
+                border: `3px solid ${grey[400]}`,
+                borderStyle: "dotted",
               }}
             >
-              (pdf, jpg, docx accepted)
-            </Typography>
-            <Button
-              sx={{ padding: "10px", backgroundColor: "#0E5FD9" }}
-              component="label"
-              variant="contained"
-            >
-              Browse
-              <VisuallyHiddenInput
-                type="file"
-                accept=".pdf, .jpg, .jpeg, .docx"
-                onChange={(event) => setValue("sowSelectedFile", event?.target?.files)}
-                multiple
-              />
-            </Button>
-            {selectedFile && (
-              <Typography sx={{ marginTop: "10px", color: `${grey[600]}` }}>
-                Selected file: {selectedFile?.name} (
-                {(selectedFile?.size / 1024).toFixed(2)} KB)
+              <Typography style={{ fontSize: "15px", marginTop: "20px" }}>
+                UPLOAD SOW
               </Typography>
-            )}
-          </Box> :
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              borderRadius: "5px",
-              padding: "20px",
-              gap: 1,
-              width: "60%",
-              border: `3px solid ${grey[400]}`,
-              borderStyle: "dotted",
-            }}
-          >
-            <Typography style={{ fontSize: "15px", marginTop: "50px" }}>
-              Download the Uploaded File here...
-            </Typography>
-            <FileDownloadIcon />
-            <Button
-              onClick={downloadFile}
-              variant="contained">Download File</Button>
-            {!isFileFound &&
-              <>
-                <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red" }}>
-                  No File Found to Download
+              <CloudUploadOutlinedIcon
+                style={{ marginBottom: "10px", fontSize: "40px", color: `red` }}
+              />
+              <Typography style={{ marginBottom: "3px", fontSize: "15px" }}>
+                Select your file or drag and drop
+              </Typography>
+              <Typography
+                style={{
+                  marginBottom: "10px",
+                  fontSize: "15px",
+                  color: `${grey[500]}`,
+                }}
+              >
+                (pdf, jpg, docx accepted)
+              </Typography>
+              <Button
+                sx={{ padding: "10px", backgroundColor: "#0E5FD9" }}
+                component="label"
+                variant="contained"
+              >
+                Browse
+                <VisuallyHiddenInput
+                  type="file"
+                  accept=".pdf, .jpg, .jpeg, .docx"
+                  onChange={(event) => setValue("sowSelectedFile", event?.target?.files)}
+                  multiple
+                />
+              </Button>
+              {selectedFile && (
+                <Typography sx={{ marginTop: "10px", color: `${grey[600]}` }}>
+                  Selected file: {selectedFile?.name} (
+                  {(selectedFile?.size / 1024).toFixed(2)} KB)
                 </Typography>
-                <FileDownloadOffIcon />
-              </>
-            }
-          </Box>
+              )}
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                borderRadius: "5px",
+                padding: "20px",
+                gap: 1,
+                width: "60%",
+                border: `3px solid ${grey[400]}`,
+                borderStyle: "dotted",
+              }}
+            >
+              <Typography style={{ fontSize: "15px", marginTop: "20px" }}>
+                UPLOAD ARCHITECHTURE
+              </Typography>
+              <CloudUploadOutlinedIcon
+                style={{ marginBottom: "10px", fontSize: "40px", color: `red` }}
+              />
+              <Typography style={{ marginBottom: "3px", fontSize: "15px" }}>
+                Select your file or drag and drop
+              </Typography>
+              <Typography
+                style={{
+                  marginBottom: "10px",
+                  fontSize: "15px",
+                  color: `${grey[500]}`,
+                }}
+              >
+                (pdf, jpg, docx accepted)
+              </Typography>
+              <Button
+                sx={{ padding: "10px", backgroundColor: "#0E5FD9" }}
+                component="label"
+                variant="contained"
+              >
+                Browse
+                <VisuallyHiddenInput
+                  type="file"
+                  accept=".pdf, .jpg, .jpeg, .docx"
+                  onChange={(event) => setValue("architectureSelectedFile", event?.target?.files)}
+                  multiple
+                />
+              </Button>
+              {architectureSelectedFile && (
+                <Typography sx={{ marginTop: "10px", color: `${grey[600]}` }}>
+                  Selected file: {architectureSelectedFile?.name} (
+                  {(architectureSelectedFile?.size / 1024).toFixed(2)} KB)
+                </Typography>
+              )}
+            </Box>
+          </>
+          :
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                borderRadius: "5px",
+                padding: "20px",
+                gap: 1,
+                width: "60%",
+                border: `3px solid ${grey[400]}`,
+                borderStyle: "dotted",
+              }}
+            >
+              <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red", fontFamily: "bold" }}>
+                DOWNLOAD SOW
+              </Typography>
+              <Typography style={{ fontSize: "15px", marginTop: "20px" }}>
+                Download the Uploaded SOW File here...
+              </Typography>
+              <FileDownloadIcon />
+              <Button
+                onClick={downloadFile}
+                variant="contained">Download File</Button>
+              {!isFileFound &&
+                <>
+                  <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red" }}>
+                    No File Found to Download
+                  </Typography>
+                  <FileDownloadOffIcon />
+                </>
+              }
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                borderRadius: "5px",
+                padding: "20px",
+                gap: 1,
+                width: "60%",
+                border: `3px solid ${grey[400]}`,
+                borderStyle: "dotted",
+              }}
+            >
+              <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red", fontFamily: "bold" }}>
+                DOWNLOAD ARCHITECHTURE
+              </Typography>
+              <Typography style={{ fontSize: "15px", marginTop: "20px" }}>
+                Download the Uploaded Architecture File here...
+              </Typography>
+              <FileDownloadIcon />
+              <Button
+                onClick={downloadArchFile}
+                variant="contained">Download File</Button>
+              {!isArchFileFOund &&
+                <>
+                  <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red" }}>
+                    No File Found to Download
+                  </Typography>
+                  <FileDownloadOffIcon />
+                </>
+              }
+            </Box>
+          </>
         }
-
         {/* Date Pickers Section */}
         <Box
           sx={{

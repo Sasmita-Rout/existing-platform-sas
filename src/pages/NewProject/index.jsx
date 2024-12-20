@@ -106,7 +106,8 @@ const NewProject = () => {
       sowStartDate: null,
       sowEndDate: null,
       sowSelectedFile: null,
-      onSubmit: false
+      architectureSelectedFile:null,
+      onSubmit:false
     }
   });
   const navigate = useNavigate();
@@ -505,7 +506,8 @@ const NewProject = () => {
             endDate={watch("sowEndDate")}
             setValue={setValue}
             selectedFile={watch("sowSelectedFile")}
-            onSubmit={watch('onSubmit')}
+            architectureSelectedFile = {watch("architectureSelectedFile")}
+            onSubmit= {watch('onSubmit')}
           />
         </AccordionDetails>
       </Accordion>
