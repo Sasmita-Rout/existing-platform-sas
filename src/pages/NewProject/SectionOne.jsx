@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { grey } from "@mui/material/colors";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import SaveIcon from '@mui/icons-material/Save';
+import LoadingButton from '@mui/lab/LoadingButton';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
@@ -34,9 +36,11 @@ export default function SectionOne(props) {
   const [sowFileName, setsowFileName] = useState();
   const [archFileName, setArchFileName] = useState()
   const [isFileFound, setIsFileFound] = useState(true);
-  const [isArchFileFOund, setIsArchFileFound] = useState(true)
+  const [isArchFileFound, setIsArchFileFound] = useState(true)
   const [startsowDate, setStartsowDate] = useState()
   const [endsowDate, setEndsowDate] = useState()
+  const [loading, setLoading] = useState(false)
+  const [archLoading, setArchLoading] = useState(false)
 
   async function uploadFile(endpoint, sowFile, archFile) {
     const formData = new FormData();
@@ -96,8 +100,10 @@ export default function SectionOne(props) {
   }, [])
 
   const downloadFile = async () => {
+    setLoading(true)
     if (!sowFileName) {
       setIsFileFound(false)
+      setLoading(false)
       return
     }
     const file = await downloadSowFile(apiUrl, sowFileName)
@@ -114,11 +120,15 @@ export default function SectionOne(props) {
 
     // Clean up URL
     URL.revokeObjectURL(url);
+    setLoading(false)
+
   }
 
   const downloadArchFile = async () => {
+    setArchLoading(true)
     if (!archFileName) {
       setIsArchFileFound(false)
+      setArchLoading(false)
       return
     }
     const file = await downloadSowFile(apiUrl, archFileName)
@@ -135,6 +145,8 @@ export default function SectionOne(props) {
 
     // Clean up URL
     URL.revokeObjectURL(url);
+    setArchLoading(false)
+
   }
   useEffect(() => {
     if (onSubmit) {
@@ -302,9 +314,12 @@ export default function SectionOne(props) {
                 Download the Uploaded SOW File here...
               </Typography>
               <FileDownloadIcon />
-              <Button
+              <LoadingButton
+                loading={loading}
+                loadingPosition="start"
+                startIcon={<SaveIcon />}
                 onClick={downloadFile}
-                variant="contained">Download File</Button>
+                variant="contained">Download File</LoadingButton>
               {!isFileFound &&
                 <>
                   <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red" }}>
@@ -334,10 +349,13 @@ export default function SectionOne(props) {
                 Download the Uploaded Architecture File here...
               </Typography>
               <FileDownloadIcon />
-              <Button
+              <LoadingButton
+                loading={archLoading}
+                loadingPosition="start"
+                startIcon={<SaveIcon />}
                 onClick={downloadArchFile}
-                variant="contained">Download File</Button>
-              {!isArchFileFOund &&
+                variant="contained">Download File</LoadingButton>
+              {!isArchFileFound &&
                 <>
                   <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red" }}>
                     No File Found to Download

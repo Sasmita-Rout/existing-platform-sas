@@ -63,6 +63,11 @@ const PlatformProject = () => {
   const [boxData, setBoxData] = useState({});
   const [handleOptions, setHandleOptions] = useState([]);
   const [pageChangeValues, setPageChangeValues] = useState({ page: 1, pageSize: null })
+  const [accountNameCount, setAccountNameCount] = useState()
+  const [applicationClassCount, setApplicationClassCount] = useState()
+  const [domainCount, setDomainCount] = useState()
+  const [projectNameCount, setProjectNameCount] = useState()
+  const [advanceSearch, setAdvanceSearch] = useState(false)
 
   useEffect(() => {
     setState({
@@ -268,6 +273,14 @@ const PlatformProject = () => {
             null,
             "GET"
           );
+          if (response) {
+            setAccountNameCount(response["account_name_count"])
+            setApplicationClassCount(response["application_class_count"])
+            setDomainCount(response["domains_count"])
+            setProjectNameCount(response["project_name_count"])
+            setAdvanceSearch(true)
+
+          }
           if (response.records !== 0) {
             const updatedData = response.records.map((item, index) => ({
               ...item,
@@ -294,6 +307,8 @@ const PlatformProject = () => {
           const pages = pageChangeValues.page > 0 ? pageChangeValues.page : 1;
           const page_size = !!pageChangeValues.pageSize ? pageChangeValues.pageSize : 10;
           const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=${pages}&page_size=${page_size}`, null, "GET");
+          setAdvanceSearch(false)
+
           const updatedData = response.records.map((item, index) => ({
             ...item,
             id: index,
@@ -329,28 +344,28 @@ const PlatformProject = () => {
     {
       id: 0,
       title: "Total Accounts",
-      titleNum: boxData?.account_name_count || 0,
+      titleNum: advanceSearch ? accountNameCount : boxData?.account_name_count || 0,
       percent: "",
       color: "#0FAF62",
     },
     {
       id: 1,
       title: "Total Projects",
-      titleNum: boxData?.project_name_count || 0,
+      titleNum: advanceSearch ? projectNameCount : boxData?.project_name_count || 0,
       percent: "",
       color: "#FF9500",
     },
     {
       id: 2,
       title: "Domains",
-      titleNum: boxData?.domains_count || 0,
+      titleNum: advanceSearch ? domainCount : boxData?.domains_count || 0,
       percent: "",
       color: "#01A4C9",
     },
     {
       id: 3,
       title: "Applications Class",
-      titleNum: boxData?.application_class_count || 0,
+      titleNum: advanceSearch ? applicationClassCount : boxData?.application_class_count || 0,
       percent: "",
       color: "#BA3838",
     },
