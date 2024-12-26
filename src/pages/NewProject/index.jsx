@@ -28,7 +28,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useLocation } from 'react-router-dom';
-import { fetchFilterData, fetchColumnData, columnValues, addNewProject } from "../../modules/FilterApiCall"
+import { fetchFilterData, fetchColumnData, columnValues, addNewProject, updateProject } from "../../modules/FilterApiCall"
 import apiUrlConfig from "../../config/apiUrlConfig";
 import { useUserStore } from "../../zustand";
 
@@ -37,6 +37,7 @@ const NewProject = () => {
   const [checked, setChecked] = React.useState(false);
   const location = useLocation();
   const row = location.state?.row;
+  console.log(row, 'row')
   const onClick = location.state?.onClick;
   const projectName = row ? row["project_name"] : null
   const accountName = row ? row["account_name"] : null
@@ -161,6 +162,8 @@ const NewProject = () => {
       setValue("projectName", row["project_name"])
       setValue("domainValue", row["domains"])
       setValue("applicationValue", row["application_class"])
+      setChecked(row.status);
+      console.log(row.status, 'status');
 
     }
   }, [onClick]);
@@ -258,6 +261,8 @@ const NewProject = () => {
   }, []);
 
   useEffect(() => {
+    // setChecked(row.status);
+    console.log(row.status, 'status');
     const fetchDropdownData = async () => {
       const responseData = await fetchColumnData(apiUrl, setValue);
       responseData.map(async (data) => {
@@ -271,6 +276,24 @@ const NewProject = () => {
   }, []);
   const createNewProject = async () => {
     const response = await addNewProject(
+      pmoUser,
+      watch("accountValue"),
+      watch("projectName").trim(),
+      watch("buhValue"),
+      watch("ddValue"),
+      watch("domainValue"),
+      watch("applicationValue"),
+      watch("allSelectedValues"),
+      watch("allSelectedValuesFour"),
+      watch("allSelectedValuesFive"),
+      watch("allSelectedValuesSix"),
+      checked
+    );
+    return response;
+  };
+
+  const updateCurrentProject = async () => {
+    const response = await updateProject(
       pmoUser,
       watch("accountValue"),
       watch("projectName").trim(),
@@ -387,13 +410,12 @@ const NewProject = () => {
             New Project
           </Typography>
           : <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-            View Project
+            Edit Project
           </Typography>}
         <Stack direction="row" spacing={2} alignItems="center" sx={{ marginRight: 30 }}>
           <FormControlLabel
             label={`${checked ? 'Active' : 'Inactive'}`}
             control={<Switch size="small" checked={checked} defaultChecked onChange={toggleChecked} />}
-
           />
           <Button
             variant="outlined"
@@ -410,14 +432,20 @@ const NewProject = () => {
           >
             Cancel
           </Button>
-          {!onClick &&
+          {!onClick ?
             <Button
               variant="contained"
               sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
               onClick={handleOpenDialog}
             >
               Submit
-            </Button>}
+            </Button>: 
+            <Button variant="contained"
+            sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
+            onClick={updateCurrentProject}
+          >
+            Update</Button>
+            }
         </Stack>
       </Stack>
       <Dialog
