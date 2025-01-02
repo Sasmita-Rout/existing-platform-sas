@@ -149,7 +149,9 @@ export default function SectionOne(props) {
 
   }
   useEffect(() => {
-    if (onSubmit) {
+    if (startDate && endDate && accountValue && projectName && selectedFile && onSubmit) {
+
+
       const callUpload = async () => {
         const file = selectedFile ? selectedFile : null;
         const archFile = architectureSelectedFile ? architectureSelectedFile : null;
