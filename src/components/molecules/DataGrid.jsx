@@ -16,7 +16,7 @@ const DataGrid = ({
   paginationModelChange
 }) => {
   const [tablePageSize, setPageSize] = useState(pageSize);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const [paginationModel, setPaginationModel] = useState({
     page: currentPage,
