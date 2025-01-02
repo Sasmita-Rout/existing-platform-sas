@@ -86,12 +86,6 @@ export default function SectionOne(props) {
       ))
       if (projectDetails && projectDetails["sow_filename"]) {
         setsowFileName(projectDetails["sow_filename"])
-
-        const startDate = projectDetails ? projectDetails["start_date"] : ""
-        const endDate = projectDetails ? projectDetails["end_date"] : ""
-
-        setStartsowDate(startDate);
-        setEndsowDate(endDate);
       } else {
         setIsFileFound(false)
       }
@@ -100,6 +94,11 @@ export default function SectionOne(props) {
       } else {
         setIsArchFileFound(false)
       }
+      const startDate = projectDetails ? projectDetails["start_date"] : ""
+      const endDate = projectDetails ? projectDetails["end_date"] : ""
+
+      setStartsowDate(startDate);
+      setEndsowDate(endDate);
     }
     viewProjectDates();
   }, [])
