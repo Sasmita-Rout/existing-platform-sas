@@ -33,8 +33,8 @@ export default function SectionOne(props) {
   const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, disableButton, accountValue, accountName, projectValue, onSubmit, architectureSelectedFile } = props
   const { pmoUser } = useUserStore();
   const [uploadFiles, setUploadFiles] = useState();
-  const [sowFileName, setsowFileName] = useState();
-  const [archFileName, setArchFileName] = useState()
+  const [sowFileName, setsowFileName] = useState(null);
+  const [archFileName, setArchFileName] = useState(null)
   const [isFileFound, setIsFileFound] = useState(true);
   const [isArchFileFound, setIsArchFileFound] = useState(true)
   const [startsowDate, setStartsowDate] = useState()
@@ -84,25 +84,30 @@ export default function SectionOne(props) {
       const projectDetails = result && result.files.find((item) => (
         item["project_name"] === projectValue && item["account_name"] === accountName
       ))
-      if (projectDetails) {
-        projectDetails["sow_filename"] && setsowFileName(projectDetails["sow_filename"])
-        projectDetails["ad_filename"] && setArchFileName(projectDetails["ad_filename"])
+      if (projectDetails && projectDetails["sow_filename"]) {
+        setsowFileName(projectDetails["sow_filename"])
 
         const startDate = projectDetails ? projectDetails["start_date"] : ""
         const endDate = projectDetails ? projectDetails["end_date"] : ""
 
         setStartsowDate(startDate);
         setEndsowDate(endDate);
+      } else {
+        setIsFileFound(false)
       }
-
+      if (projectDetails["ad_filename"] && projectDetails["ad_filename"]) {
+        setArchFileName(projectDetails["ad_filename"])
+      } else {
+        setIsArchFileFound(false)
+      }
     }
     viewProjectDates();
   }, [])
 
   const downloadFile = async () => {
     setLoading(true)
-    if (!sowFileName) {
-      setIsFileFound(false)
+    if (sowFileName === null) {
+      // setIsFileFound(false)
       setLoading(false)
       return
     }
@@ -126,8 +131,7 @@ export default function SectionOne(props) {
 
   const downloadArchFile = async () => {
     setArchLoading(true)
-    if (!archFileName) {
-      setIsArchFileFound(false)
+    if (archFileName === null) {
       setArchLoading(false)
       return
     }

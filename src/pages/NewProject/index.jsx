@@ -262,7 +262,7 @@ const NewProject = () => {
 
   useEffect(() => {
     // setChecked(row.status);
-    console.log(row.status, 'status');
+    // console.log(row.status, 'status');
     const fetchDropdownData = async () => {
       const responseData = await fetchColumnData(apiUrl, setValue);
       responseData.map(async (data) => {
