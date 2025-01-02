@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Stack, Button, Snackbar, SnackbarContent } from "@mui/material";
+import { Box, Typography, Stack, Button, Snackbar, SnackbarContent, Switch } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { grey } from '@mui/material/colors';
 import { Avatar } from '@mui/material';
@@ -19,6 +19,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useEffect } from "react";
 import { DialogBox } from "../../components/molecules";
+import FormControlLabel from '@mui/material/FormControlLabel';
 import {
   Dialog,
   DialogContentText,
@@ -27,15 +28,19 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useLocation } from 'react-router-dom';
-import { fetchFilterData, fetchColumnData, columnValues, addNewProject } from "../../modules/FilterApiCall"
+import { fetchFilterData, fetchColumnData, columnValues, addNewProject, updateProject } from "../../modules/FilterApiCall"
 import apiUrlConfig from "../../config/apiUrlConfig";
 import { useUserStore } from "../../zustand";
 
 
 const NewProject = () => {
+  const [checked, setChecked] = React.useState(false);
   const location = useLocation();
   const row = location.state?.row;
+  console.log(row, 'row')
   const onClick = location.state?.onClick;
+  const projectName = row ? row["project_name"] : null
+  const accountName = row ? row["account_name"] : null
   const {
     setValue,
     watch
@@ -102,6 +107,8 @@ const NewProject = () => {
       sowStartDate: null,
       sowEndDate: null,
       sowSelectedFile: null,
+      architectureSelectedFile:null,
+      onSubmit:false
     }
   });
   const navigate = useNavigate();
@@ -149,13 +156,14 @@ const NewProject = () => {
   };
   useEffect(() => {
     if (onClick) {
-      console.log("Setting values", row);
       setValue("accountValue", row["account_name"]);
       setValue("buhValue", row["buh_name"]);
       setValue("ddValue", row["dd_name"]);
       setValue("projectName", row["project_name"])
       setValue("domainValue", row["domains"])
       setValue("applicationValue", row["application_class"])
+      setChecked(row.status);
+      console.log(row.status, 'status');
 
     }
   }, [onClick]);
@@ -179,8 +187,9 @@ const NewProject = () => {
 
   const handleOpenDialog = () => {
     const requiredFields = [
-      watch("buhValue"), watch("accountValue"), watch("ddValue"), watch("projectName").trim(),
-      watch("domainValue"), watch("applicationValue"), watch("sowStartDate"), watch("sowEndDate"), watch("sowSelectedFile")
+      watch("buhValue"), watch("accountValue"), watch("ddValue"), watch("projectName") && watch("projectName").trim(),
+      watch("domainValue"), watch("applicationValue")
+      // , watch("sowStartDate"), watch("sowEndDate"), watch("sowSelectedFile")
     ];
 
     const fieldNames = {
@@ -190,9 +199,9 @@ const NewProject = () => {
       projectName: "Project Name",
       domainValue: "Domain",
       applicationValue: "Application",
-      sowStartDate: "Upload SOW Start Date",
-      sowEndDate: "Upload SOW End Date",
-      sowSelectedFile: "Upload SOW Select File"
+      // sowStartDate: "Upload SOW Start Date",
+      // sowEndDate: "Upload SOW End Date",
+      // sowSelectedFile: "Upload SOW Select File"
     };
 
     // Identify missing required fields
@@ -207,7 +216,9 @@ const NewProject = () => {
     setValue("errorDisplay", formattedNullValues);
 
     // Check if there are missing fields to determine dialog display
-    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || (watch("projectName").trim() === "") || (watch("projectName").trim() === null) || watch("domainValue") === null || watch("applicationValue") === null || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile") === null) {
+    if (watch("buhValue") === null || watch("accountValue") === null || watch("ddValue") === null || (watch("projectName").trim() === "") || 
+    (watch("projectName").trim() === null) || watch("domainValue") === null || watch("applicationValue") === null) {
+      //  || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile") === null) {
       setValue("errorDailogBox", true);
     } else {
       setValue("openDialog", true);
@@ -219,6 +230,7 @@ const NewProject = () => {
   };
 
   const handleConfirmSubmit = async () => {
+    setValue("onSubmit", true)
     const response = await createNewProject();
     console.log("Form submitted!", response);
     if (response.id) {
@@ -249,6 +261,8 @@ const NewProject = () => {
   }, []);
 
   useEffect(() => {
+    // setChecked(row.status);
+    console.log(row.status, 'status');
     const fetchDropdownData = async () => {
       const responseData = await fetchColumnData(apiUrl, setValue);
       responseData.map(async (data) => {
@@ -272,12 +286,38 @@ const NewProject = () => {
       watch("allSelectedValues"),
       watch("allSelectedValuesFour"),
       watch("allSelectedValuesFive"),
-      watch("allSelectedValuesSix")
+      watch("allSelectedValuesSix"),
+      checked
     );
     return response;
   };
 
-  const errorMessage = `Please fill up these fields as they are mandotory: ${watch("errorDisplay")}`.replace(/,/g, ", ")
+  const updateCurrentProject = async () => {
+    const response = await updateProject(
+      pmoUser,
+      watch("accountValue"),
+      watch("projectName").trim(),
+      watch("buhValue"),
+      watch("ddValue"),
+      watch("domainValue"),
+      watch("applicationValue"),
+      watch("allSelectedValues"),
+      watch("allSelectedValuesFour"),
+      watch("allSelectedValuesFive"),
+      watch("allSelectedValuesSix"),
+      checked
+    );
+    return response;
+  };
+
+  const errorMessage = `Please fill up these fields as they are mandotory: ${watch("errorDisplay")}`.replace(/,/g, ", ");
+
+
+  const toggleChecked = () => {
+    setChecked((prev) => !prev);
+  };
+
+
   return (
     <>
       <Snackbar
@@ -370,9 +410,13 @@ const NewProject = () => {
             New Project
           </Typography>
           : <Typography ml={1} variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-            View Project
+            Edit Project
           </Typography>}
         <Stack direction="row" spacing={2} alignItems="center" sx={{ marginRight: 30 }}>
+          <FormControlLabel
+            label={`${checked ? 'Active' : 'Inactive'}`}
+            control={<Switch size="small" checked={checked} defaultChecked onChange={toggleChecked} />}
+          />
           <Button
             variant="outlined"
             sx={{
@@ -388,14 +432,20 @@ const NewProject = () => {
           >
             Cancel
           </Button>
-          {!onClick &&
+          {!onClick ?
             <Button
               variant="contained"
               sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
               onClick={handleOpenDialog}
             >
               Submit
-            </Button>}
+            </Button>: 
+            <Button variant="contained"
+            sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
+            onClick={updateCurrentProject}
+          >
+            Update</Button>
+            }
         </Stack>
       </Stack>
       <Dialog
@@ -466,17 +516,26 @@ const NewProject = () => {
               <Typography variant="body" color="white">1</Typography>
             </Avatar>
             <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold', color: `${grey[600]}` }}>
-              <EmergencyIcon style={{ fontSize: "small", color: "red" }} />
+              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
               Upload SOW
             </Typography>
           </Box>
         </AccordionSummary>
         <AccordionDetails>
           <SectionOne
+            projectValue={projectName}
+            accountValue={watch("accountValue")}
+            accountName={accountName}
+            projectName={watch("projectName")}
+            apiUrl={apiUrl}
+            viewProject={onClick}
+            // disableButton={!onClick}
             startDate={watch("sowStartDate")}
             endDate={watch("sowEndDate")}
             setValue={setValue}
             selectedFile={watch("sowSelectedFile")}
+            architectureSelectedFile = {watch("architectureSelectedFile")}
+            onSubmit= {watch('onSubmit')}
           />
         </AccordionDetails>
       </Accordion>
@@ -508,6 +567,7 @@ const NewProject = () => {
             domainValue={watch("domainValue")}
             applicationValue={watch("applicationValue")}
             setValue={setValue}
+            // disableButton={!onClick}
           />
         </AccordionDetails>
       </Accordion>
@@ -539,6 +599,7 @@ const NewProject = () => {
           <SectionThree
             viewProject={onClick}
             row={row}
+            // disableButton={!onClick}
             environmentInput={watch("env")}
             cloudTechnologies={watch("cloudTechnologies")}
             enterprisePlatforms={watch("enterprisePlatforms")}
@@ -602,6 +663,7 @@ const NewProject = () => {
             // ApplicationSecurityTesting={ApplicationSecurityTesting}
             viewProject={onClick}
             row={row}
+            // disableButton={!onClick}
             SelectManualTestingMgmt={watch("manualTestingManagementTools")}
             FunctionalandIntegration={watch("functionalIntegrationTesting")}
             PerformanceandLoadTest={watch("performanceLoadTestingTools")}
@@ -637,6 +699,7 @@ const NewProject = () => {
           <SectionFive
             viewProject={onClick}
             row={row}
+            // disableButton={!onClick}
             AnalyticsReporting={watch("analyticsReporting")}
             SelectUserFeedbackandAnalytics={watch("userFeedbackAnalyticsTools")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionFive} />
@@ -668,6 +731,7 @@ const NewProject = () => {
           <SectionSix
             viewProject={onClick}
             row={row}
+            // disableButton={!onClick}
             aiAndMachineLearningTechnologies={watch("aiMachineLearningTechnologies")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionSix}
           />

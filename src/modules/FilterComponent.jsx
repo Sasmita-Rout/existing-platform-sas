@@ -22,7 +22,15 @@ export default function FilterComponent({ technologyInput, onValuesChange }) {
     if (!selectedValue) {
       setLanguageDropdown([]);
     }
-    const languageResponse = await columnValues(apiUrl, selectedValue)
+    const toSnakeCase = (str) => {
+      return str
+        .replace(/([a-z])([A-Z])/g, '$1_$2') // Insert underscores between lowercase and uppercase letters
+        .replace(/\s+/g, '_') // Replace spaces with underscores
+        .toLowerCase(); // Convert everything to lowercase
+    };
+    
+    const formattedSelectedValue = toSnakeCase(selectedValue); 
+    const languageResponse = await columnValues(apiUrl, formattedSelectedValue)
 
     setLanguageDropdown(languageResponse);
   };

@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import EmergencyIcon from '@mui/icons-material/Emergency';
 
 export default function SectionTwo(props) {
-    const { domainInput, applicationInput, domainValue , applicationValue, setValue } = props
+    const { domainInput, applicationInput, domainValue, applicationValue, setValue, disableButton } = props
 
     const domainPlaceholder = 'Select Domain';
     const applicationClassPlaceholder = 'Feature Enhancements, New Production';
@@ -14,7 +14,7 @@ export default function SectionTwo(props) {
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
             <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
                 <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" gutterBottom>
+                    <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Domain
                     </Typography>
                     <Filter
@@ -26,11 +26,12 @@ export default function SectionTwo(props) {
                         isMultiSelect={false}
                         placeholder={domainPlaceholder}
                         showIcon={false}
+                        // disabled={!disableButton}
                     />
                 </Box>
 
                 <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" gutterBottom>
+                    <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Application Class
                     </Typography>
                     <Filter
@@ -42,6 +43,7 @@ export default function SectionTwo(props) {
                         isMultiSelect={false}
                         placeholder={applicationClassPlaceholder}
                         showIcon={false}
+                        // disabled={!disableButton}
                     />
                 </Box>
             </Box>
