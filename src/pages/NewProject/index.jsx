@@ -37,7 +37,6 @@ const NewProject = () => {
   const [checked, setChecked] = React.useState(false);
   const location = useLocation();
   const row = location.state?.row;
-  console.log(row, 'row')
   const onClick = location.state?.onClick;
   const projectName = row ? row["project_name"] : null
   const accountName = row ? row["account_name"] : null
@@ -163,7 +162,6 @@ const NewProject = () => {
       setValue("domainValue", row["domains"])
       setValue("applicationValue", row["application_class"])
       setChecked(row.status);
-      console.log(row.status, 'status');
 
     }
   }, [onClick]);
@@ -262,7 +260,6 @@ const NewProject = () => {
 
   useEffect(() => {
     // setChecked(row.status);
-    // console.log(row.status, 'status');
     const fetchDropdownData = async () => {
       const responseData = await fetchColumnData(apiUrl, setValue);
       responseData.map(async (data) => {
