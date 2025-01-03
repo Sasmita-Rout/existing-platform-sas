@@ -12,7 +12,7 @@ import {
   fetchRecords,
 } from "../../components/apiServices/index";
 import apiUrlConfig from "../../config/apiUrlConfig";
-import { fetchFilterData, fetchColumnData } from "../../modules/FilterApiCall"
+import { fetchFilterData, fetchColumnData } from "../../modules/FilterApiCall";
 import { RequestErrorLoader } from "../../components/organism";
 
 const PlatformProject = () => {
@@ -24,19 +24,16 @@ const PlatformProject = () => {
   const { apiUrl } = apiUrlConfig;
 
   const [openPlatFormReport, setPlatFormReport] = useState(false);
-  const {
-    setValue,
-    watch
-  } = useForm({
+  const { setValue, watch } = useForm({
     defaultValues: {
       accountName: [],
       buhName: [],
       ddName: [],
       projectName: [],
       loader: false,
-      technologyData: []
-    }
-  })
+      technologyData: [],
+    },
+  });
 
   const [buhSelected, setBuhSelected] = useState(null);
   const [accountSelected, setAccountSelected] = useState(null);
@@ -49,7 +46,7 @@ const PlatformProject = () => {
       dd_name: "",
       project_name: "",
       account_name: "",
-      loader: ""
+      loader: "",
     },
     keywords: "",
   });
@@ -58,16 +55,19 @@ const PlatformProject = () => {
     total_pages: null,
     total_records: null,
     current_page: null,
-    page_size: 10
+    page_size: 10,
   });
   const [boxData, setBoxData] = useState({});
   const [handleOptions, setHandleOptions] = useState([]);
-  const [pageChangeValues, setPageChangeValues] = useState({ page: 1, pageSize: null })
-  const [accountNameCount, setAccountNameCount] = useState()
-  const [applicationClassCount, setApplicationClassCount] = useState()
-  const [domainCount, setDomainCount] = useState()
-  const [projectNameCount, setProjectNameCount] = useState()
-  const [advanceSearch, setAdvanceSearch] = useState(false)
+  const [pageChangeValues, setPageChangeValues] = useState({
+    page: 1,
+    pageSize: null,
+  });
+  const [accountNameCount, setAccountNameCount] = useState();
+  const [applicationClassCount, setApplicationClassCount] = useState();
+  const [domainCount, setDomainCount] = useState();
+  const [projectNameCount, setProjectNameCount] = useState();
+  const [advanceSearch, setAdvanceSearch] = useState(false);
 
   useEffect(() => {
     setState({
@@ -96,7 +96,7 @@ const PlatformProject = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      watch("loader", true)
+      watch("loader", true);
 
       try {
         const promises = typeOfDropdown.map(async (filterName) => {
@@ -122,14 +122,13 @@ const PlatformProject = () => {
           }
         });
 
-        watch("loader", false)
-
+        watch("loader", false);
       } catch (error) {
         console.error("Error fetching data:", error);
-        watch("loader", false)
+        watch("loader", false);
       }
     };
-    watch("loader", true)
+    watch("loader", true);
     fetchFilterData(apiUrl, typeOfDropdown, setValue);
   }, []);
 
@@ -144,9 +143,12 @@ const PlatformProject = () => {
           // Convert to normal case
           const toNormalCase = (str) => {
             return str
-              .split('_')
-              .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-              .join(' ');
+              .split("_")
+              .map(
+                (word) =>
+                  word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+              )
+              .join(" ");
           };
 
           const normalCaseList = data.map(toNormalCase);
@@ -197,7 +199,9 @@ const PlatformProject = () => {
             sx={{ padding: 0 }}
             aria-label="edit"
             onClick={() => {
-              navigate("/PlatformProject/NewProject", { state: { row: i.row, onClick: true } });
+              navigate("/PlatformProject/NewProject", {
+                state: { row: i.row, onClick: true },
+              });
             }}
           >
             <Visibility />
@@ -229,7 +233,12 @@ const PlatformProject = () => {
   const handleSelectedValues = async (values) => {
     if (values === null) {
       setHandleOptions([]);
-      const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=1&page_size=10`, null, "GET");
+      const response = await createUpdateRecord(
+        null,
+        `platform_data/search_advanced?keywords=n&page=1&page_size=10`,
+        null,
+        "GET"
+      );
       const updatedData = response.records.map((item, index) => ({
         ...item,
         id: index,
@@ -239,8 +248,8 @@ const PlatformProject = () => {
         total_pages: response.total_pages,
         total_records: response.total_records,
         current_page: response.current_page,
-        page_size: 10
-      })
+        page_size: 10,
+      });
     } else setHandleOptions(() => values);
   };
 
@@ -265,7 +274,9 @@ const PlatformProject = () => {
             ...(state.filters.dd_name && { dd_name: state.filters.dd_name }),
             ...(keywords && { keywords }),
             page: pageChangeValues.page > 0 ? pageChangeValues.page : 1,
-            page_size: !!pageChangeValues.pageSize ? pageChangeValues.pageSize : 10,
+            page_size: !!pageChangeValues.pageSize
+              ? pageChangeValues.pageSize
+              : 10,
           });
           const response = await createUpdateRecord(
             null,
@@ -274,12 +285,11 @@ const PlatformProject = () => {
             "GET"
           );
           if (response) {
-            setAccountNameCount(response["account_name_count"])
-            setApplicationClassCount(response["application_class_count"])
-            setDomainCount(response["domains_count"])
-            setProjectNameCount(response["project_name_count"])
-            setAdvanceSearch(true)
-
+            setAccountNameCount(response["account_name_count"]);
+            setApplicationClassCount(response["application_class_count"]);
+            setDomainCount(response["domains_count"]);
+            setProjectNameCount(response["project_name_count"]);
+            setAdvanceSearch(true);
           }
           if (response.records !== 0) {
             const updatedData = response.records.map((item, index) => ({
@@ -292,22 +302,29 @@ const PlatformProject = () => {
               total_pages: response.total_pages,
               total_records: response.total_records,
               current_page: response.current_page,
-              page_size: 10
-            })
+              page_size: 10,
+            });
           } else {
             setTableData({
               records: 0,
               total_pages: 0,
               total_records: 0,
               current_page: 0,
-              page_size: 10
-            })
+              page_size: 10,
+            });
           }
         } else {
           const pages = pageChangeValues.page > 0 ? pageChangeValues.page : 1;
-          const page_size = !!pageChangeValues.pageSize ? pageChangeValues.pageSize : 10;
-          const response = await createUpdateRecord(null, `platform_data/search_advanced?keywords=n&page=${pages}&page_size=${page_size}`, null, "GET");
-          setAdvanceSearch(false)
+          const page_size = !!pageChangeValues.pageSize
+            ? pageChangeValues.pageSize
+            : 10;
+          const response = await createUpdateRecord(
+            null,
+            `platform_data/search_advanced?keywords=n&page=${pages}&page_size=${page_size}`,
+            null,
+            "GET"
+          );
+          setAdvanceSearch(false);
 
           const updatedData = response.records.map((item, index) => ({
             ...item,
@@ -319,8 +336,8 @@ const PlatformProject = () => {
             total_pages: response.total_pages,
             total_records: response.total_records,
             current_page: response.current_page,
-            page_size: 10
-          })
+            page_size: 10,
+          });
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -330,11 +347,11 @@ const PlatformProject = () => {
     fetchUpdateTable();
   }, [state, pageChangeValues]);
 
-
   const onPageChange = async (values) => {
+    const adjustedPage = values.page + 1;
     setPageChangeValues((prev) => {
-      if (prev.page !== values.page || prev.pageSize !== values.pageSize) {
-        return { page: values.page, pageSize: values.pageSize };
+      if (prev.page !== adjustedPage || prev.pageSize !== values.pageSize) {
+        return { page: adjustedPage, pageSize: values.pageSize };
       }
       return prev;
     });
@@ -344,14 +361,18 @@ const PlatformProject = () => {
     {
       id: 0,
       title: "Total Accounts",
-      titleNum: advanceSearch ? accountNameCount : boxData?.account_name_count || 0,
+      titleNum: advanceSearch
+        ? accountNameCount
+        : boxData?.account_name_count || 0,
       percent: "",
       color: "#0FAF62",
     },
     {
       id: 1,
       title: "Total Projects",
-      titleNum: advanceSearch ? projectNameCount : boxData?.project_name_count || 0,
+      titleNum: advanceSearch
+        ? projectNameCount
+        : boxData?.project_name_count || 0,
       percent: "",
       color: "#FF9500",
     },
@@ -365,7 +386,9 @@ const PlatformProject = () => {
     {
       id: 3,
       title: "Applications Class",
-      titleNum: advanceSearch ? applicationClassCount : boxData?.application_class_count || 0,
+      titleNum: advanceSearch
+        ? applicationClassCount
+        : boxData?.application_class_count || 0,
       percent: "",
       color: "#BA3838",
     },
