@@ -135,6 +135,7 @@ export const addNewProject = async (
 
 
 export const updateProject = async (
+    id,
     pmoUser,
     accountName,
     projectName,
@@ -147,7 +148,7 @@ export const updateProject = async (
 
     const formattedDateTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T` +
         `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
-    const url = `platform_data/update_data/`;
+    const url = `platform_data/update_project/${id}`;
     const data = {
         submitter_email_id: pmoUser["email"],
         submitting_time: formattedDateTime,
@@ -156,6 +157,21 @@ export const updateProject = async (
         buh_name: buhName || "",
         dd_name: ddName || "",
         domains: [domainValue] || [], // Ensure it's an array
+        alerting_tools: [],
+        analytics_reporting: [],
+        api_testing_tools: [],
+        architecture_methodology: [],
+        behavioral_testing_tools: [],
+        cicd_tools: [],
+        containerization_orchestration: [],
+        cybersecurity_technologies: [],
+        dependency_analysis: [],
+        deployment_methodologies: [],
+        design_patterns: [],
+        development_maturity_assessment: [],
+        headless_cms: [],
+        serverless_computing: [],
+        software_composition_analysis: [],
         application_class: [applicationValue] || [],
         environment: [allSelectedValues.environmentInput].filter(Boolean), // Filter out falsy values
         cloud_technologies: [allSelectedValues.cloudTechnologies].filter(Boolean),

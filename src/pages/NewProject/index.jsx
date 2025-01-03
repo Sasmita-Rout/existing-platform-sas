@@ -294,6 +294,7 @@ const NewProject = () => {
 
   const updateCurrentProject = async () => {
     const response = await updateProject(
+      row.id,
       pmoUser,
       watch("accountValue"),
       watch("projectName").trim(),

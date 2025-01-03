@@ -45,7 +45,7 @@ const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, 
               onBlur={labels}
               handleOnSelect={(event, newValue) => handleSelect(key, newValue)}
               // selectedValues={selectedValues[key]}
-              selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
+              selectedValues={viewProject ? viewValues[key] ? selectedValues[key] : selectedValues[key] : viewValues[key] }
               isMultiSelect={false}
               placeholder={labels}
               showIcon={false}

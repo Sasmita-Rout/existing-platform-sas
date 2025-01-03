@@ -79,7 +79,7 @@ export default function SectionThree({ row, viewProject, disableButton, onSelect
                             handleOnSelect={(event, newValue) =>
                                 handleSelect(key, newValue)
                             }
-                            selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
+                            selectedValues={viewProject ? viewValues[key] ? selectedValues[key] : selectedValues[key] : viewValues[key] }
                             isMultiSelect={false}
                             placeholder={labels}
                             showIcon={false}

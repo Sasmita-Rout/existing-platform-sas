@@ -241,7 +241,6 @@ const PlatformProject = () => {
       );
       const updatedData = response.records.map((item, index) => ({
         ...item,
-        id: index,
       }));
       setTableData({
         records: updatedData,
@@ -294,7 +293,6 @@ const PlatformProject = () => {
           if (response.records !== 0) {
             const updatedData = response.records.map((item, index) => ({
               ...item,
-              id: index,
             }));
 
             setTableData({
@@ -328,7 +326,6 @@ const PlatformProject = () => {
 
           const updatedData = response.records.map((item, index) => ({
             ...item,
-            id: index,
           }));
 
           setTableData({
