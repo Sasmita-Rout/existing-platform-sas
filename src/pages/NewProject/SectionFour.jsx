@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Box, Typography } from "@mui/material";
 import { Filter } from "../../components/molecules/Filter";
 
-const SectionFour = ({ row, viewProject, disableButton, onSelectedValuesChange, ...props }) => {
+const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => {
   const [selectedValues, setSelectedValues] = React.useState({});
   const [viewValues, setViewValues] = React.useState({});
 
@@ -16,23 +16,41 @@ const SectionFour = ({ row, viewProject, disableButton, onSelectedValuesChange, 
     });
   };
 
+  const handleViewSelect = (key, newValue) => {
+    setViewValues((prevValues) => ({
+      ...prevValues,
+      [key]: newValue,
+    }));
+  };
+
+  const handleFilterSelect = (key, newValue) => {
+    if (viewProject) {
+      handleViewSelect(key, newValue);
+    } else {
+      handleSelect(key, newValue);
+    }
+  };
+
   useEffect(() => {
     if (viewProject) {
-      const updatedValues = {
-        SelectManualTestingMgmt: row["manual_testing_management_tools"], FunctionalandIntegration: row["functional_integration_testing"],
-        PerformanceandLoadTest: row["performance_load_testing_tools"], ApplicationSecurityTesting: row["application_security_testing_tools"], devopsInfrastructureAsCodeIac: row["devops_infrastructure_as_code_iac"]
-      };
-      setViewValues(updatedValues);
+      setViewValues({
+        SelectManualTestingMgmt: row["manual_testing_management_tools"],
+        FunctionalandIntegration: row["functional_integration_testing"],
+        PerformanceandLoadTest: row["performance_load_testing_tools"],
+        ApplicationSecurityTesting: row["application_security_testing_tools"],
+        devopsInfrastructureAsCodeIac: row["devops_infrastructure_as_code_iac"],
+      });
     }
-  }, [])
+  }, [viewProject]);
 
   const inputs = [
     { key: 'SelectManualTestingMgmt', labels: 'Select Manual Testing & Mgmt' },
     { key: 'FunctionalandIntegration', labels: 'Select Functional and Integration...' },
     { key: 'PerformanceandLoadTest', labels: 'Select Performance and Load Test' },
     { key: 'ApplicationSecurityTesting', labels: 'Select Application Security Testing' },
-    { key: 'devopsInfrastructureAsCodeIac', labels: 'Select Devops' },
+    { key: 'devopsInfrastructureAsCodeIac', labels: 'Select DevOps' },
   ];
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
       <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -45,12 +63,11 @@ const SectionFour = ({ row, viewProject, disableButton, onSelectedValuesChange, 
               input={props[key] || []}
               onFocus="Select..."
               onBlur={labels}
-              handleOnSelect={(event, newValue) => handleSelect(key, newValue)}
-              selectedValues={viewProject ? viewValues[key] ? selectedValues[key] : selectedValues[key] : viewValues[key] }
+              handleOnSelect={(event, newValue) => handleFilterSelect(key, newValue)}
+              selectedValues={viewProject ? viewValues[key] : selectedValues[key] ? selectedValues[key] : viewValues[key]}
               isMultiSelect={false}
               placeholder={labels}
               showIcon={false}
-              // disabled={!disableButton}
             />
           </Box>
         ))}
