@@ -58,7 +58,7 @@ export default function SectionSix({ row, viewProject, disableButton, onSelected
                             onFocus="Select..."
                             onBlur={labels}
                             handleOnSelect={(event, newValue) => handleFilterSelect(key, newValue)}
-                            selectedValues={viewProject ? viewValues[key] : selectedValues[key] ? selectedValues[key] : viewValues[key]}
+                            selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
                             isMultiSelect={false}
                             placeholder={labels}
                             showIcon={false}

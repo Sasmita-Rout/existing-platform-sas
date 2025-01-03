@@ -64,7 +64,7 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => 
               onFocus="Select..."
               onBlur={labels}
               handleOnSelect={(event, newValue) => handleFilterSelect(key, newValue)}
-              selectedValues={viewProject ? viewValues[key] : selectedValues[key] ? selectedValues[key] : viewValues[key]}
+              selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
               isMultiSelect={false}
               placeholder={labels}
               showIcon={false}
