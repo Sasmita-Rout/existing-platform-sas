@@ -17,6 +17,21 @@ export default function SectionSix({ row, viewProject, disableButton, onSelected
         });
     };
 
+    const handleViewSelect = (key, newValue) => {
+        setViewValues((prevValues) => ({
+            ...prevValues,
+            [key]: newValue,
+        }));
+    };
+
+    const handleFilterSelect = (key, newValue) => {
+        if (viewProject) {
+            handleViewSelect(key, newValue);
+        } else {
+            handleSelect(key, newValue);
+        }
+    };
+
     useEffect(() => {
         if (viewProject) {
             const updatedValues = {
@@ -24,7 +39,7 @@ export default function SectionSix({ row, viewProject, disableButton, onSelected
             };
             setViewValues(updatedValues);
         }
-    }, [])
+    }, [viewProject])
 
     const inputs = [
         { key: 'aiAndMachineLearningTechnologies', labels: 'Select AI and Machine Learning' },
@@ -42,12 +57,12 @@ export default function SectionSix({ row, viewProject, disableButton, onSelected
                             input={props[key] || []}
                             onFocus="Select..."
                             onBlur={labels}
-                            handleOnSelect={(event, newValue) => handleSelect(key, newValue)}
+                            handleOnSelect={(event, newValue) => handleFilterSelect(key, newValue)}
                             selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
                             isMultiSelect={false}
                             placeholder={labels}
                             showIcon={false}
-                            // disabled={!disableButton}
+                        // disabled={!disableButton}
                         />
                     </Box>
                 ))}

@@ -16,6 +16,21 @@ export default function SectionThree({ row, viewProject, disableButton, onSelect
         });
     };
 
+    const handleViewSelect = (key, newValue) => {
+        setViewValues((prevValues) => ({
+            ...prevValues,
+            [key]: newValue,
+        }));
+    };
+
+    const handleFilterSelect = (key, newValue) => {
+        if (viewProject) {
+            handleViewSelect(key, newValue);
+        } else {
+            handleSelect(key, newValue);
+        }
+    };
+
     useEffect(() => {
         if (viewProject) {
             const updatedValues = {
@@ -32,7 +47,7 @@ export default function SectionThree({ row, viewProject, disableButton, onSelect
             };
             setViewValues(updatedValues);
         }
-    }, [])
+    }, [viewProject])
 
     const inputs = [
         { key: 'environmentInput', labels: 'Select Environment' },
@@ -76,14 +91,12 @@ export default function SectionThree({ row, viewProject, disableButton, onSelect
                         </Typography>
                         <Filter
                             input={props[key] || []}
-                            handleOnSelect={(event, newValue) =>
-                                handleSelect(key, newValue)
-                            }
+                            handleOnSelect={(event, newValue) => handleFilterSelect(key, newValue)}
                             selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
                             isMultiSelect={false}
                             placeholder={labels}
                             showIcon={false}
-                            // disabled={!disableButton}
+                        // disabled={!disableButton}
                         />
                     </Box>
                 ))}

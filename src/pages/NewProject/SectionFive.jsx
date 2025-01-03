@@ -18,6 +18,20 @@ const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, 
     });
   };
 
+  const handleViewSelect = (key, newValue) => {
+    setViewValues((prevValues) => ({
+      ...prevValues,
+      [key]: newValue,
+    }));
+  };
+
+  const handleFilterSelect = (key, newValue) => {
+    if (viewProject) {
+      handleViewSelect(key, newValue);
+    } else {
+      handleSelect(key, newValue);
+    }
+  };
 
   useEffect(() => {
     if (viewProject) {
@@ -26,7 +40,7 @@ const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, 
       };
       setViewValues(updatedValues);
     }
-  }, [])
+  }, [viewProject])
   const inputs = [
     { key: 'AnalyticsReporting', labels: 'Select Analytics & Reporting' },
     { key: 'SelectUserFeedbackandAnalytics', labels: 'Select User Feedback and Analytics' },
@@ -43,13 +57,13 @@ const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, 
               input={props[key] || []}
               onFocus="Select..."
               onBlur={labels}
-              handleOnSelect={(event, newValue) => handleSelect(key, newValue)}
+              handleOnSelect={(event, newValue) => handleFilterSelect(key, newValue)}
               // selectedValues={selectedValues[key]}
               selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
               isMultiSelect={false}
               placeholder={labels}
               showIcon={false}
-              // disabled={!disableButton}
+            // disabled={!disableButton}
             />
           </Box>
         ))}
