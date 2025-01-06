@@ -305,7 +305,6 @@ const NewProject = () => {
       watch("allSelectedValuesSix"),
       checked
     );
-  
     if (response.project_id) {
       setValue("message", `Your Project "${watch("projectName").trim()}" Updated Successfully`);
       setValue("open", true);

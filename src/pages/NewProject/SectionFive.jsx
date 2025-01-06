@@ -34,6 +34,10 @@ const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, 
   };
 
   useEffect(() => {
+    onSelectedValuesChange(viewValues);
+}, [viewValues])
+
+  useEffect(() => {
     if (viewProject) {
       const updatedValues = {
         AnalyticsReporting: row["analytics_reporting"], SelectUserFeedbackandAnalytics: row["user_feedback_analytics_tools"],

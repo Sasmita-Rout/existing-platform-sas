@@ -23,6 +23,10 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => 
     }));
   };
 
+  useEffect(() => {
+    onSelectedValuesChange(viewValues);
+}, [viewValues])
+
   const handleFilterSelect = (key, newValue) => {
     if (viewProject) {
       handleViewSelect(key, newValue);
