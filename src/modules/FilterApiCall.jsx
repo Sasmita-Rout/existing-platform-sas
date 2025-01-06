@@ -148,7 +148,7 @@ export const updateProject = async (
 
     const formattedDateTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T` +
         `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
-    const url = `platform_data/update_project/${id}`;
+    const url = `update_project/${id}`;
     const data = {
         submitter_email_id: pmoUser["email"],
         submitting_time: formattedDateTime,
