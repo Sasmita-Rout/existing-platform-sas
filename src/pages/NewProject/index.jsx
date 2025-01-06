@@ -305,6 +305,15 @@ const NewProject = () => {
       watch("allSelectedValuesSix"),
       checked
     );
+  
+    if (response.project_id) {
+      setValue("message", `Your Project "${watch("projectName").trim()}" Updated Successfully`);
+      setValue("open", true);
+      setTimeout(() => {
+        navigate("/PlatformProject");
+      }, 1500);
+    }
+    setValue("openDialog", false);
     return response;
   };
 
@@ -495,7 +504,8 @@ const NewProject = () => {
             ddInput={watch("ddName")}
             setValue={setValue}
             buhValue={watch("buhValue")} ddValue={watch("ddValue")} accountValue={watch("accountValue")} projectName={watch("projectName")}
-            viewProject={onClick} />
+            viewProject={onClick}
+            disableButton={!onClick} />
         </AccordionDetails>
       </Accordion>
       <Accordion defaultExpanded sx={{
