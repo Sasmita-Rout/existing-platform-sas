@@ -23,6 +23,10 @@ export default function SectionThree({ row, viewProject, disableButton, onSelect
         }));
     };
 
+    useEffect(() => {
+        onSelectedValuesChange(viewValues);
+    }, [viewValues]);
+
     const handleFilterSelect = (key, newValue) => {
         if (viewProject) {
             handleViewSelect(key, newValue);

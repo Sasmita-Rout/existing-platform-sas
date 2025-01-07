@@ -45,6 +45,11 @@ export default function SectionSix({ row, viewProject, disableButton, onSelected
         { key: 'aiAndMachineLearningTechnologies', labels: 'Select AI and Machine Learning' },
     ];
 
+
+    useEffect(() => {
+        onSelectedValuesChange(viewValues);
+    }, [viewValues])
+
     return (
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
             <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
