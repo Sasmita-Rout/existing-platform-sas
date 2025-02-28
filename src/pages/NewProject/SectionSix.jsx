@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Filter } from "../../components/molecules/index";
 import { Box, Typography } from "@mui/material";
-import {DropdownCustom} from "../../components/atoms/DropdownCustom";
+import { DropdownCustom } from "../../components/atoms/DropdownCustom";
 
 export default function SectionSix({
   row,
@@ -24,6 +24,7 @@ export default function SectionSix({
   };
 
   const handleViewSelect = (key, newValue) => {
+
     setViewValues((prevValues) => ({
       ...prevValues,
       [key]: newValue,
@@ -37,6 +38,7 @@ export default function SectionSix({
       handleSelect(key, newValue);
     }
   };
+
 
   useEffect(() => {
     if (viewProject) {
@@ -74,7 +76,7 @@ export default function SectionSix({
             {/* <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
               {labels}
             </Typography> */}
-            <Filter
+            {/* <Filter
               input={props[key] || []}
               onFocus="Select..."
               onBlur={labels}
@@ -88,14 +90,19 @@ export default function SectionSix({
               placeholder={labels}
               showIcon={false}
               // disabled={!disableButton}
-            />
+            /> */}
             <DropdownCustom
-                row={row}
-              placeholder={labels}
-
-              onSelectedValuesChange={onSelectedValuesChange}
               input={props[key] || []}
-              props= {props}
+              row={row}
+              placeholder={labels}
+              handleSelect={(newValue) =>
+                handleFilterSelect(key, newValue)
+              }
+              selectedValues={
+                viewProject ? viewValues[key] : selectedValues[key]
+              }
+              onSelectedValuesChange={onSelectedValuesChange}
+              props={props}
             />
           </Box>
         ))}

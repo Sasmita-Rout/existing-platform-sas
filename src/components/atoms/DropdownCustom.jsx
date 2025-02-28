@@ -4,38 +4,21 @@ import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 
 const filter = createFilterOptions();
 
-export function DropdownCustom({ placeholder, input = [], row, onSelectedValuesChange }) {
+export function DropdownCustom({ placeholder, input = [], handleSelect, selectedValues }) {
   const [value, setValue] = useState(null);
-  const [selectedValues, setSelectedValues] = useState({});
 
   // Convert input array of strings into objects with title property
   const formattedInput = input.map((item) =>
-    typeof item === "string" ? { title: item } : item
+    typeof item === "string" ? item: ""
   );
-
-  const handleSelect = (key, newValue) => {
-    setSelectedValues((prevValues) => {
-      const updatedValues = { ...prevValues, [key]: newValue };
-      if (onSelectedValuesChange) {
-        onSelectedValuesChange(updatedValues);
-      }
-      return updatedValues;
-    });
-  };
 
   return (
     <Autocomplete
-      value={value}
+      value={selectedValues}
       onChange={(event, newValue) => {
-        console.log("New Value:", newValue);
-        handleSelect(row?.id || "defaultKey", newValue);
-        
-        if (typeof newValue === "string") {
-          setValue({ title: newValue });
-        } else if (newValue?.inputValue) {
-          setValue({ title: newValue.inputValue });
-        } else {
-          setValue(newValue);
+        setValue(newValue);
+        if (handleSelect) {
+          handleSelect(newValue); // Ensure this function exists in the parent component
         }
       }}
       filterOptions={(options, params) => {
@@ -43,10 +26,7 @@ export function DropdownCustom({ placeholder, input = [], row, onSelectedValuesC
         const { inputValue } = params;
 
         if (inputValue !== "" && !options.some((option) => option.title === inputValue)) {
-          filtered.push({
-            inputValue,
-            title: inputValue,
-          });
+          filtered.push({ title: inputValue });
         }
 
         return filtered;
@@ -58,7 +38,9 @@ export function DropdownCustom({ placeholder, input = [], row, onSelectedValuesC
       options={formattedInput}
       sx={{ width: 300 }}
       getOptionLabel={(option) => (typeof option === "string" ? option : option.title)}
-      renderOption={(props, option) => <li {...props}>{option.title}</li>}
+      renderOption={(props, option) => (
+        <li {...props}>{typeof option === "string" ? option : option.title}</li>
+      )}
       freeSolo
       renderInput={(params) => (
         <TextField
