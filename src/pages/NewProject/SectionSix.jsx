@@ -13,6 +13,8 @@ export default function SectionSix({
   const [selectedValues, setSelectedValues] = React.useState({});
   const [viewValues, setViewValues] = React.useState({});
 
+  console.log(viewValues,"Val")
+
   const handleSelect = (key, newValue) => {
     setSelectedValues((prevValues) => {
       const updatedValues = { ...prevValues, [key]: newValue };
@@ -24,6 +26,7 @@ export default function SectionSix({
   };
 
   const handleViewSelect = (key, newValue) => {
+    console.log(newValue,"val")
 
     setViewValues((prevValues) => ({
       ...prevValues,

@@ -4,7 +4,7 @@ import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 
 const filter = createFilterOptions();
 
-export function DropdownCustom({ placeholder, input = [], handleSelect, selectedValues }) {
+export function DropdownCustom({ placeholder, input = [], handleSelect, selectedValues = [] }) {
   const [value, setValue] = useState(null);
 
   // Convert input array of strings into objects with title property
