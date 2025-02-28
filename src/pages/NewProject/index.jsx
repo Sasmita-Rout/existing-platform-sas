@@ -97,6 +97,20 @@ const NewProject = () => {
       aiMachineLearningTechnologies: [],
       userFeedbackAnalyticsTools: [],
       lowCodeEnvironments: [],
+      containerizationOrchestration: [],
+      cybersecurityTechnologies: [],
+      serverless_computing: [],
+      headless_cms: [],
+      architecture_methodology: [],
+      design_patterns: [],
+      development_maturity_assessment: [],
+      software_composition_analysis: [],
+      api_testing_tools: [],
+      behavioral_testing_tools: [],
+      deployment_methodologies: [],
+      cicd_tools: [],
+      alerting_tools: [],
+      dependency_analysis: [],
       buhValue: null,
       accountValue: null,
       ddValue: null,
@@ -118,6 +132,20 @@ const NewProject = () => {
     "application_class": (value) => setValue("app", value),
     "environment": (value) => setValue("env", value),
     "cloud_technologies": (value) => setValue("cloudTechnologies", value),
+    "containerization_orchestration": (value) => setValue("containerizationOrchestration", value),
+    "cybersecurity_technologies": (value) => setValue("cybersecurityTechnologies", value),
+    "serverless_computing": (value) => setValue("serverlessComputing", value),
+    "headless_cms": (value) => setValue("headlessCms", value),
+    "architecture_methodology": (value) => setValue("architectureMethodology", value),
+    "design_patterns": (value) => setValue("designPatterns", value),
+    "development_maturity_assessment": (value) => setValue("developmentMaturityAssessment", value),
+    "software_composition_analysis": (value) => setValue("softwareCompositionAnalysis", value),
+    "api_testing_tools": (value) => setValue("apiTestingTools", value),
+    "behavioral_testing_tools": (value) => setValue("behavioralTestingTools", value),
+    "deployment_methodologies": (value) => setValue("deploymentMethodologies", value),
+    "cicd_tools": (value) => setValue("cicdTools", value),
+    "alerting_tools": (value) => setValue("alertingTools", value),
+    "dependency_analysis": (value) => setValue("dependencyAnalysis", value),
     "data_engineering_etl_mdm_tools": (value) => setValue("dataEngineeringEtlMdmTools", value),
     "mobile_cloud_computing": (value) => setValue("mobileCloudComputing", value),
     "edge_computing": (value) => setValue("edgeComputing", value),
@@ -177,6 +205,7 @@ const NewProject = () => {
     setValue("allSelectedValuesFour", selectedValues);
   };
   const handleSelectedValuesChangeSectionFive = (selectedValues) => {
+    console.log('allSelectedValuesFive', selectedValues);
     setValue("allSelectedValuesFive", selectedValues);
   };
   const handleSelectedValuesChangeSectionSix = (selectedValues) => {
@@ -609,6 +638,8 @@ const NewProject = () => {
             // disableButton={!onClick}
             environmentInput={watch("env")}
             cloudTechnologies={watch("cloudTechnologies")}
+            containerizationOrchestration={watch("containerizationOrchestration")}
+            cybersecurityTechnologies={watch("cybersecurityTechnologies")}
             enterprisePlatforms={watch("enterprisePlatforms")}
             etlAndMdmTools={watch("dataEngineeringEtlMdmTools")}
             devops={watch("devopsInfrastructureAsCodeIac")}

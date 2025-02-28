@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Box, Typography } from "@mui/material";
 import { Filter } from "../../components/molecules/Filter";
+import {DropdownCustom} from "../../components/atoms/DropdownCustom";
 
 const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, ...props }) => {
 
@@ -39,6 +40,7 @@ const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, 
 
   useEffect(() => {
     if (viewProject) {
+      alert("123");
       const updatedValues = {
         AnalyticsReporting: row["analytics_reporting"], SelectUserFeedbackandAnalytics: row["user_feedback_analytics_tools"],
       };
@@ -54,10 +56,10 @@ const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, 
       <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
         {inputs.map(({ key, labels }) => (
           <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
-            <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
+            {/* <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
               {labels}
-            </Typography>
-            <Filter
+            </Typography> */}
+            {/* <Filter
               input={props[key] || []}
               onFocus="Select..."
               onBlur={labels}
@@ -68,6 +70,16 @@ const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, 
               placeholder={labels}
               showIcon={false}
             // disabled={!disableButton}
+            /> */}
+            <DropdownCustom
+              row={row}
+              selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
+              placeholder={labels}
+              onChange={(event, newValue) => handleFilterSelect(key, newValue)}
+              onSelectedValuesChange={onSelectedValuesChange}
+              input={props[key] || []}
+              props= {props}
+              viewProject={viewProject}
             />
           </Box>
         ))}

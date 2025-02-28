@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 
 const filter = createFilterOptions();
 
-export function DropdownCustom({ placeholder, input = [], row, onSelectedValuesChange }) {
+export function DropdownCustom({ placeholder, input = [], row, onSelectedValuesChange, viewProject,selectedValues }) {
   const [value, setValue] = useState(null);
-  const [selectedValues, setSelectedValues] = useState({});
+  const [selectedValuess, setSelectedValuess] = useState({});
+  const [viewValues, setViewValues] = React.useState({});
 
   // Convert input array of strings into objects with title property
   const formattedInput = input.map((item) =>
@@ -14,7 +15,7 @@ export function DropdownCustom({ placeholder, input = [], row, onSelectedValuesC
   );
 
   const handleSelect = (key, newValue) => {
-    setSelectedValues((prevValues) => {
+    setSelectedValuess((prevValues) => {
       const updatedValues = { ...prevValues, [key]: newValue };
       if (onSelectedValuesChange) {
         onSelectedValuesChange(updatedValues);
@@ -22,10 +23,25 @@ export function DropdownCustom({ placeholder, input = [], row, onSelectedValuesC
       return updatedValues;
     });
   };
+  
+
+  useEffect(() => {
+    if (viewProject) {
+      alert("123");
+      const updatedValues = {
+        AnalyticsReporting: row["analytics_reporting"], SelectUserFeedbackandAnalytics: row["user_feedback_analytics_tools"],
+      };
+      setViewValues(updatedValues);
+    }
+  }, [viewProject])
+
+  useEffect(() => {
+    onSelectedValuesChange(viewValues);
+}, [viewValues])
 
   return (
     <Autocomplete
-      value={value}
+      value={selectedValues}
       onChange={(event, newValue) => {
         console.log("New Value:", newValue);
         handleSelect(row?.id || "defaultKey", newValue);
@@ -45,7 +61,7 @@ export function DropdownCustom({ placeholder, input = [], row, onSelectedValuesC
         if (inputValue !== "" && !options.some((option) => option.title === inputValue)) {
           filtered.push({
             inputValue,
-            title: inputValue,
+            title: `Add "${inputValue}"`,
           });
         }
 
@@ -63,6 +79,7 @@ export function DropdownCustom({ placeholder, input = [], row, onSelectedValuesC
       renderInput={(params) => (
         <TextField
           {...params}
+          value={selectedValues}
           label={placeholder}
           InputLabelProps={{ shrink: true }} // ✅ Ensures label stays visible
           variant="outlined"

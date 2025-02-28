@@ -71,28 +71,9 @@ export default function SectionSix({
       >
         {inputs.map(({ key, labels }) => (
           <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
-            {/* <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
-              {labels}
-            </Typography> */}
-            <Filter
-              input={props[key] || []}
-              onFocus="Select..."
-              onBlur={labels}
-              handleOnSelect={(event, newValue) =>
-                handleFilterSelect(key, newValue)
-              }
-              selectedValues={
-                viewProject ? viewValues[key] : selectedValues[key]
-              }
-              isMultiSelect={false}
-              placeholder={labels}
-              showIcon={false}
-              // disabled={!disableButton}
-            />
             <DropdownCustom
-                row={row}
+              row={row}
               placeholder={labels}
-
               onSelectedValuesChange={onSelectedValuesChange}
               input={props[key] || []}
               props= {props}
