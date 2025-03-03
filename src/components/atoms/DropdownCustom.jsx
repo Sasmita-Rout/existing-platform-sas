@@ -14,7 +14,7 @@ export function DropdownCustom({
   const [value, setValue] = useState(null);
 
   // Convert input array of strings into a valid format
-  const formattedInput = input.map((item) => (typeof item === "string" ? item : ""));
+  const formattedInput = input ? input?.map((item) => (typeof item === "string" ? item : "")) : [];
 
   return (
     <Autocomplete
