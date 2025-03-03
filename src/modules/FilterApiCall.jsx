@@ -204,7 +204,7 @@ export const updateProject = async (
         directory_services_identity_management: [allSelectedValues.directoryServices].filter(Boolean),
         code_quality_tools: [allSelectedValues.codeQualityTools].filter(Boolean),
         ipaas_integration_platform_as_a_service: [allSelectedValues.iPaas].filter(Boolean),
-        ai_machine_learning_technologies: [allSelectedValuesSix.aiAndMachineLearningTechnologies].filter(Boolean),
+        ai_machine_learning_technologies: [allSelectedValuesSix.aiAndMachineLearningTechnologies.title].filter(Boolean),
         user_feedback_analytics_tools: [allSelectedValuesFive.SelectUserFeedbackandAnalytics].filter(Boolean),
         low_code_environments: [allSelectedValues.lowCodeEnv].filter(Boolean),
         status: checked === true ? "Active" : "Inactive" // Set the status to Active by default
