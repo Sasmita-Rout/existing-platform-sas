@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Box, Typography } from "@mui/material";
 import { Filter } from "../../components/molecules/Filter";
+import { DropdownCustom } from "../../components/atoms/DropdownCustom";
 
 const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, ...props }) => {
 
@@ -54,20 +55,18 @@ const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, 
       <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
         {inputs.map(({ key, labels }) => (
           <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
-            <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
-              {labels}
-            </Typography>
-            <Filter
+            <DropdownCustom
               input={props[key] || []}
-              onFocus="Select..."
-              onBlur={labels}
-              handleOnSelect={(event, newValue) => handleFilterSelect(key, newValue)}
-              // selectedValues={selectedValues[key]}
-              selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
-              isMultiSelect={false}
+              row={row}
               placeholder={labels}
-              showIcon={false}
-            // disabled={!disableButton}
+              handleSelect={(newValue) =>
+                handleFilterSelect(key, newValue)
+              }
+              selectedValues={
+                viewProject ? viewValues[key] : selectedValues[key]
+              }
+              onSelectedValuesChange={onSelectedValuesChange}
+              props={props}
             />
           </Box>
         ))}
