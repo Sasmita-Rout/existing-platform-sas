@@ -1,18 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography } from "@mui/material";
-import { Filter } from "../../components/molecules/Filter";
 import { DropdownCustom } from "../../components/atoms/DropdownCustom";
 
 const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => {
-  const [selectedValues, setSelectedValues] = React.useState({});
-  const [viewValues, setViewValues] = React.useState({});
+  const [selectedValues, setSelectedValues] = useState({});
+  const [viewValues, setViewValues] = useState({});
 
   const handleSelect = (key, newValue) => {
     setSelectedValues((prevValues) => {
       const updatedValues = { ...prevValues, [key]: newValue };
-      if (onSelectedValuesChange) {
-        onSelectedValuesChange(updatedValues);
-      }
+      onSelectedValuesChange?.(updatedValues);
       return updatedValues;
     });
   };
@@ -26,14 +23,10 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => 
 
   useEffect(() => {
     onSelectedValuesChange(viewValues);
-}, [viewValues])
+  }, [viewValues]);
 
   const handleFilterSelect = (key, newValue) => {
-    if (viewProject) {
-      handleViewSelect(key, newValue);
-    } else {
-      handleSelect(key, newValue);
-    }
+    viewProject ? handleViewSelect(key, newValue) : handleSelect(key, newValue);
   };
 
   useEffect(() => {
@@ -61,16 +54,16 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => 
       <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
         {inputs.map(({ key, labels }) => (
           <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
+            <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
+              {labels}
+            </Typography>
             <DropdownCustom
               input={props[key] || []}
               row={row}
-              placeholder={labels}
+              onFocus="Select..."
+              onBlur={labels}
               handleSelect={(newValue) => handleFilterSelect(key, newValue)}
-              selectedValues={
-                viewProject ? viewValues[key] : selectedValues[key]
-              }
-              onSelectedValuesChange={onSelectedValuesChange}
-              props={props}
+              selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
             />
           </Box>
         ))}

@@ -4,22 +4,24 @@ import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 
 const filter = createFilterOptions();
 
-export function DropdownCustom({ placeholder, input = [], handleSelect, selectedValues = [] }) {
+export function DropdownCustom({
+  input = [],
+  handleSelect,
+  selectedValues = [],
+  onFocus = "",
+  onBlur = ""
+}) {
   const [value, setValue] = useState(null);
 
-  // Convert input array of strings into objects with title property
-  const formattedInput = input.map((item) =>
-    typeof item === "string" ? item: ""
-  );
+  // Convert input array of strings into a valid format
+  const formattedInput = input.map((item) => (typeof item === "string" ? item : ""));
 
   return (
     <Autocomplete
       value={selectedValues}
       onChange={(event, newValue) => {
         setValue(newValue);
-        if (handleSelect) {
-          handleSelect(newValue); // Ensure this function exists in the parent component
-        }
+        handleSelect?.(newValue);
       }}
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
@@ -31,24 +33,22 @@ export function DropdownCustom({ placeholder, input = [], handleSelect, selected
 
         return filtered;
       }}
-      selectOnFocus
-      clearOnBlur
       handleHomeEndKeys
       id="custom-dropdown"
       options={formattedInput}
       sx={{ width: 300 }}
-      getOptionLabel={(option) => (typeof option === "string" ? option : option.title)}
-      renderOption={(props, option) => (
-        <li {...props}>{typeof option === "string" ? option : option.title}</li>
-      )}
+      getOptionLabel={(option) => (typeof option === "string" ? option : "")}
+      renderOption={(props, option) => <li {...props}>{option}</li>}
       freeSolo
       renderInput={(params) => (
         <TextField
           {...params}
-          label={placeholder}
-          InputLabelProps={{ shrink: true }} // ✅ Ensures label stays visible
+          InputLabelProps={{ shrink: true }}
           variant="outlined"
           fullWidth
+          placeholder={onBlur} // ✅ Set initial placeholder
+          onFocus={(event) => event.target.setAttribute("placeholder", onFocus)} // ✅ Updates on focus
+          onBlur={(event) => event.target.setAttribute("placeholder", onBlur)} // ✅ Restores on blur
         />
       )}
     />

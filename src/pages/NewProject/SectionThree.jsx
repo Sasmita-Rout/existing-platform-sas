@@ -152,9 +152,14 @@ export default function SectionThree({
                             showIcon={false}
                         // disabled={!disableButton}
                         /> */}
+            <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
+              {labels}
+            </Typography>
             <DropdownCustom
               input={props[key] || []}
               row={row}
+              onFocus="Select..."
+              onBlur={labels}
               placeholder={labels}
               handleSelect={(newValue) => handleFilterSelect(key, newValue)}
               selectedValues={

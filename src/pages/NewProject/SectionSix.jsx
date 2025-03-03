@@ -73,9 +73,9 @@ export default function SectionSix({
       >
         {inputs.map(({ key, labels }) => (
           <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
-            {/* <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
+            <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
               {labels}
-            </Typography> */}
+            </Typography>
             {/* <Filter
               input={props[key] || []}
               onFocus="Select..."
@@ -94,6 +94,8 @@ export default function SectionSix({
             <DropdownCustom
               input={props[key] || []}
               row={row}
+              onFocus="Select..."
+              onBlur={labels}
               placeholder={labels}
               handleSelect={(newValue) =>
                 handleFilterSelect(key, newValue)
