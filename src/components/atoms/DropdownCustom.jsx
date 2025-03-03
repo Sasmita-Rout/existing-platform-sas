@@ -26,7 +26,7 @@ export function DropdownCustom({ placeholder, input = [], handleSelect, selected
         const { inputValue } = params;
 
         if (inputValue !== "" && !options.some((option) => option.title === inputValue)) {
-          filtered.push(`Add "${params.inputValue}"`);
+          filtered.push({ title: inputValue });
         }
 
         return filtered;
