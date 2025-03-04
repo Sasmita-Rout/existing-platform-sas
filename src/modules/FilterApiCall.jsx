@@ -70,7 +70,8 @@ export const addNewProject = async (
     projectName,
     buhName,
     ddName,
-    domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix, checked
+    allSelectedValuesTwo,
+    allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix, checked
 
 ) => {
     const date = new Date();
@@ -85,8 +86,8 @@ export const addNewProject = async (
         project_name: projectName || "",
         buh_name: buhName || "",
         dd_name: ddName || "",
-        domains: [domainValue] || [], // Ensure it's an array
-        application_class: [applicationValue] || [],
+        domains: [allSelectedValuesTwo.domainInput] || [], // Ensure it's an array
+        application_class: [allSelectedValuesTwo.applicationInput] || [],
         environment: [allSelectedValues.environmentInput].filter(Boolean), // Filter out falsy values
         cloud_technologies: [allSelectedValues.cloudTechnologies].filter(Boolean),
         data_engineering_etl_mdm_tools: [allSelectedValues.etlAndMdmTools].filter(Boolean),
@@ -141,11 +142,10 @@ export const updateProject = async (
     projectName,
     buhName,
     ddName,
-    domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix, checked
+    allSelectedValuesTwo, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix, checked
 
 ) => {
     const date = new Date();
-
     const formattedDateTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T` +
         `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
     const url = `update_project/${id}`;
@@ -156,7 +156,7 @@ export const updateProject = async (
         project_name: projectName || "",
         buh_name: buhName || "",
         dd_name: ddName || "",
-        domains: [domainValue] || [], // Ensure it's an array
+        domains: [allSelectedValuesTwo.domainInput] || [], // Ensure it's an array
         alerting_tools: [],
         analytics_reporting: [],
         api_testing_tools: [],
@@ -172,7 +172,7 @@ export const updateProject = async (
         headless_cms: [],
         serverless_computing: [],
         software_composition_analysis: [],
-        application_class: [applicationValue] || [],
+        application_class: [allSelectedValuesTwo.applicationInput] || [],
         environment: [allSelectedValues.environmentInput].filter(Boolean), // Filter out falsy values
         cloud_technologies: [allSelectedValues.cloudTechnologies].filter(Boolean),
         data_engineering_etl_mdm_tools: [allSelectedValues.etlAndMdmTools].filter(Boolean),
@@ -205,7 +205,7 @@ export const updateProject = async (
         directory_services_identity_management: [allSelectedValues.directoryServices].filter(Boolean),
         code_quality_tools: [allSelectedValues.codeQualityTools].filter(Boolean),
         ipaas_integration_platform_as_a_service: [allSelectedValues.iPaas].filter(Boolean),
-        ai_machine_learning_technologies: [allSelectedValuesSix.aiAndMachineLearningTechnologies].filter(Boolean),
+        ai_machine_learning_technologies: [allSelectedValuesSix.aiAndMachineLearningTechnologies.title].filter(Boolean),
         user_feedback_analytics_tools: [allSelectedValuesFive.SelectUserFeedbackandAnalytics].filter(Boolean),
         low_code_environments: [allSelectedValues.lowCodeEnv].filter(Boolean),
         status: checked === true ? "Active" : "Inactive" // Set the status to Active by default
