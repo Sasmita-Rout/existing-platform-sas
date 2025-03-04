@@ -70,7 +70,8 @@ export const addNewProject = async (
     projectName,
     buhName,
     ddName,
-    domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix, checked
+    allSelectedValuesTwo,
+    allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix, checked
 
 ) => {
     const date = new Date();
@@ -85,8 +86,8 @@ export const addNewProject = async (
         project_name: projectName || "",
         buh_name: buhName || "",
         dd_name: ddName || "",
-        domains: [domainValue] || [], // Ensure it's an array
-        application_class: [applicationValue] || [],
+        domains: [allSelectedValuesTwo.domainInput] || [], // Ensure it's an array
+        application_class: [allSelectedValuesTwo.applicationInput] || [],
         environment: [allSelectedValues.environmentInput].filter(Boolean), // Filter out falsy values
         cloud_technologies: [allSelectedValues.cloudTechnologies].filter(Boolean),
         data_engineering_etl_mdm_tools: [allSelectedValues.etlAndMdmTools].filter(Boolean),
@@ -141,7 +142,7 @@ export const updateProject = async (
     projectName,
     buhName,
     ddName,
-    domainValue, applicationValue, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix, checked
+    allSelectedValuesTwo, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix, checked
 
 ) => {
     const date = new Date();
@@ -155,7 +156,7 @@ export const updateProject = async (
         project_name: projectName || "",
         buh_name: buhName || "",
         dd_name: ddName || "",
-        domains: [domainValue] || [], // Ensure it's an array
+        domains: [allSelectedValuesTwo.domainInput] || [], // Ensure it's an array
         alerting_tools: [],
         analytics_reporting: [],
         api_testing_tools: [],
@@ -171,7 +172,7 @@ export const updateProject = async (
         headless_cms: [],
         serverless_computing: [],
         software_composition_analysis: [],
-        application_class: [applicationValue] || [],
+        application_class: [allSelectedValuesTwo.applicationInput] || [],
         environment: [allSelectedValues.environmentInput].filter(Boolean), // Filter out falsy values
         cloud_technologies: [allSelectedValues.cloudTechnologies].filter(Boolean),
         data_engineering_etl_mdm_tools: [allSelectedValues.etlAndMdmTools].filter(Boolean),

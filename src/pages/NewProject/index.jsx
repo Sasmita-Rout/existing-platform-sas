@@ -58,6 +58,7 @@ const NewProject = () => {
     defaultValues: {
       open: false,
       openPlatFormReport: false,
+      allSelectedValuesTwo:{},
       allSelectedValues: {},
       allSelectedValuesFour: {},
       allSelectedValuesFive: {},
@@ -197,7 +198,9 @@ const NewProject = () => {
   const handleClose = () => {
     setValue("open", false);
   };
-
+  const handleSelectedValuesChangeSectionTwo = (selectedValues) => {
+    setValue("allSelectedValuesTwo", selectedValues);
+  };
   const handleSelectedValuesChangeSectionThree = (selectedValues) => {
     setValue("allSelectedValues", selectedValues);
   };
@@ -217,6 +220,7 @@ const NewProject = () => {
       watch("accountValue"),
       watch("ddValue"),
       watch("projectName") && watch("projectName").trim(),
+      watch("allSelectedValuesTwo"),
       watch("domainValue"),
       watch("applicationValue"),
       // , watch("sowStartDate"), watch("sowEndDate"), watch("sowSelectedFile")
@@ -253,9 +257,8 @@ const NewProject = () => {
       watch("accountValue") === null ||
       watch("ddValue") === null ||
       watch("projectName").trim() === "" ||
-      watch("projectName").trim() === null ||
-      watch("domainValue") === null ||
-      watch("applicationValue") === null
+      watch("projectName").trim() === null
+      // watch("allSelectedValuesTwo") === null ||{}
     ) {
       //  || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile") === null) {
       setValue("errorDailogBox", true);
@@ -318,8 +321,7 @@ const NewProject = () => {
       watch("projectName").trim(),
       watch("buhValue"),
       watch("ddValue"),
-      watch("domainValue"),
-      watch("applicationValue"),
+      watch("allSelectedValuesTwo"),
       watch("allSelectedValues"),
       watch("allSelectedValuesFour"),
       watch("allSelectedValuesFive"),
@@ -337,8 +339,9 @@ const NewProject = () => {
       watch("projectName").trim(),
       watch("buhValue"),
       watch("ddValue"),
-      watch("domainValue"),
-      watch("applicationValue"),
+      // watch("domainValue"),
+      // watch("applicationValue"),
+      watch("allSelectedValuesTwo"),
       watch("allSelectedValues"),
       watch("allSelectedValuesFour"),
       watch("allSelectedValuesFive"),
@@ -698,10 +701,13 @@ const NewProject = () => {
         <AccordionDetails>
           <SectionTwo
             domainInput={watch("domain")}
+            viewProject={onClick}
             applicationInput={watch("app")}
-            domainValue={watch("domainValue")}
-            applicationValue={watch("applicationValue")}
-            setValue={setValue}
+            // domainValue={watch("domainValue")}
+            // applicationValue={watch("applicationValue")}
+            // setValue={setValue}
+            row={row}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionTwo}
             // disableButton={!onClick}
           />
         </AccordionDetails>
