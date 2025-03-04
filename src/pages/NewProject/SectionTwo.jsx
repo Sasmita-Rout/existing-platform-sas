@@ -1,51 +1,82 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import { Filter } from "../../components/molecules/index";
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import EmergencyIcon from '@mui/icons-material/Emergency';
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import EmergencyIcon from "@mui/icons-material/Emergency";
+import { DropdownCustom } from "../../components/atoms/DropdownCustom";
 
-export default function SectionTwo(props) {
-    const { domainInput, applicationInput, domainValue, applicationValue, setValue, disableButton } = props
+export default function SectionTwo({ onSelectedValuesChange,
+    row,
+    viewProject, ...props }) {
 
-    const domainPlaceholder = 'Select Domain';
-    const applicationClassPlaceholder = 'Feature Enhancements, New Production';
+    const [selectedValues, setSelectedValues] = useState({});
+    const [viewValues, setViewValues] = useState({});
+
+    const handleSelect = (key, newValue) => {
+        console.log(key, "key")
+        setSelectedValues((prevValues) => {
+            const updatedValues = { ...prevValues, [key]: newValue };
+            onSelectedValuesChange?.(updatedValues);
+            return updatedValues;
+        });
+    };
+    const handleViewSelect = (key, newValue) => {
+        setViewValues((prevValues) => ({
+            ...prevValues,
+            [key]: newValue,
+        }));
+    };
+
+    useEffect(() => {
+        if (Object.keys(viewValues).length > 0) {
+            onSelectedValuesChange(viewValues);
+        }
+    }, [viewValues]);
+
+
+    const handleFilterSelect = (key, newValue) => {
+        viewProject ? handleViewSelect(key, newValue) : handleSelect(key, newValue);
+    };
+    useEffect(() => {
+        if (viewProject) {
+            setViewValues({
+                domainInput: row["domains"],
+                applicationInput: row["application_class"],
+            });
+        }
+    }, [viewProject, row]);
+
+    const inputs = [
+        { key: 'domainInput', labels: 'Select Domain' },
+        { key: 'applicationInput', labels: 'Appliction Class' },
+    ];
 
     return (
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
             <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-                <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
-                        <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Domain
-                    </Typography>
-                    <Filter
-                        input={domainInput}
-                        onFocus="Select..."
-                        onBlur={domainPlaceholder}
-                        handleOnSelect={(event, newValue) => setValue("domainValue", newValue)}
-                        selectedValues={domainValue}
-                        isMultiSelect={false}
-                        placeholder={domainPlaceholder}
-                        showIcon={false}
-                        // disabled={!disableButton}
-                    />
-                </Box>
-
-                <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
-                        <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Application Class
-                    </Typography>
-                    <Filter
-                        input={applicationInput}
-                        onFocus="Select..."
-                        onBlur={applicationClassPlaceholder}
-                        handleOnSelect={(event, newValue) => setValue("applicationValue", newValue)}
-                        selectedValues={applicationValue}
-                        isMultiSelect={false}
-                        placeholder={applicationClassPlaceholder}
-                        showIcon={false}
-                        // disabled={!disableButton}
-                    />
-                </Box>
+                {inputs.map(({ key, labels }) => (
+                    <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
+                        <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
+                            {labels}
+                            <EmergencyIcon style={{ fontSize: "small", color: "red" }} />
+                        </Typography>
+                        <DropdownCustom
+                            input={props[key] || []}
+                            row={row}
+                            placeholder={labels}
+                            onFocus="Select..."
+                            onBlur={labels}
+                            handleSelect={(newValue) =>
+                                handleFilterSelect(key, newValue)
+                            }
+                            selectedValues={
+                                viewProject ? viewValues[key] : selectedValues[key]
+                            }
+                            onSelectedValuesChange={onSelectedValuesChange}
+                            props={props}
+                        />
+                    </Box>
+                ))}
             </Box>
         </div>
     );

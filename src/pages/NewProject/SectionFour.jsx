@@ -1,17 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography } from "@mui/material";
-import { Filter } from "../../components/molecules/Filter";
+import { DropdownCustom } from "../../components/atoms/DropdownCustom";
 
 const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => {
-  const [selectedValues, setSelectedValues] = React.useState({});
-  const [viewValues, setViewValues] = React.useState({});
+  const [selectedValues, setSelectedValues] = useState({});
+  const [viewValues, setViewValues] = useState({});
 
   const handleSelect = (key, newValue) => {
     setSelectedValues((prevValues) => {
       const updatedValues = { ...prevValues, [key]: newValue };
-      if (onSelectedValuesChange) {
-        onSelectedValuesChange(updatedValues);
-      }
+      onSelectedValuesChange?.(updatedValues);
       return updatedValues;
     });
   };
@@ -25,14 +23,10 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => 
 
   useEffect(() => {
     onSelectedValuesChange(viewValues);
-}, [viewValues])
+  }, [viewValues]);
 
   const handleFilterSelect = (key, newValue) => {
-    if (viewProject) {
-      handleViewSelect(key, newValue);
-    } else {
-      handleSelect(key, newValue);
-    }
+    viewProject ? handleViewSelect(key, newValue) : handleSelect(key, newValue);
   };
 
   useEffect(() => {
@@ -63,15 +57,13 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => 
             <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
               {labels}
             </Typography>
-            <Filter
+            <DropdownCustom
               input={props[key] || []}
+              row={row}
               onFocus="Select..."
               onBlur={labels}
-              handleOnSelect={(event, newValue) => handleFilterSelect(key, newValue)}
+              handleSelect={(newValue) => handleFilterSelect(key, newValue)}
               selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
-              isMultiSelect={false}
-              placeholder={labels}
-              showIcon={false}
             />
           </Box>
         ))}
