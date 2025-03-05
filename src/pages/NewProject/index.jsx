@@ -369,8 +369,7 @@ const NewProject = () => {
     );
 
   const toggleChecked = (prev) => {
-    console.log(checked, "checled", prev);
-    setChecked((prev) => !prev);
+    setChecked(prev.target.checked);
   };
 
   return (
@@ -492,8 +491,8 @@ const NewProject = () => {
           sx={{ marginRight: 30 }}
         >
           <FormControlLabel
-            label={`${checked ? 'Inactive' : 'Active'} `}
-            control={<Switch size="small" value={selectedRow ? selectedRow.status : false} onChange={toggleChecked} />}
+            label={`${checked === true ? 'Active' : 'Inactive'} `}
+            control={<Switch size="small" value={row.status ? row.status : checked} onChange={toggleChecked} />}
           />
           <Button
             variant="outlined"
