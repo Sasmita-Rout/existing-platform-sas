@@ -58,7 +58,7 @@ const NewProject = () => {
     defaultValues: {
       open: false,
       openPlatFormReport: false,
-      allSelectedValuesTwo:{},
+      allSelectedValuesTwo: {},
       allSelectedValues: {},
       allSelectedValuesFour: {},
       allSelectedValuesFive: {},
@@ -215,15 +215,16 @@ const NewProject = () => {
   };
 
   const handleOpenDialog = () => {
+    const sectionTwoValues = watch("allSelectedValuesTwo");
     const requiredFields = [
       watch("buhValue"),
       watch("accountValue"),
       watch("ddValue"),
       watch("projectName") && watch("projectName").trim(),
-      watch("allSelectedValuesTwo"),
+      sectionTwoValues?.domainInput, // Check individual fields directly
+      sectionTwoValues?.applicationInput,
       watch("domainValue"),
       watch("applicationValue"),
-      // , watch("sowStartDate"), watch("sowEndDate"), watch("sowSelectedFile")
     ];
 
     const fieldNames = {
@@ -231,17 +232,16 @@ const NewProject = () => {
       accountValue: "Account",
       ddValue: "DD",
       projectName: "Project Name",
-      domainValue: "Domain",
-      applicationValue: "Application",
-      // sowStartDate: "Upload SOW Start Date",
-      // sowEndDate: "Upload SOW End Date",
-      // sowSelectedFile: "Upload SOW Select File"
+      domainInput: "Domain",
+      applicationInput: "Application",
     };
 
     // Identify missing required fields
     const nullValues = requiredFields
       .map((field, index) =>
-        field === null || field === "" ? Object.keys(fieldNames)[index] : ""
+        field === null || field === "" || field === undefined
+          ? Object.keys(fieldNames)[index]
+          : ""
       )
       .filter(Boolean);
 
@@ -257,10 +257,13 @@ const NewProject = () => {
       watch("accountValue") === null ||
       watch("ddValue") === null ||
       watch("projectName").trim() === "" ||
-      watch("projectName").trim() === null
-      // watch("allSelectedValuesTwo") === null ||{}
+      watch("projectName").trim() === null ||
+      !sectionTwoValues || // Check if sectionTwoValues is missing
+      sectionTwoValues.domainInput === null ||
+      sectionTwoValues.domainInput === undefined ||
+      sectionTwoValues.applicationInput === null ||
+      sectionTwoValues.applicationInput === undefined
     ) {
-      //  || watch("sowStartDate") === null || watch("sowEndDate") === null || watch("sowSelectedFile") === null) {
       setValue("errorDailogBox", true);
     } else {
       setValue("openDialog", true);
@@ -492,7 +495,7 @@ const NewProject = () => {
         >
           <FormControlLabel
             label={`${checked === true ? 'Active' : 'Inactive'} `}
-            control={<Switch size="small" value={row.status ? row.status : checked} onChange={toggleChecked} />}
+            control={<Switch size="small" value={row?.status ? row?.status : checked} onChange={toggleChecked} />}
           />
           <Button
             variant="outlined"
@@ -707,7 +710,7 @@ const NewProject = () => {
             // setValue={setValue}
             row={row}
             onSelectedValuesChange={handleSelectedValuesChangeSectionTwo}
-            // disableButton={!onClick}
+          // disableButton={!onClick}
           />
         </AccordionDetails>
       </Accordion>
