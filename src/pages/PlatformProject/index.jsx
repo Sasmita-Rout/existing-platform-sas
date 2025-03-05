@@ -243,7 +243,6 @@ const PlatformProject = () => {
       const updatedData = response.records.map((item, index) => ({
         ...item,
       }));
-      console.log('2');
       setTableData({
         records: updatedData,
         total_pages: response.total_pages,
@@ -285,7 +284,6 @@ const PlatformProject = () => {
             null,
             "GET"
           );
-          console.log('3');
           setsearchResponse(response);
           if (response) {
             setAccountNameCount(response["account_name_count"]);
@@ -326,7 +324,6 @@ const PlatformProject = () => {
             null,
             "GET"
           );
-          console.log('1');
           setAdvanceSearch(false);
 
           const updatedData = response.records.map((item, index) => ({
