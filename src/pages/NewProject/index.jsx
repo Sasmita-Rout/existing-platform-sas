@@ -109,6 +109,20 @@ const NewProject = () => {
       aiMachineLearningTechnologies: [],
       userFeedbackAnalyticsTools: [],
       lowCodeEnvironments: [],
+      cybersecurityTechnologies: [],
+      containerizationOrchestration: [],
+      serverlessComputing: [],
+      headlessCms: [],
+      architectureMethodology: [],
+      designPatterns: [],
+      developmentMaturityAssessment: [],
+      softwareCompositionAnalysis: [],
+      apiTestingTools: [],
+      behavioralTestingTools: [],
+      deploymentMethodologies: [],
+      cicdTools: [],
+      alertingTools: [],
+      dependencyAnalysis: [],
       buhValue: null,
       accountValue: null,
       ddValue: null,
@@ -182,6 +196,20 @@ const NewProject = () => {
     user_feedback_analytics_tools: (value) =>
       setValue("userFeedbackAnalyticsTools", value),
     low_code_environments: (value) => setValue("lowCodeEnvironments", value),
+    cybersecurity_technologies: (value) => setValue("cybersecurityTechnologies",value),
+    containerization_orchestration: (value) => setValue("containerizationOrchestration",value),
+    serverless_computing: (value) => setValue("serverlessComputing",value),
+    headless_cms: (value) => setValue("headlessCms",value),
+    architecture_methodology: (value) => setValue("architectureMethodology",value),
+    design_patterns: (value) => setValue("designPatterns",value),
+    development_maturity_assessment: (value) => setValue("developmentMaturityAssessment",value),
+    software_composition_analysis: (value) => setValue("softwareCompositionAnalysis",value),
+    api_testing_tools: (value) => setValue("apiTestingTools",value),
+    behavioral_testing_tools: (value) => setValue("behavioralTestingTools",value),
+    deployment_methodologies: (value) => setValue("deploymentMethodologies",value),
+    cicd_tools: (value) => setValue("cicdTools",value),
+    alerting_tools: (value) => setValue("alertingTools",value),
+    dependency_analysis: (value) => setValue("dependencyAnalysis",value),
   };
   useEffect(() => {
     if (onClick) {
@@ -792,6 +820,21 @@ const NewProject = () => {
             codeQualityTools={watch("codeQualityTools")}
             testCoverage={watch("testCoverage")}
             productivityMeasurement={watch("productivityMeasurement")}
+            cybersecurityTechnologies={watch("cybersecurityTechnologies")}
+            containerizationOrchestration={watch("containerizationOrchestration")}
+            serverlessComputing={watch("serverlessComputing")}
+            headlessCms={watch("headlessCms")}
+            architectureMethodology={watch("architectureMethodology")}
+            designPatterns={watch("designPatterns")}
+            developmentMaturityAssessment={watch("developmentMaturityAssessment")}
+            softwareCompositionAnalysis={watch("softwareCompositionAnalysis")}
+            apiTestingTools={watch("apiTestingTools")}
+            behavioralTestingTools={watch("behavioralTestingTools")}
+            deploymentMethodologies={watch("deploymentMethodologies")}
+            cicdTools={watch("cicdTools")}
+            alertingTools={watch("alertingTools")}
+            dependencyAnalysis={watch("dependencyAnalysis")}
+            versionControlSystemVcs={watch("versionControlSystemVcs")}
             tracing={watch("tracing")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionThree}
           />

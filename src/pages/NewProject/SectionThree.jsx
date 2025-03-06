@@ -75,6 +75,21 @@ export default function SectionThree({
         testCoverage: row["test_coverage"],
         productivityMeasurement: row["productivity_measurement"],
         tracing: row["tracing"],
+        cybersecurityTechnologies: row["cybersecurity_technologies"],
+        containerizationOrchestration: row["containerization_orchestration"],
+        serverlessComputing: row["serverless_computing"],
+        headlessCms: row["headless_cms"],
+        architectureMethodology: row["architecture_methodology"],
+        designPatterns: row["design_patterns"],
+        developmentMaturityAssessment: row["development_maturity_assessment"],
+        softwareCompositionAnalysis: row["software_composition_analysis"],
+        apiTestingTools: row["api_testing_tools"],
+        behavioralTestingTools: row["behavioral_testing_tools"],
+        deploymentMethodologies: row["deployment_methodologies"],
+        cicdTools: row["cicd_tools"],
+        alertingTools: row["alerting_tools"],
+        dependencyAnalysis: row["dependency_analysis"],
+        versionControlSystemVcs: row["version_control_system_vcs"],
       };
       setViewValues(updatedValues);
     }
@@ -119,6 +134,41 @@ export default function SectionThree({
     { key: "testCoverage", labels: "Select Test Coverage" },
     { key: "productivityMeasurement", labels: "Select Productive Measurement" },
     { key: "tracing", labels: "Select Tracing" },
+    {
+      key: "cybersecurityTechnologies",
+      labels: "Select Cybersecurity Technologies",
+    },
+    {
+      key: "containerizationOrchestration",
+      labels: "Select Containerization Orchestration",
+    },
+    { key: "serverlessComputing", labels: "Select Serverless Computing" },
+    { key: "headlessCms", labels: "Select Headless Cms" },
+    {
+      key: "architectureMethodology",
+      labels: "Select Architecture Methodology",
+    },
+    { key: "designPatterns", labels: "Select Design Patterns" },
+    {
+      key: "developmentMaturityAssessment",
+      labels: "Select Development Maturity Assessment",
+    },
+    {
+      key: "softwareCompositionAnalysis",
+      labels: "Select Software Composition Analysis",
+    },
+    { key: "apiTestingTools", labels: "Select API Testing Tools" },
+    {
+      key: "behavioralTestingTools",
+      labels: "Select Behavioral Testing Tools",
+    },
+    {
+      key: "deploymentMethodologies",
+      labels: "Select Deployment Methodologies",
+    },
+    { key: "cicdTools", labels: "Select CI/CD Tools" },
+    { key: "alertingTools", labels: "Select Alerting Tools" },
+    { key: "dependencyAnalysis", labels: "Select Dependency Analysis" },
   ];
 
   return (
