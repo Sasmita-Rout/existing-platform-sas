@@ -8,10 +8,12 @@ export default function SectionThree({
   viewProject,
   disableButton,
   onSelectedValuesChange,
+  onSelectedViewValuesChange,
   ...props
 }) {
   const [selectedValues, setSelectedValues] = React.useState({});
   const [viewValues, setViewValues] = React.useState({});
+  const [updateValues, setUpdateValues] = React.useState({})
 
   const handleSelect = (key, newValue) => {
     setSelectedValues((prevValues) => {
@@ -24,10 +26,11 @@ export default function SectionThree({
   };
 
   const handleViewSelect = (key, newValue) => {
-    setViewValues((prevValues) => ({
-      ...prevValues,
-      [key]: newValue,
-    }));
+    setUpdateValues((prevValues) => {
+      const updatedValues = { ...prevValues, [key]: newValue }; // Update only selected dropdowns
+      onSelectedViewValuesChange?.(updatedValues); // Send only the latest selections
+      return updatedValues;
+    });
   };
 
   useEffect(() => {

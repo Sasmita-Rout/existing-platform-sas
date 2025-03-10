@@ -5,15 +5,15 @@ import Typography from "@mui/material/Typography";
 import EmergencyIcon from "@mui/icons-material/Emergency";
 import { DropdownCustom } from "../../components/atoms/DropdownCustom";
 
-export default function SectionTwo({ onSelectedValuesChange,
+export default function SectionTwo({ onSelectedValuesChange, onSelectedViewValuesChange,
     row,
     viewProject, ...props }) {
 
     const [selectedValues, setSelectedValues] = useState({});
     const [viewValues, setViewValues] = useState({});
+    const [updateValues, setUpdateValues] = useState({})
 
     const handleSelect = (key, newValue) => {
-        console.log(key, "key")
         setSelectedValues((prevValues) => {
             const updatedValues = { ...prevValues, [key]: newValue };
             onSelectedValuesChange?.(updatedValues);
@@ -21,11 +21,12 @@ export default function SectionTwo({ onSelectedValuesChange,
         });
     };
     const handleViewSelect = (key, newValue) => {
-        setViewValues((prevValues) => ({
-            ...prevValues,
-            [key]: newValue,
-        }));
-    };
+        setUpdateValues((prevValues) => {
+          const updatedValues = { ...prevValues, [key]: newValue }; // Update only selected dropdowns
+          onSelectedViewValuesChange?.(updatedValues); // Send only the latest selections
+          return updatedValues;
+        });
+      };
 
     useEffect(() => {
         if (Object.keys(viewValues).length > 0) {
