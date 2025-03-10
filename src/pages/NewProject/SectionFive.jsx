@@ -3,11 +3,12 @@ import { Box, Typography } from "@mui/material";
 import { Filter } from "../../components/molecules/Filter";
 import { DropdownCustom } from "../../components/atoms/DropdownCustom";
 
-const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, ...props }) => {
+const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, onSelectedViewValuesChange, ...props }) => {
 
   // Handler for single select autocomplete
   const [selectedValues, setSelectedValues] = React.useState({});
   const [viewValues, setViewValues] = React.useState({});
+  const [updatedValues, setUpdateValues] = React.useState({});
 
   const handleSelect = (key, newValue) => {
     setSelectedValues((prevValues) => {
@@ -20,10 +21,11 @@ const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, 
   };
 
   const handleViewSelect = (key, newValue) => {
-    setViewValues((prevValues) => ({
-      ...prevValues,
-      [key]: newValue,
-    }));
+    setUpdateValues((prevValues) => {
+      const updatedValues = { ...prevValues, [key]: newValue }; // Update only selected dropdowns
+      onSelectedViewValuesChange?.(updatedValues); // Send only the latest selections
+      return updatedValues;
+    });
   };
 
   const handleFilterSelect = (key, newValue) => {

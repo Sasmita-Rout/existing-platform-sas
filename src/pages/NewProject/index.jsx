@@ -58,6 +58,11 @@ const NewProject = () => {
     defaultValues: {
       open: false,
       openPlatFormReport: false,
+      updatedValuesTwo:{},
+      updatedValuesFour: {},
+      updatedValuesThree: {},
+      updatedValuesFive: {},
+      updatedValuesSix: {},
       allSelectedValuesTwo: {},
       allSelectedValues: {},
       allSelectedValuesFour: {},
@@ -196,20 +201,20 @@ const NewProject = () => {
     user_feedback_analytics_tools: (value) =>
       setValue("userFeedbackAnalyticsTools", value),
     low_code_environments: (value) => setValue("lowCodeEnvironments", value),
-    cybersecurity_technologies: (value) => setValue("cybersecurityTechnologies",value),
-    containerization_orchestration: (value) => setValue("containerizationOrchestration",value),
-    serverless_computing: (value) => setValue("serverlessComputing",value),
-    headless_cms: (value) => setValue("headlessCms",value),
-    architecture_methodology: (value) => setValue("architectureMethodology",value),
-    design_patterns: (value) => setValue("designPatterns",value),
-    development_maturity_assessment: (value) => setValue("developmentMaturityAssessment",value),
-    software_composition_analysis: (value) => setValue("softwareCompositionAnalysis",value),
-    api_testing_tools: (value) => setValue("apiTestingTools",value),
-    behavioral_testing_tools: (value) => setValue("behavioralTestingTools",value),
-    deployment_methodologies: (value) => setValue("deploymentMethodologies",value),
-    cicd_tools: (value) => setValue("cicdTools",value),
-    alerting_tools: (value) => setValue("alertingTools",value),
-    dependency_analysis: (value) => setValue("dependencyAnalysis",value),
+    cybersecurity_technologies: (value) => setValue("cybersecurityTechnologies", value),
+    containerization_orchestration: (value) => setValue("containerizationOrchestration", value),
+    serverless_computing: (value) => setValue("serverlessComputing", value),
+    headless_cms: (value) => setValue("headlessCms", value),
+    architecture_methodology: (value) => setValue("architectureMethodology", value),
+    design_patterns: (value) => setValue("designPatterns", value),
+    development_maturity_assessment: (value) => setValue("developmentMaturityAssessment", value),
+    software_composition_analysis: (value) => setValue("softwareCompositionAnalysis", value),
+    api_testing_tools: (value) => setValue("apiTestingTools", value),
+    behavioral_testing_tools: (value) => setValue("behavioralTestingTools", value),
+    deployment_methodologies: (value) => setValue("deploymentMethodologies", value),
+    cicd_tools: (value) => setValue("cicdTools", value),
+    alerting_tools: (value) => setValue("alertingTools", value),
+    dependency_analysis: (value) => setValue("dependencyAnalysis", value),
   };
   useEffect(() => {
     if (onClick) {
@@ -229,19 +234,33 @@ const NewProject = () => {
   const handleSelectedValuesChangeSectionTwo = (selectedValues) => {
     setValue("allSelectedValuesTwo", selectedValues);
   };
+  const handleSelectedViewValuesChangeSectionTwo = (selectedValues) => {
+    setValue("updatedValuesTwo", selectedValues);
+  };
   const handleSelectedValuesChangeSectionThree = (selectedValues) => {
     setValue("allSelectedValues", selectedValues);
+  };
+  const handleSelectedViewValuesChangeSectionThree = (selectedValues) => {
+    setValue("updatedValuesThree", selectedValues);
   };
   const handleSelectedValuesChangeSectionFour = (selectedValues) => {
     setValue("allSelectedValuesFour", selectedValues);
   };
+  const handleSelectedViewValuesChangeSectionFour = (selectedValues) => {
+    setValue("updatedValuesFour", selectedValues);
+  };
   const handleSelectedValuesChangeSectionFive = (selectedValues) => {
     setValue("allSelectedValuesFive", selectedValues);
+  };
+  const handleSelectedViewValuesChangeSectionFive = (selectedValues) => {
+    setValue("updatedValuesFive", selectedValues);
   };
   const handleSelectedValuesChangeSectionSix = (selectedValues) => {
     setValue("allSelectedValuesSix", selectedValues);
   };
-
+  const handleSelectedViewValuesChangeSectionSix = (selectedValues) => {
+    setValue("updatedValuesSix", selectedValues);
+  };
   const handleOpenDialog = () => {
     const sectionTwoValues = watch("allSelectedValuesTwo");
     const requiredFields = [
@@ -372,11 +391,11 @@ const NewProject = () => {
       watch("ddValue"),
       // watch("domainValue"),
       // watch("applicationValue"),
-      watch("allSelectedValuesTwo"),
-      watch("allSelectedValues"),
-      watch("allSelectedValuesFour"),
-      watch("allSelectedValuesFive"),
-      watch("allSelectedValuesSix"),
+      watch("updatedValuesTwo"),
+      watch("updatedValuesFour"),
+      watch("updatedValuesThree"),
+      watch("updatedValuesFive"),
+      watch("updatedValuesSix"),
       checked
     );
     if (response.project_id) {
@@ -738,6 +757,7 @@ const NewProject = () => {
             // setValue={setValue}
             row={row}
             onSelectedValuesChange={handleSelectedValuesChangeSectionTwo}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionTwo}
           // disableButton={!onClick}
           />
         </AccordionDetails>
@@ -837,6 +857,7 @@ const NewProject = () => {
             versionControlSystemVcs={watch("versionControlSystemVcs")}
             tracing={watch("tracing")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionThree}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionThree}
           />
         </AccordionDetails>
       </Accordion>
@@ -900,6 +921,7 @@ const NewProject = () => {
               "devopsInfrastructureAsCodeIac"
             )}
             onSelectedValuesChange={handleSelectedValuesChangeSectionFour}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionFour}
           />
         </AccordionDetails>
       </Accordion>
@@ -952,6 +974,7 @@ const NewProject = () => {
             AnalyticsReporting={watch("analyticsReporting")}
             SelectUserFeedbackandAnalytics={watch("userFeedbackAnalyticsTools")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionFive}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionFive}
           />
         </AccordionDetails>
       </Accordion>
@@ -1005,6 +1028,7 @@ const NewProject = () => {
               "aiMachineLearningTechnologies"
             )}
             onSelectedValuesChange={handleSelectedValuesChangeSectionSix}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionSix}
           />
         </AccordionDetails>
       </Accordion>
