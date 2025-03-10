@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography } from "@mui/material";
 import { DropdownCustom } from "../../components/atoms/DropdownCustom";
 
-const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => {
+const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewValuesChange, ...props }) => {
   const [selectedValues, setSelectedValues] = useState({});
   const [viewValues, setViewValues] = useState({});
+  const [updateValues, setUpdateValues] = useState({})
 
   const handleSelect = (key, newValue) => {
+
     setSelectedValues((prevValues) => {
       const updatedValues = { ...prevValues, [key]: newValue };
       onSelectedValuesChange?.(updatedValues);
@@ -15,11 +17,16 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, ...props }) => 
   };
 
   const handleViewSelect = (key, newValue) => {
-    setViewValues((prevValues) => ({
-      ...prevValues,
-      [key]: newValue,
-    }));
+    setUpdateValues((prevValues) => {
+      const updatedValues = { ...prevValues, [key]: newValue }; // Update only selected dropdowns
+      onSelectedViewValuesChange?.(updatedValues); // Send only the latest selections
+      return updatedValues;
+    });
   };
+  
+  
+  
+
 
   useEffect(() => {
     onSelectedValuesChange(viewValues);
