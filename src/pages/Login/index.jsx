@@ -1,34 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
 import Cookies from "js-cookie";
 import { useUserStore } from "../../zustand/index";
-import { Box, Paper, Typography } from "@mui/material";
-import GoogleIcon from "../../assets/icons/Google_Icons.png";
+import { Box, Paper, Typography, Button } from "@mui/material";
 import theme from "../../modules/styles/theme";
+import { PublicClientApplication } from "@azure/msal-browser";
+import { FaMicrosoft } from 'react-icons/fa';
 
+const msalConfig = {
+  auth: {
+    clientId: "34c2bfbb-a701-4594-a453-bf0893d30b67",
+    authority:
+      "https://login.microsoftonline.com/9e19c113-9fbf-4030-b93e-10fc81bd1965",
+    redirectUri: window.location.origin,
+  },
+};
+
+const msalInstance = new PublicClientApplication(msalConfig);
 const LoginPage = () => {
   const navigate = useNavigate();
   const { setUser } = useUserStore();
+  const [error, setError] = useState(null);
+  const handleLogin = async () => {
+    try {
+      const loginResponse = await msalInstance.loginPopup({
+        scopes: ["openid", "profile", "email", "User.Read"],
+      });
+      const accessToken = loginResponse.accessToken;
 
-  const handleSuccess = async (response) => {
-    if (response?.credential) {
-      Cookies.set("pmoUser", response?.credential, { expires: 0.5 });
-      const userData = await JSON.parse(
-        atob(response?.credential.split(".")[1])
-      );
-      if (userData.name) {
-        setUser(userData);
+      if (!accessToken) throw new Error("Access token not found.");
+
+      console.log("Access Token:", accessToken);
+
+      const userInfo = await fetch("https://graph.microsoft.com/v1.0/me", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }).then((res) => res.json());
+
+      console.log("User info:", userInfo);
+
+      if (userInfo.mail && userInfo.mail.endsWith("@accionlabs.com")) {
+        setUser(userInfo);
+        Cookies.set("pmoUser", userInfo, { expires: 0.5 });
+        console.log("Navigating to PlatformProject page");
         navigate("/PlatformProject");
       } else {
-        navigate("/");
+        setError("Please sign in with an @accionlabs.com account.");
       }
+    } catch (error) {
+      console.error("Error occurred:", error);
+      setError("An error occurred while signing in.");
     }
-  };
-
-  const handleError = () => {
-    console.log("Login Failed");
-    navigate("/PageNotFound");
   };
 
   return (
@@ -43,14 +64,8 @@ const LoginPage = () => {
         sx={{ padding: 4, textAlign: "center", maxWidth: 400 }}
       >
         <Box display="flex" justifyContent="center" alignItems="center" mb={3}>
-          <img
-            src={GoogleIcon}
-            alt="Google Icon"
-            width={40}
-            style={{ marginRight: 8 }}
-          />
           <Typography variant="h6" gutterBottom>
-            Sign in with Google
+            Sign in with Microsoft
           </Typography>
         </Box>
 
@@ -67,13 +82,10 @@ const LoginPage = () => {
             PMO Intranet
           </Typography>
         </Typography>
-
-        <GoogleLogin
-          onSuccess={handleSuccess}
-          onError={handleError}
-          ux_mode="popup"
-          sx={{ mt: 2 }}
-        />
+        <Button sx={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px', background: '#F3F3F3', color: 'black', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }} onClick={handleLogin}> <FaMicrosoft size={20} /> Sign in with Microsoft</Button>       
+        <Typography>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+        </Typography>
       </Paper>
     </Box>
   );
