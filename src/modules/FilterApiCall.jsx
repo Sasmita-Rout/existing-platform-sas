@@ -78,7 +78,7 @@ export const addNewProject = async (
         `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
     const url = `platform_data/create_project/`;
     const data = {
-        submitter_email_id: pmoUser["email"],
+        submitter_email_id: pmoUser["mail"],
         submitting_time: formattedDateTime,
         account_name: accountName || "",
         project_name: projectName || "",
@@ -162,7 +162,7 @@ export const updateProject = async (
         `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
     const url = `update_project/${id}`;
     const data = {
-        submitter_email_id: pmoUser["email"],
+        submitter_email_id: pmoUser["mail"],
         submitting_time: formattedDateTime,
         account_name: accountName || "",
         project_name: projectName || "",
