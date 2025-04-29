@@ -34,7 +34,7 @@ const NAVIGATION = [
   // { title: "PMO Dashboard", icon: <DashboardIcon />, path: "/pmo-dashboard" },
   // { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
   { title: "Platform Data", icon: <LayersIcon />, path: "/PlatformProject" },
-  { title: "Portfolio", icon: <LayersIcon />, path: "/portfolio" },
+  { title: "Portfolio", icon: <LayersIcon />, path: 'https://intranet.accionlabs.com/pmo_portfolio/#/portfolio' },
   // { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" },
 ];
 
@@ -54,7 +54,13 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
   };
 
   const handleNavItemClick = (path) => {
-    navigate(path);
+    if (path.startsWith('http')) {
+      // External navigation
+      window.location.href = path;
+    } else {
+      // Internal route using react-router
+      navigate(path);
+    }
   };
   const handleLogoutClick = () => {
     setPlatFormReport(true);
@@ -110,7 +116,7 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
               title={item.title}
               path={item.path}
               isExpanded={isExpanded}
-              isActive={location.pathname === item.path}
+              isActive={!item.path.startsWith('http') && location.pathname === item.path}
               onClick={() => handleNavItemClick(item.path)}
             />
           ))}
@@ -154,7 +160,7 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
             path="#notifications"
             isExpanded={isExpanded}
             isActive={false}
-            onClick={() => {}}
+            onClick={() => { }}
           />
 
           <NavItem
