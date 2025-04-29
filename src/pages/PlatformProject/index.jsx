@@ -441,13 +441,23 @@ const PlatformProject = () => {
                 <PrimaryButton
                   startIcon={<PieChart />}
                   sx={{ marginBottom: "4px" }}
-                  onClick={() => setPlatFormReport(true)}
+                  onClick={() =>
+                    window.open(
+                      "https://lookerstudio.google.com/reporting/39a93a62-f2ad-481e-aa2d-d7160ab8b49f",
+                      "_blank"
+                    )
+                  }
                 >
                   Platform Related Data Reports
                 </PrimaryButton>
                 <PrimaryButton
                   startIcon={<PieChart />}
-                  onClick={() => setPlatFormReport(true)}
+                  onClick={() =>
+                    window.open(
+                      "https://lookerstudio.google.com/reporting/39a93a62-f2ad-481e-aa2d-d7160ab8b49f/page/p_07agtmdvrd",
+                      "_blank"
+                    )
+                  }
                 >
                   Tools and Metrics Data Reports
                 </PrimaryButton>
@@ -497,24 +507,6 @@ const PlatformProject = () => {
           </PrimaryButton>
         </DialogBox>
       </Box>
-      <DialogBox
-        size="xl"
-        openDialog={openPlatFormReport}
-        closeDialog={() => setPlatFormReport(false)}
-      >
-        <Box height={"60vh"}>
-          <iframe
-            width="100%"
-            height="100%"
-            // src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_3bucp9nmjd?embedded=true"
-            src="https://lookerstudio.google.com/reporting/39a93a62-f2ad-481e-aa2d-d7160ab8b49f"
-            frameborder="0"
-            style={{ border: "0" }}
-            allowfullscreen
-            sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-          ></iframe>
-        </Box>
-      </DialogBox>
     </Box>
     // </RequestErrorLoader>
   );
