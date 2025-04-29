@@ -506,7 +506,8 @@ const PlatformProject = () => {
           <iframe
             width="100%"
             height="100%"
-            src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_3bucp9nmjd?embedded=true"
+            // src="https://lookerstudio.google.com/embed/reporting/abd6444f-b303-4398-a204-fcaa62d393f1/page/p_3bucp9nmjd?embedded=true"
+            src="https://lookerstudio.google.com/reporting/39a93a62-f2ad-481e-aa2d-d7160ab8b49f"
             frameborder="0"
             style={{ border: "0" }}
             allowfullscreen
