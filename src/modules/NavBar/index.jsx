@@ -42,10 +42,20 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
   const [openPlatFormReport, setPlatFormReport] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const userEmail = sessionStorage.getItem("userEmail")
   const { pmoUser, logout } = useUserStore();
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      // await msalInstance.logoutPopup(); // or logoutRedirect()
+      sessionStorage.removeItem("userEmail"); // ✅ Clear on logout
+      // Cookies.remove("pmoUser");
+      navigate("/login"); // or wherever your login page is
+      logout();
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+    
+    
   };
 
   const toggleDrawer = () => {
@@ -151,7 +161,7 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
               textOverflow: "ellipsis",
             }}
           >
-            {pmoUser?.name || "Guest"}
+            { userEmail ? pmoUser?.name || userEmail : "Guest"}
           </Typography>
 
           <NavItem
