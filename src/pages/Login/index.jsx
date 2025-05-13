@@ -36,7 +36,6 @@ const LoginPage = () => {
       }).then((res) => res.json());
 
       const email = userInfo.mail || userInfo.userPrincipalName;
-      console.log("Logged in with email:", email); // ✅ Console log email
       sessionStorage.setItem("userEmail", email); // ✅ Store email
 
 

@@ -46,9 +46,7 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
   const { pmoUser, logout } = useUserStore();
   const handleLogout = async () => {
     try {
-      // await msalInstance.logoutPopup(); // or logoutRedirect()
       sessionStorage.removeItem("userEmail"); // ✅ Clear on logout
-      // Cookies.remove("pmoUser");
       navigate("/login"); // or wherever your login page is
       logout();
     } catch (err) {
