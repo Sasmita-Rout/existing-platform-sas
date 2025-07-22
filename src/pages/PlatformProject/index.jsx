@@ -436,11 +436,11 @@ const PlatformProject = () => {
               onProjectChange={setProjectSelected} // callback for Project change
             />
             <Stack mt={2} direction="row" justifyContent="space-between">
-              <Boxes boxes={boxes} />
-              <Stack width={200}>
+              {/* <Boxes boxes={boxes} /> */}
+              <Stack display={"inline-block"} >
                 <PrimaryButton
                   startIcon={<PieChart />}
-                  sx={{ marginBottom: "4px" }}
+                  sx={{ mr: 2 }}
                   onClick={() =>
                     window.open(
                       "https://lookerstudio.google.com/reporting/39a93a62-f2ad-481e-aa2d-d7160ab8b49f",

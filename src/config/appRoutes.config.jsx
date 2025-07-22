@@ -11,14 +11,14 @@ import {
 } from "../pages";
 
 export const appRoutes = [
-  {
-    path: "/login",
-    element: <LoginPage />,
-    index: true,
-  },
-  {
-    element: <PrivateRoute />,
-    children: [
+  // {
+  //   path: "/login",
+  //   element: <LoginPage />,
+  //   index: true,
+  // },
+  // {
+    // element: <PrivateRoute />,
+    // children: [
       {
         path: "/home",
         element: <HomePage />,
@@ -43,8 +43,8 @@ export const appRoutes = [
         path: "/PlatformProject/NewProject",
         element: <NewProject />,
       },
-    ],
-  },
+    // ],
+  // },
   {
     path: "*",
     element: <PageNotFound />,
