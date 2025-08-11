@@ -7,4 +7,7 @@ export default defineConfig({
   build: {
     outDir: "build", // or 'dist' based on your preference
   },
+  optimizeDeps: {
+    include: ['@azure/msal-browser'],
+  },
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useUserStore } from "../../zustand";
@@ -20,12 +20,29 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { setUser } = useUserStore();
   const [error, setError] = useState(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Initialize MSAL instance once on component mount
+  useEffect(() => {
+    msalInstance
+      .initialize()
+      .then(() => setIsInitialized(true))
+      .catch((initError) => {
+        console.error("MSAL initialization failed:", initError);
+        setError("Failed to initialize login system.");
+      });
+  }, []);
 
   const handleLogin = async () => {
+    if (!isInitialized) {
+      setError("Login system not ready yet. Please wait...");
+      return;
+    }
+
     try {
       const loginResponse = await msalInstance.loginPopup({
         scopes: ["openid", "profile", "email", "User.Read"],
-        prompt: "select_account", // ✅ Force account picker every time
+        prompt: "select_account", // force account picker every time
       });
 
       const accessToken = loginResponse.accessToken;
@@ -36,8 +53,7 @@ const LoginPage = () => {
       }).then((res) => res.json());
 
       const email = userInfo.mail || userInfo.userPrincipalName;
-      sessionStorage.setItem("userEmail", email); // ✅ Store email
-
+      sessionStorage.setItem("userEmail", email); // store email
 
       if (email && email.endsWith("@accionlabs.com")) {
         setUser(userInfo);
@@ -71,6 +87,7 @@ const LoginPage = () => {
 
         <Button
           onClick={handleLogin}
+          disabled={!isInitialized}
           sx={{
             mt: 2,
             backgroundColor: "#F3F3F3",
