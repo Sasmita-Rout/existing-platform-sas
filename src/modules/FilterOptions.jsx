@@ -50,6 +50,17 @@ export default function FilterOptions({
         />
       </Grid>
 
+       {/* DD Filter */}
+      <Grid size={2.7}>
+        <Filter
+          input={ddInput}
+          handleOnSelect={(event, newValue) => setDdValue(newValue)} // Direct state update
+          selectedValues={ddValue}
+          isMultiSelect={false}
+          placeholder={ddFilterPlaceholder}
+        />
+      </Grid>
+
       {/* Account Filter */}
       <Grid size={2.7}>
         <Filter
@@ -58,17 +69,6 @@ export default function FilterOptions({
           selectedValues={accountValue}
           isMultiSelect={false}
           placeholder={accountFilterPlaceholder}
-        />
-      </Grid>
-
-      {/* DD Filter */}
-      <Grid size={2.7}>
-        <Filter
-          input={ddInput}
-          handleOnSelect={(event, newValue) => setDdValue(newValue)} // Direct state update
-          selectedValues={ddValue}
-          isMultiSelect={false}
-          placeholder={ddFilterPlaceholder}
         />
       </Grid>
 

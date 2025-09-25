@@ -28,7 +28,24 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                         isMultiSelect={false}
                         placeholder={buhFilterPlaceholder}
                         showIcon={false}
-                        // disabled={!disableButton}
+                    // disabled={!disableButton}
+                    />
+                </Box>
+
+                {/* DD Filter */}
+                <Box sx={{ marginRight: 2 }}>
+                    <Typography variant="subtitle1" gutterBottom sx={{ fontSize: 14 }}>
+                        <EmergencyIcon style={{ fontSize: "small", color: "red" }} />DD
+                    </Typography>
+                    <Filter
+                        input={ddInput}
+                        onFocus='Select...'
+                        onBlur={ddFilterPlaceholder}
+                        handleOnSelect={(event, newValue) => setValue("ddValue", newValue)}
+                        selectedValues={ddValue}
+                        isMultiSelect={false}
+                        placeholder={ddFilterPlaceholder}
+                    // disabled={!disableButton}
                     />
                 </Box>
 
@@ -47,23 +64,6 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                         placeholder={accountFilterPlaceholder}
                         showIcon={false}
                         disabled={!disableButton}
-                    />
-                </Box>
-
-                {/* DD Filter */}
-                <Box sx={{ marginRight: 2 }}>
-                    <Typography variant="subtitle1" gutterBottom sx={{ fontSize: 14 }}>
-                        <EmergencyIcon style={{ fontSize: "small", color: "red" }} />DD
-                    </Typography>
-                    <Filter
-                        input={ddInput}
-                        onFocus='Select...'
-                        onBlur={ddFilterPlaceholder}
-                        handleOnSelect={(event, newValue) => setValue("ddValue", newValue)}
-                        selectedValues={ddValue}
-                        isMultiSelect={false}
-                        placeholder={ddFilterPlaceholder}
-                        // disabled={!disableButton}
                     />
                 </Box>
 
