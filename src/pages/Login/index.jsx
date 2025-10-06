@@ -22,7 +22,6 @@ const LoginPage = () => {
   const [error, setError] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Initialize MSAL instance once on component mount
   useEffect(() => {
     msalInstance
       .initialize()
@@ -42,7 +41,7 @@ const LoginPage = () => {
     try {
       const loginResponse = await msalInstance.loginPopup({
         scopes: ["openid", "profile", "email", "User.Read"],
-        prompt: "select_account", // force account picker every time
+        prompt: "select_account",
       });
 
       const accessToken = loginResponse.accessToken;
@@ -53,7 +52,7 @@ const LoginPage = () => {
       }).then((res) => res.json());
 
       const email = userInfo.mail || userInfo.userPrincipalName;
-      sessionStorage.setItem("userEmail", email); // store email
+      sessionStorage.setItem("userEmail", email);
 
       if (email && email.endsWith("@accionlabs.com")) {
         setUser(userInfo);

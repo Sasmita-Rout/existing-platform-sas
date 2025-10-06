@@ -1,79 +1,203 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography } from "@mui/material";
-import { DropdownCustom } from "../../components/atoms/DropdownCustom";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  ListSubheader,
+  CircularProgress,
+  TextField,
+  Divider,
+} from "@mui/material";
 
-const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewValuesChange, ...props }) => {
+const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewValuesChange }) => {
+  const [options, setOptions] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const [selectedValues, setSelectedValues] = useState({});
   const [viewValues, setViewValues] = useState({});
-  const [updateValues, setUpdateValues] = useState({})
 
-  const handleSelect = (key, newValue) => {
-
-    setSelectedValues((prevValues) => {
-      const updatedValues = { ...prevValues, [key]: newValue };
-      onSelectedValuesChange?.(updatedValues);
-      return updatedValues;
-    });
-  };
-
-  const handleViewSelect = (key, newValue) => {
-    setUpdateValues((prevValues) => {
-      const updatedValues = { ...prevValues, [key]: newValue }; // Update only selected dropdowns
-      onSelectedViewValuesChange?.(updatedValues); // Send only the latest selections
-      return updatedValues;
-    });
-  };
-  
-  
-  
-
+  const inputs = [
+    { key: 'manual_testing_management_tools', labels: 'Select Manual Testing & Mgmt' },
+    { key: 'functional_integration_testing', labels: 'Select Functional and Integration...' },
+    { key: 'performance_load_testing_tools', labels: 'Select Performance and Load Test' },
+    { key: 'application_security_testing_tools', labels: 'Select Application Security Testing' },
+    { key: 'devops_infrastructure_as_code_iac', labels: 'Select DevOps' },
+  ];
 
   useEffect(() => {
-    onSelectedValuesChange(viewValues);
-  }, [viewValues]);
-
-  const handleFilterSelect = (key, newValue) => {
-    viewProject ? handleViewSelect(key, newValue) : handleSelect(key, newValue);
-  };
+    const fetchAll = async () => {
+      try {
+        const results = await Promise.all(
+          inputs.map((input) =>
+            fetch(
+              `https://intranet.accionlabs.com/pmoreporting/platform_data/column_dropdown?dropdown_type=${input.key}`
+            ).then((r) => r.json())
+          )
+        );
+        const dataObj = {};
+        inputs.forEach((input, idx) => {
+          dataObj[input.key] = results[idx]?.values || [];
+        });
+        setOptions(dataObj);
+      } catch (err) {
+        console.error("Error fetching dropdowns:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAll();
+  }, []);
 
   useEffect(() => {
     if (viewProject) {
       setViewValues({
-        SelectManualTestingMgmt: row["manual_testing_management_tools"],
-        FunctionalandIntegration: row["functional_integration_testing"],
-        PerformanceandLoadTest: row["performance_load_testing_tools"],
-        ApplicationSecurityTesting: row["application_security_testing_tools"],
-        devopsInfrastructureAsCodeIac: row["devops_infrastructure_as_code_iac"],
+        manual_testing_management_tools: row["manual_testing_management_tools"] || [],
+        functional_integration_testing: row["functional_integration_testing"] || [],
+        performance_load_testing_tools: row["performance_load_testing_tools"] || [],
+        application_security_testing_tools: row["application_security_testing_tools"] || [],
+        devops_infrastructure_as_code_iac: row["devops_infrastructure_as_code_iac"] || [],
       });
     }
-  }, [viewProject]);
+  }, [viewProject, row]);
 
-  const inputs = [
-    { key: 'SelectManualTestingMgmt', labels: 'Select Manual Testing & Mgmt' },
-    { key: 'FunctionalandIntegration', labels: 'Select Functional and Integration...' },
-    { key: 'PerformanceandLoadTest', labels: 'Select Performance and Load Test' },
-    { key: 'ApplicationSecurityTesting', labels: 'Select Application Security Testing' },
-    { key: 'devopsInfrastructureAsCodeIac', labels: 'Select DevOps' },
+  useEffect(() => {
+    if (viewProject) {
+      onSelectedViewValuesChange?.(viewValues);
+    } else {
+      onSelectedValuesChange?.(selectedValues);
+    }
+  }, [viewValues, selectedValues, viewProject]);
+
+  const handleToggle = (key, item) => {
+    if (viewProject) {
+      setViewValues((prev) => {
+        const oldArr = prev[key] || [];
+        const newArr = oldArr.includes(item)
+          ? oldArr.filter((v) => v !== item)
+          : [...oldArr, item];
+        const updated = { ...prev, [key]: newArr };
+        onSelectedViewValuesChange?.(updated);
+        return updated;
+      });
+    } else {
+      setSelectedValues((prev) => {
+        const oldArr = prev[key] || [];
+        const newArr = oldArr.includes(item)
+          ? oldArr.filter((v) => v !== item)
+          : [...oldArr, item];
+        const updated = { ...prev, [key]: newArr };
+        onSelectedValuesChange?.(updated);
+        return updated;
+      });
+    }
+  };
+
+  const filterItems = (arr) =>
+    arr.filter((item) =>
+      item.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+  const allSelected = [
+    ...new Set([
+      ...(selectedValues.manual_testing_management_tools || []),
+      ...(selectedValues.functional_integration_testing || []),
+      ...(selectedValues.performance_load_testing_tools || []),
+      ...(selectedValues.application_security_testing_tools || []),
+      ...(selectedValues.devops_infrastructure_as_code_iac || []),
+      ...(viewValues.manual_testing_management_tools || []),
+      ...(viewValues.functional_integration_testing || []),
+      ...(viewValues.performance_load_testing_tools || []),
+      ...(viewValues.application_security_testing_tools || []),
+      ...(viewValues.devops_infrastructure_as_code_iac || []),
+    ]),
   ];
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
       <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-        {inputs.map(({ key, labels }) => (
-          <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
-            <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
-              {labels}
-            </Typography>
-            <DropdownCustom
-              input={props[key] || []}
-              row={row}
-              onFocus="Select..."
-              onBlur={labels}
-              handleSelect={(newValue) => handleFilterSelect(key, newValue)}
-              selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
-            />
-          </Box>
-        ))}
+        <Box sx={{ width: 625 }}>
+          <FormControl fullWidth>
+            <InputLabel>QA & DevOps</InputLabel>
+
+            {loading ? (
+              <CircularProgress size={24} />
+            ) : (
+              <Select
+                multiple
+                value={allSelected}
+                renderValue={(selectedVals) => selectedVals.join(", ")}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 400,
+                      width: 400,
+                    },
+                  },
+                }}
+                onClose={(event) => {
+                  if (event?.target?.tagName === 'INPUT') event.stopPropagation();
+                }}
+              >
+                <MenuItem
+                  disableRipple
+                  disableTouchRipple
+                  style={{ cursor: "default" }}
+                  onKeyDown={(e) => e.stopPropagation()}
+                >
+                  <TextField
+                    size="small"
+                    fullWidth
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </MenuItem>
+
+                <Divider />
+
+                {inputs.map((input) => {
+                  const filteredItems = filterItems(options[input.key] || []);
+                  const currentValues = viewProject
+                    ? viewValues[input.key] || []
+                    : selectedValues[input.key] || [];
+
+                  return (
+                    <React.Fragment key={input.key}>
+                      <ListSubheader sx={{ bgcolor: "#f5f5f5" }}>
+                        {input.labels}
+                      </ListSubheader>
+
+                      {filteredItems.length === 0 && (
+                        <MenuItem disabled>
+                          <em>No matches</em>
+                        </MenuItem>
+                      )}
+
+                      {filteredItems.map((item) => {
+                        const checked = currentValues.includes(item);
+                        return (
+                          <MenuItem
+                            key={`${input.key}:${item}`}
+                            value={item}
+                            onClick={() => handleToggle(input.key, item)}
+                          >
+                            <Checkbox checked={checked} />
+                            <ListItemText primary={item} />
+                          </MenuItem>
+                        );
+                      })}
+                    </React.Fragment>
+                  );
+                })}
+              </Select>
+            )}
+          </FormControl>
+        </Box>
       </Box>
     </div>
   );

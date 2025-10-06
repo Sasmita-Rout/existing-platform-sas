@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { Filter } from "../../components/molecules/index";
 import { Box, Typography } from "@mui/material";
 import { DropdownCustom } from "../../components/atoms/DropdownCustom";
 
@@ -27,8 +26,8 @@ export default function SectionSix({
 
   const handleViewSelect = (key, newValue) => {
     setUpdateValues((prevValues) => {
-      const updatedValues = { ...prevValues, [key]: newValue }; // Update only selected dropdowns
-      onSelectedViewValuesChange?.(updatedValues); // Send only the latest selections
+      const updatedValues = { ...prevValues, [key]: newValue };
+      onSelectedViewValuesChange?.(updatedValues);
       return updatedValues;
     });
   };
@@ -40,7 +39,6 @@ export default function SectionSix({
       handleSelect(key, newValue);
     }
   };
-
 
   useEffect(() => {
     if (viewProject) {
@@ -78,21 +76,7 @@ export default function SectionSix({
             <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
               {labels}
             </Typography>
-            {/* <Filter
-              input={props[key] || []}
-              onFocus="Select..."
-              onBlur={labels}
-              handleOnSelect={(event, newValue) =>
-                handleFilterSelect(key, newValue)
-              }
-              selectedValues={
-                viewProject ? viewValues[key] : selectedValues[key]
-              }
-              isMultiSelect={false}
-              placeholder={labels}
-              showIcon={false}
-              // disabled={!disableButton}
-            /> */}
+
             <DropdownCustom
               input={props[key] || []}
               row={row}

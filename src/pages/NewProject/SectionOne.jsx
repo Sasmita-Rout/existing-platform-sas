@@ -30,7 +30,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export default function SectionOne(props) {
-  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, disableButton, accountValue, accountName, projectValue, onSubmit, architectureSelectedFile } = props
+  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, accountValue, accountName, projectValue, onSubmit, architectureSelectedFile } = props
   const { pmoUser } = useUserStore();
   const [uploadFiles, setUploadFiles] = useState();
   const [sowFileName, setsowFileName] = useState(null);
@@ -44,17 +44,15 @@ export default function SectionOne(props) {
 
   async function uploadFile(endpoint, sowFile, archFile) {
     const formData = new FormData();
-    // Append sow_file (either with a file or as empty)
     if (sowFile) {
-      formData.append("sow_file", sowFile, sowFile.name); // With file
+      formData.append("sow_file", sowFile, sowFile.name);
     } else {
-      formData.append("sow_file", ""); // Empty field
+      formData.append("sow_file", "");
     }
-    // Append architecture_file (either with a file or as empty)
     if (archFile) {
-      formData.append("architecture_file", archFile, archFile.name); // With file
+      formData.append("architecture_file", archFile, archFile.name);
     } else {
-      formData.append("architecture_file", ""); // Empty field
+      formData.append("architecture_file", "");
     }
 
     const config = {
@@ -106,7 +104,6 @@ export default function SectionOne(props) {
   const downloadFile = async () => {
     setLoading(true)
     if (sowFileName === null) {
-      // setIsFileFound(false)
       setLoading(false)
       return
     }
@@ -114,15 +111,13 @@ export default function SectionOne(props) {
 
     const url = URL.createObjectURL(file);
 
-    // Trigger download
     const link = document.createElement("a");
     link.href = url;
-    link.download = sowFileName; // Set desired file name
+    link.download = sowFileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    // Clean up URL
     URL.revokeObjectURL(url);
     setLoading(false)
 
@@ -138,15 +133,13 @@ export default function SectionOne(props) {
 
     const url = URL.createObjectURL(file);
 
-    // Trigger download
     const link = document.createElement("a");
     link.href = url;
-    link.download = archFileName; // Set desired file name
+    link.download = archFileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    // Clean up URL
     URL.revokeObjectURL(url);
     setArchLoading(false)
 
@@ -161,13 +154,10 @@ export default function SectionOne(props) {
         const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&start_date=${sowStart}&end_date=${sowEnd}&account_name=${accountValue}&project_name=${projectName}`;
 
         if (file) {
-          setValue("sowSelectedFile", file[0]); // Store file info in state
+          setValue("sowSelectedFile", file[0]);
           if (architectureSelectedFile) {
-            setValue("architectureSelectedFile", archFile[0]); // Store file info in state
-
-            // await uploadFile(url, file[0], archFile[0]);
+            setValue("architectureSelectedFile", archFile[0]);
           }
-          // await uploadFile(url, file[0], null);
         }
         await uploadFile(url, file ? file[0] : null, archFile ? archFile[0] : null);
 
@@ -179,7 +169,6 @@ export default function SectionOne(props) {
 
   return (
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
-      {/* Browse Button and Date Pickers Together */}
       <Box
         sx={{
           display: "flex",
@@ -189,8 +178,7 @@ export default function SectionOne(props) {
           gap: 3,
         }}
       >
-        {/* Browse Button Section */}
-        {!viewProject ?
+        {/* {!viewProject ?
           <>
             <Box
               sx={{
@@ -368,8 +356,8 @@ export default function SectionOne(props) {
               }
             </Box>
           </>
-        }
-        {/* Date Pickers Section */}
+        } */}
+
         <Box
           sx={{
             display: "flex",
@@ -382,11 +370,9 @@ export default function SectionOne(props) {
         >
           <Typography sx={{ fontSize: 14 }} variant="subtitle1">SOW Start Date</Typography>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            {/* {startsowDate} {endsowDate} */}
             {viewProject && startsowDate}
             {!viewProject && <DatePicker
               value={startDate}
-              // disabled={!disableButton}
               onChange={(newValue) => setValue("sowStartDate", newValue)}
               inputFormat="DD-MM-YYYY"
               format="DD-MM-YYYY"
@@ -397,7 +383,6 @@ export default function SectionOne(props) {
             {!viewProject && <DatePicker
               value={endDate}
               minDate={startDate}
-              // disabled={!disableButton}
               onChange={(newValue) => setValue("sowEndDate", newValue)}
               inputFormat="DD-MM-YYYY"
               format="DD-MM-YYYY"

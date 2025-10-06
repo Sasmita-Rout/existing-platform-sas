@@ -14,7 +14,7 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
     return (
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
             <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-                {/* BUH Filter */}
+
                 <Box sx={{ marginRight: 2 }}>
                     <Typography variant="subtitle1" gutterBottom sx={{ fontSize: 14 }}>
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />BUH
@@ -28,11 +28,9 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                         isMultiSelect={false}
                         placeholder={buhFilterPlaceholder}
                         showIcon={false}
-                    // disabled={!disableButton}
                     />
                 </Box>
 
-                {/* DD Filter */}
                 <Box sx={{ marginRight: 2 }}>
                     <Typography variant="subtitle1" gutterBottom sx={{ fontSize: 14 }}>
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />DD
@@ -45,11 +43,9 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                         selectedValues={ddValue}
                         isMultiSelect={false}
                         placeholder={ddFilterPlaceholder}
-                    // disabled={!disableButton}
                     />
                 </Box>
 
-                {/* Account Filter */}
                 <Box sx={{ marginRight: 2 }}>
                     <Typography variant="subtitle1" gutterBottom sx={{ fontSize: 14 }}>
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Account
@@ -67,7 +63,6 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                     />
                 </Box>
 
-                {/* Project Name Filter */}
                 <Box sx={{ marginRight: 2 }}>
                     <Typography variant="subtitle1" gutterBottom sx={{ fontSize: 14 }}>
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Project Name

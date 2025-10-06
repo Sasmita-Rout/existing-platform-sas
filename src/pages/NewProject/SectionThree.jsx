@@ -1,228 +1,445 @@
-import React, { useEffect } from "react";
-import { Filter } from "../../components/molecules/index";
-import { Box, Typography } from "@mui/material";
-import { DropdownCustom } from "../../components/atoms/DropdownCustom";
+// import React, { useEffect, useState } from "react";
+// import {
+//   Box,
+//   FormControl,
+//   InputLabel,
+//   Select,
+//   MenuItem,
+//   Checkbox,
+//   ListItemText,
+//   ListSubheader,
+//   CircularProgress,
+//   TextField,
+//   Divider,
+// } from "@mui/material";
+
+// export default function SectionThree({
+//   row,
+//   viewProject,
+//   onSelectedValuesChange,
+//   onSelectedViewValuesChange,
+// }) {
+//   const [options, setOptions] = useState({});
+//   const [loading, setLoading] = useState(true);
+//   const [searchTerm, setSearchTerm] = useState("");
+
+//   const [selectedValues, setSelectedValues] = useState({});
+//   const [viewValues, setViewValues] = useState({});
+
+//   const inputs = [
+//     { key: "environment", labels: "Select Environment" },
+//     { key: "cloud_technologies", labels: "Select Cloud Technologies" },
+//     { key: "enterprise_platforms", labels: "Select Enterprise Platforms" },
+//     { key: "data_engineering_etl_mdm_tools", labels: "Select Data Engg-ETL & MDM Tools" },
+//     { key: "devops_infrastructure_as_code_iac", labels: "Select DevOps" },
+//     { key: "low_code_environments", labels: "Select Low Code Environments" },
+//     { key: "version_control_system_vcs", labels: "Select VCS" },
+//     { key: "edge_computing", labels: "Select Edge Computing" },
+//     { key: "relational_databases_sql", labels: "Select Relational Databases (SQL)" },
+//     { key: "nosql_databases", labels: "Select NoSQL Databases" },
+//     { key: "in_memory_databases", labels: "Select In-Memory Databases" },
+//     { key: "mobile_cloud_computing", labels: "Select Mobile Cloud Computing" },
+//     { key: "system_monitoring_performance_tools", labels: "Select System Monitoring & Performance" },
+//     { key: "directory_services_identity_management", labels: "Select Directory Services" },
+//     { key: "ides", labels: "Select IDEs" },
+//     { key: "cms_applications", labels: "Select CMS Applications" },
+//     { key: "ipaas_integration_platform_as_a_service", labels: "Select iPaaS" },
+//     { key: "frontend_development", labels: "Select Frontend Development" },
+//     { key: "server_side_backend_frameworks", labels: "Select Server-Side & Back-End" },
+//     { key: "full_stack_development", labels: "Select Full-Stack Development" },
+//     { key: "mobile_development", labels: "Select Mobile Development" },
+//     { key: "api_development_data_access_technologies", labels: "Select API Development & Data Access" },
+//     { key: "application_integration_tools", labels: "Select Application Integration Tools" },
+//     { key: "unit_testing_frameworks", labels: "Select Unit Testing Frameworks" },
+//     { key: "programming_languages", labels: "Select Programming Languages" },
+//     { key: "code_quality_tools", labels: "Select Code Quality Tools" },
+//     { key: "test_coverage", labels: "Select Test Coverage" },
+//     { key: "productivity_measurement", labels: "Select Productivity Measurement" },
+//     { key: "tracing", labels: "Select Tracing" },
+//     { key: "cybersecurity_technologies", labels: "Select Cybersecurity Technologies" },
+//     { key: "containerization_orchestration", labels: "Select Containerization/Orchestration" },
+//     { key: "serverless_computing", labels: "Select Serverless Computing" },
+//     { key: "headless_cms", labels: "Select Headless CMS" },
+//     { key: "architecture_methodology", labels: "Select Architecture Methodology" },
+//     { key: "design_patterns", labels: "Select Design Patterns" },
+//     { key: "development_maturity_assessment", labels: "Select Development Maturity Assessment" },
+//     { key: "software_composition_analysis", labels: "Select Software Composition Analysis" },
+//     { key: "api_testing_tools", labels: "Select API Testing Tools" },
+//     { key: "behavioral_testing_tools", labels: "Select Behavioral Testing Tools" },
+//     { key: "deployment_methodologies", labels: "Select Deployment Methodologies" },
+//     { key: "cicd_tools", labels: "Select CI/CD Tools" },
+//     { key: "alerting_tools", labels: "Select Alerting Tools" },
+//     { key: "dependency_analysis", labels: "Select Dependency Analysis" },
+//   ];
+
+//   useEffect(() => {
+//     const fetchAll = async () => {
+//       try {
+//         const results = await Promise.all(
+//           inputs.map((input) =>
+//             fetch(
+//               `https://intranet.accionlabs.com/pmoreporting/platform_data/column_dropdown?dropdown_type=${input.key}`
+//             ).then((r) => r.json())
+//           )
+//         );
+//         const dataObj = {};
+//         inputs.forEach((input, idx) => {
+//           dataObj[input.key] = results[idx]?.values || [];
+//         });
+//         setOptions(dataObj);
+//       } catch (err) {
+//         console.error("Error fetching dropdowns:", err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchAll();
+//   }, []);
+
+//   useEffect(() => {
+//     if (viewProject) {
+//       const initial = {};
+//       inputs.forEach(({ key }) => {
+//         initial[key] = row[key] || [];
+//       });
+//       setViewValues(initial);
+//     }
+//   }, [viewProject, row]);
+
+//   useEffect(() => {
+//     if (viewProject) {
+//       onSelectedViewValuesChange?.(viewValues);
+//     } else {
+//       onSelectedValuesChange?.(selectedValues);
+//     }
+//   }, [viewValues, selectedValues, viewProject]);
+
+//   const handleToggle = (key, item) => {
+//     if (viewProject) {
+//       setViewValues((prev) => {
+//         const arr = prev[key] || [];
+//         const updatedArr = arr.includes(item)
+//           ? arr.filter((v) => v !== item)
+//           : [...arr, item];
+//         const updated = { ...prev, [key]: updatedArr };
+//         onSelectedViewValuesChange?.(updated);
+//         return updated;
+//       });
+//     } else {
+//       setSelectedValues((prev) => {
+//         const arr = prev[key] || [];
+//         const updatedArr = arr.includes(item)
+//           ? arr.filter((v) => v !== item)
+//           : [...arr, item];
+//         const updated = { ...prev, [key]: updatedArr };
+//         onSelectedValuesChange?.(updated);
+//         return updated;
+//       });
+//     }
+//   };
+
+//   const filterItems = (arr) =>
+//     arr.filter((item) =>
+//       item.toLowerCase().includes(searchTerm.toLowerCase())
+//     );
+
+//   const allSelected = [
+//     ...new Set(
+//       Object.values(viewProject ? viewValues : selectedValues).flat()
+//     ),
+//   ];
+
+//   return (
+//     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", marginTop: "15px" }}>
+//       <Box sx={{ display: "flex", flex: 1, flexWrap: "wrap", alignItems: "center" }}>
+//         <Box sx={{ width: 625 }}>
+//           <FormControl fullWidth>
+//             <InputLabel>Environment, Infrastructure, System Related Info</InputLabel>
+
+//             {loading ? (
+//               <CircularProgress size={24} />
+//             ) : (
+//               <Select
+//                 multiple
+//                 value={allSelected}
+//                 renderValue={(vals) => vals.join(", ")}
+//                 MenuProps={{
+//                   PaperProps: {
+//                     style: { maxHeight: 500, width: 400 },
+//                   },
+//                 }}
+//                 onClose={(event) => {
+//                   if (event?.target?.tagName === "INPUT") event.stopPropagation();
+//                 }}
+//               >
+//                 <MenuItem
+//                   disableRipple
+//                   disableTouchRipple
+//                   style={{ cursor: "default" }}
+//                   onKeyDown={(e) => e.stopPropagation()}
+//                 >
+//                   <TextField
+//                     size="small"
+//                     fullWidth
+//                     placeholder="Search..."
+//                     value={searchTerm}
+//                     onChange={(e) => setSearchTerm(e.target.value)}
+//                   />
+//                 </MenuItem>
+
+//                 <Divider />
+
+//                 {inputs.map((input) => {
+//                   const filtered = filterItems(options[input.key] || []);
+//                   const currentValues = viewProject
+//                     ? viewValues[input.key] || []
+//                     : selectedValues[input.key] || [];
+
+//                   return (
+//                     <React.Fragment key={input.key}>
+//                       <ListSubheader sx={{ bgcolor: "#f5f5f5" }}>
+//                         {input.labels}
+//                       </ListSubheader>
+
+//                       {filtered.length === 0 && (
+//                         <MenuItem disabled>
+//                           <em>No matches</em>
+//                         </MenuItem>
+//                       )}
+
+//                       {filtered.map((item) => {
+//                         const checked = currentValues.includes(item);
+//                         return (
+//                           <MenuItem
+//                             key={`${input.key}:${item}`}
+//                             value={item}
+//                             onClick={() => handleToggle(input.key, item)}
+//                           >
+//                             <Checkbox checked={checked} />
+//                             <ListItemText primary={item} />
+//                           </MenuItem>
+//                         );
+//                       })}
+//                     </React.Fragment>
+//                   );
+//                 })}
+//               </Select>
+//             )}
+//           </FormControl>
+//         </Box>
+//       </Box>
+//     </div>
+//   );
+// }
+
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  ListSubheader,
+  CircularProgress,
+  TextField,
+  Divider,
+} from "@mui/material";
+import EmergencyIcon from "@mui/icons-material/Emergency";
 
 export default function SectionThree({
   row,
   viewProject,
-  disableButton,
   onSelectedValuesChange,
   onSelectedViewValuesChange,
-  ...props
 }) {
-  const [selectedValues, setSelectedValues] = React.useState({});
-  const [viewValues, setViewValues] = React.useState({});
-  const [updateValues, setUpdateValues] = React.useState({})
+  const [options, setOptions] = useState({});
+  const [selectedValues, setSelectedValues] = useState({});
+  const [viewValues, setViewValues] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const handleSelect = (key, newValue) => {
-    setSelectedValues((prevValues) => {
-      const updatedValues = { ...prevValues, [key]: newValue };
-      if (onSelectedValuesChange) {
-        onSelectedValuesChange(updatedValues);
-      }
-      return updatedValues;
-    });
-  };
-
-  const handleViewSelect = (key, newValue) => {
-    setUpdateValues((prevValues) => {
-      const updatedValues = { ...prevValues, [key]: newValue }; // Update only selected dropdowns
-      onSelectedViewValuesChange?.(updatedValues); // Send only the latest selections
-      return updatedValues;
-    });
-  };
-
-  useEffect(() => {
-    onSelectedValuesChange(viewValues);
-  }, [viewValues]);
-
-  const handleFilterSelect = (key, newValue) => {
-    if (viewProject) {
-      handleViewSelect(key, newValue);
-    } else {
-      handleSelect(key, newValue);
-    }
-  };
-
-  useEffect(() => {
-    if (viewProject) {
-      const updatedValues = {
-        environmentInput: row["environment"],
-        cloudTechnologies: row["cloud_technologies"],
-        enterprisePlatforms: row["enterprise_platforms"],
-        etlAndMdmTools: row["data_engineering_etl_mdm_tools"],
-        devops: row["devops_infrastructure_as_code_iac"],
-        lowCodeEnv: row["low_code_environments"],
-        vcs: row["version_control_system_vcs"],
-        edgeComputing: row["edge_computing"],
-        relationalDb: row["relational_databases_sql"],
-        nosqlDb: row["nosql_databases"],
-        inMemoryDbs: row["in_memory_databases"],
-        mobileCloudComputing: row["mobile_cloud_computing"],
-        systemMonitoringAndPerformance:
-          row["system_monitoring_performance_tools"],
-        directoryServices: row["directory_services_identity_management"],
-        ides: row["ides"],
-        cmsApp: row["cms_applications"],
-        iPaas: row["ipaas_integration_platform_as_a_service"],
-        frontendDevelopment: row["frontend_development"],
-        serverSide: row["server_side_backend_frameworks"],
-        fullStack: row["full_stack_development"],
-        mobileDevelopment: row["mobile_development"],
-        apiDevelopment: row["api_development_data_access_technologies"],
-        applicationIntegrationTools: row["application_integration_tools"],
-        unitTestingFrameworks: row["unit_testing_frameworks"],
-        programmingLanguages: row["programming_languages"],
-        codeQualityTools: row["code_quality_tools"],
-        testCoverage: row["test_coverage"],
-        productivityMeasurement: row["productivity_measurement"],
-        tracing: row["tracing"],
-        cybersecurityTechnologies: row["cybersecurity_technologies"],
-        containerizationOrchestration: row["containerization_orchestration"],
-        serverlessComputing: row["serverless_computing"],
-        headlessCms: row["headless_cms"],
-        architectureMethodology: row["architecture_methodology"],
-        designPatterns: row["design_patterns"],
-        developmentMaturityAssessment: row["development_maturity_assessment"],
-        softwareCompositionAnalysis: row["software_composition_analysis"],
-        apiTestingTools: row["api_testing_tools"],
-        behavioralTestingTools: row["behavioral_testing_tools"],
-        deploymentMethodologies: row["deployment_methodologies"],
-        cicdTools: row["cicd_tools"],
-        alertingTools: row["alerting_tools"],
-        dependencyAnalysis: row["dependency_analysis"],
-        versionControlSystemVcs: row["version_control_system_vcs"],
-      };
-      setViewValues(updatedValues);
-    }
-  }, [viewProject]);
-
+  // Define dropdown inputs
   const inputs = [
-    { key: "environmentInput", labels: "Select Environment" },
-    { key: "cloudTechnologies", labels: "Select Cloud Technologies" },
-    { key: "enterprisePlatforms", labels: "Select Enterprise Platforms" },
-    { key: "etlAndMdmTools", labels: "Select Data Engg-ETL & MDM Tools" },
-    { key: "devops", labels: "Select Devops" },
-    { key: "lowCodeEnv", labels: "Select Low Code Environments" },
-    { key: "vcs", labels: "Select VCS" },
-    { key: "edgeComputing", labels: "Select Edge Computing" },
-    { key: "relationalDb", labels: "Select Relational Databases(SQL)" },
-    { key: "nosqlDb", labels: "Select NOSQL databases" },
-    { key: "inMemoryDbs", labels: "Select In-Memory databases" },
-    { key: "mobileCloudComputing", labels: "Select Mobile Cloud Computing" },
-    {
-      key: "systemMonitoringAndPerformance",
-      labels: "Select System Monitoring & Performance",
-    },
-    { key: "directoryServices", labels: "Select Directory Services" },
-    { key: "ides", labels: "Select IDEs" },
-    { key: "cmsApp", labels: "Select CMS Applications" },
-    { key: "iPaas", labels: "Select IPaas" },
-    { key: "frontendDevelopment", labels: "Select Frontend Development" },
-    { key: "serverSide", labels: "Select Server-Side & Back-end" },
-    { key: "fullStack", labels: "Select Full-Stack Development" },
-    { key: "mobileDevelopment", labels: "Select Mobile Development" },
-    {
-      key: "apiDevelopment",
-      labels: "Select Api Development and Data Analytics",
-    },
-    {
-      key: "applicationIntegrationTools",
-      labels: "Select Application Integration Tools",
-    },
-    { key: "unitTestingFrameworks", labels: "Select Unit Testing Frameworks" },
-    { key: "programmingLanguages", labels: "Select Programming Languages" },
-    { key: "codeQualityTools", labels: "Select Code Quality Tools" },
-    { key: "testCoverage", labels: "Select Test Coverage" },
-    { key: "productivityMeasurement", labels: "Select Productive Measurement" },
-    { key: "tracing", labels: "Select Tracing" },
-    {
-      key: "cybersecurityTechnologies",
-      labels: "Select Cybersecurity Technologies",
-    },
-    {
-      key: "containerizationOrchestration",
-      labels: "Select Containerization Orchestration",
-    },
-    { key: "serverlessComputing", labels: "Select Serverless Computing" },
-    { key: "headlessCms", labels: "Select Headless Cms" },
-    {
-      key: "architectureMethodology",
-      labels: "Select Architecture Methodology",
-    },
-    { key: "designPatterns", labels: "Select Design Patterns" },
-    {
-      key: "developmentMaturityAssessment",
-      labels: "Select Development Maturity Assessment",
-    },
-    {
-      key: "softwareCompositionAnalysis",
-      labels: "Select Software Composition Analysis",
-    },
-    { key: "apiTestingTools", labels: "Select API Testing Tools" },
-    {
-      key: "behavioralTestingTools",
-      labels: "Select Behavioral Testing Tools",
-    },
-    {
-      key: "deploymentMethodologies",
-      labels: "Select Deployment Methodologies",
-    },
-    { key: "cicdTools", labels: "Select CI/CD Tools" },
-    { key: "alertingTools", labels: "Select Alerting Tools" },
-    { key: "dependencyAnalysis", labels: "Select Dependency Analysis" },
+    { key: "environment", labels: "Select Environment" },
+    { key: "cloud_technologies", labels: "Select Cloud Technologies" },
+    { key: "enterprise_platforms", labels: "Select Enterprise Platforms" },
+    { key: "data_engineering_etl_mdm_tools", labels: "Select Data Engg-ETL & MDM Tools" },
+    { key: "devops_infrastructure_as_code_iac", labels: "Select DevOps" },
+    { key: "programming_languages", labels: "Select Programming Languages" },
+    { key: "containerization_orchestration", labels: "Select Containerization / Orchestration" },
   ];
 
+  // Fetch options for dropdowns
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const results = await Promise.all(
+          inputs.map((input) =>
+            fetch(
+              `https://intranet.accionlabs.com/pmoreporting/platform_data/column_dropdown?dropdown_type=${input.key}`
+            ).then((r) => r.json())
+          )
+        );
+
+        const dataObj = {};
+        inputs.forEach((input, idx) => {
+          dataObj[input.key] = results[idx]?.values || [];
+        });
+        setOptions(dataObj);
+      } catch (err) {
+        console.error("Error fetching dropdowns:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAll();
+  }, []);
+
+  // Load initial view values in view mode
+  useEffect(() => {
+    if (viewProject) {
+      const updated = {};
+      inputs.forEach((input) => {
+        updated[input.key] = row[input.key] || [];
+      });
+      setViewValues(updated);
+    }
+  }, [viewProject, row]);
+
+  // Notify parent on changes
+  useEffect(() => {
+    if (viewProject) {
+      onSelectedViewValuesChange?.(viewValues);
+    } else {
+      onSelectedValuesChange?.(selectedValues);
+    }
+  }, [viewValues, selectedValues, viewProject]);
+
+  // Select handlers
+  const handleSelect = (key, newValues) => {
+    setSelectedValues((prev) => {
+      const updated = { ...prev, [key]: newValues };
+      onSelectedValuesChange?.(updated);
+      return updated;
+    });
+  };
+
+  const handleViewSelect = (key, newValues) => {
+    setViewValues((prev) => {
+      const updated = { ...prev, [key]: newValues };
+      onSelectedViewValuesChange?.(updated);
+      return updated;
+    });
+  };
+
+  const handleFilterSelect = (key, newValues) => {
+    viewProject ? handleViewSelect(key, newValues) : handleSelect(key, newValues);
+  };
+
+  // Toggle items in multi-select
+  const handleToggle = (key, item) => {
+    const current = viewProject ? viewValues[key] || [] : selectedValues[key] || [];
+    const updatedArray = current.includes(item)
+      ? current.filter((v) => v !== item)
+      : [...current, item];
+    handleFilterSelect(key, updatedArray);
+  };
+
+  // Filter options by search
+  const filterItems = (arr) =>
+    arr.filter((item) => item.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  // Flatten for display in Select
+  const allSelected = inputs.flatMap((input) =>
+    (viewProject ? viewValues[input.key] : selectedValues[input.key] || []).map(
+      (item) => `${input.key}:${item}`
+    )
+  );
+
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        flexWrap: "wrap",
-        marginTop: "15px",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          flex: 1,
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}
-      >
-        {inputs.map(({ key, labels }) => (
-          <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
-            {/* <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
-                            {labels}
-                        </Typography>
-                        <Filter
-                            input={props[key] || []}
-                            handleOnSelect={(event, newValue) => handleFilterSelect(key, newValue)}
-                            selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
-                            isMultiSelect={false}
-                            placeholder={labels}
-                            showIcon={false}
-                        // disabled={!disableButton}
-                        /> */}
-            <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
-              {labels}
-            </Typography>
-            <DropdownCustom
-              input={props[key] || []}
-              row={row}
-              onFocus="Select..."
-              onBlur={labels}
-              placeholder={labels}
-              handleSelect={(newValue) => handleFilterSelect(key, newValue)}
-              selectedValues={
-                viewProject ? viewValues[key] : selectedValues[key]
-              }
-              onSelectedValuesChange={onSelectedValuesChange}
-              props={props}
-            />
-          </Box>
-        ))}
+    <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", marginTop: "15px" }}>
+      <Box sx={{ display: "flex", flex: 1, flexWrap: "wrap", alignItems: "center" }}>
+        <Box sx={{ width: 625 }}>
+          <Typography variant="subtitle1" sx={{ fontSize: 14, marginBottom: 1 }}>
+            Environment, Infrastructure, and System Info
+            <EmergencyIcon style={{ fontSize: "small", color: "red", marginLeft: 4 }} />
+          </Typography>
+
+          <FormControl fullWidth>
+            <InputLabel>Environment Details</InputLabel>
+            {loading ? (
+              <CircularProgress size={24} />
+            ) : (
+              <Select
+                multiple
+                value={allSelected}
+                renderValue={(selectedVals) =>
+                  selectedVals.map((v) => v.split(":")[1]).join(", ")
+                }
+                MenuProps={{
+                  PaperProps: { style: { maxHeight: 400, width: 400 } },
+                }}
+                onClose={(event) => {
+                  if (event?.target?.tagName === "INPUT") event.stopPropagation();
+                }}
+              >
+                {/* Search bar */}
+                <MenuItem
+                  disableRipple
+                  disableTouchRipple
+                  style={{ cursor: "default" }}
+                  onKeyDown={(e) => e.stopPropagation()}
+                >
+                  <TextField
+                    size="small"
+                    fullWidth
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </MenuItem>
+
+                <Divider />
+
+                {/* Render grouped options */}
+                {inputs.map((input) => {
+                  const filtered = filterItems(options[input.key] || []);
+                  const current = viewProject
+                    ? viewValues[input.key] || []
+                    : selectedValues[input.key] || [];
+
+                  return (
+                    <React.Fragment key={input.key}>
+                      <ListSubheader sx={{ bgcolor: "#f5f5f5" }}>{input.labels}</ListSubheader>
+                      {filtered.length === 0 && (
+                        <MenuItem disabled>
+                          <em>No matches</em>
+                        </MenuItem>
+                      )}
+                      {filtered.map((item) => {
+                        const checked = current.includes(item);
+                        const value = `${input.key}:${item}`;
+                        return (
+                          <MenuItem
+                            key={value}
+                            value={value}
+                            onClick={() => handleToggle(input.key, item)}
+                          >
+                            <Checkbox checked={checked} />
+                            <ListItemText primary={item} />
+                          </MenuItem>
+                        );
+                      })}
+                    </React.Fragment>
+                  );
+                })}
+              </Select>
+            )}
+          </FormControl>
+        </Box>
       </Box>
     </div>
   );

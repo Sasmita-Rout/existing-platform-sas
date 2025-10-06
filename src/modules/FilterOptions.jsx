@@ -39,44 +39,40 @@ export default function FilterOptions({
 
   return (
     <Grid container>
-      {/* BUH Filter */}
       <Grid size={2.7}>
         <Filter
           input={buhInput}
-          handleOnSelect={(event, newValue) => setBuhValue(newValue)} // Direct state update
+          handleOnSelect={(event, newValue) => setBuhValue(newValue)}
           selectedValues={buhValue}
           isMultiSelect={false}
           placeholder={buhFilterPlaceholder}
         />
       </Grid>
 
-       {/* DD Filter */}
       <Grid size={2.7}>
         <Filter
           input={ddInput}
-          handleOnSelect={(event, newValue) => setDdValue(newValue)} // Direct state update
+          handleOnSelect={(event, newValue) => setDdValue(newValue)}
           selectedValues={ddValue}
           isMultiSelect={false}
           placeholder={ddFilterPlaceholder}
         />
       </Grid>
 
-      {/* Account Filter */}
       <Grid size={2.7}>
         <Filter
           input={accountInput}
-          handleOnSelect={(event, newValue) => setAccountValue(newValue)} // Direct state update
+          handleOnSelect={(event, newValue) => setAccountValue(newValue)}
           selectedValues={accountValue}
           isMultiSelect={false}
           placeholder={accountFilterPlaceholder}
         />
       </Grid>
 
-      {/* Project Filter */}
       <Grid size={2.7}>
         <Filter
           input={projectInput}
-          handleOnSelect={(event, newValue) => setProjectValue(newValue)} // Direct state update
+          handleOnSelect={(event, newValue) => setProjectValue(newValue)}
           selectedValues={projectValue}
           isMultiSelect={false}
           placeholder={projectFilterPlaceholder}
@@ -87,7 +83,6 @@ export default function FilterOptions({
           style={{
             backgroundColor: "grey",
             color: "white",
-            // width: "100px",
             height: "100%",
           }}
           onClick={handleClearAll}

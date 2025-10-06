@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Filter } from "../../components/molecules/index";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import EmergencyIcon from "@mui/icons-material/Emergency";
@@ -22,11 +21,11 @@ export default function SectionTwo({ onSelectedValuesChange, onSelectedViewValue
     };
     const handleViewSelect = (key, newValue) => {
         setUpdateValues((prevValues) => {
-          const updatedValues = { ...prevValues, [key]: newValue }; // Update only selected dropdowns
-          onSelectedViewValuesChange?.(updatedValues); // Send only the latest selections
-          return updatedValues;
+            const updatedValues = { ...prevValues, [key]: newValue };
+            onSelectedViewValuesChange?.(updatedValues);
+            return updatedValues;
         });
-      };
+    };
 
     useEffect(() => {
         if (Object.keys(viewValues).length > 0) {
@@ -49,7 +48,7 @@ export default function SectionTwo({ onSelectedValuesChange, onSelectedViewValue
 
     const inputs = [
         { key: 'domainInput', labels: 'Select Domain' },
-        { key: 'applicationInput', labels: 'Appliction Class' },
+        { key: 'applicationInput', labels: 'Application Class' },
     ];
 
     return (

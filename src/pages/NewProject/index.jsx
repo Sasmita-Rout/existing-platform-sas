@@ -13,7 +13,6 @@ import {
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { grey } from "@mui/material/colors";
 import { Avatar } from "@mui/material";
-import EmergencyIcon from "@mui/icons-material/Emergency";
 import Section from "./Section";
 import SectionOne from "./SectionOne";
 import SectionTwo from "./SectionTwo";
@@ -53,12 +52,11 @@ const NewProject = () => {
   const onClick = location.state?.onClick;
   const projectName = row ? row["project_name"] : null;
   const accountName = row ? row["account_name"] : null;
-  const [selectedRow, setselectedRow] = React.useState(row);
   const { setValue, watch } = useForm({
     defaultValues: {
       open: false,
       openPlatFormReport: false,
-      updatedValuesTwo:{},
+      updatedValuesTwo: {},
       updatedValuesFour: {},
       updatedValuesThree: {},
       updatedValuesFive: {},
@@ -268,7 +266,7 @@ const NewProject = () => {
       watch("accountValue"),
       watch("ddValue"),
       watch("projectName") && watch("projectName").trim(),
-      sectionTwoValues?.domainInput, // Check individual fields directly
+      sectionTwoValues?.domainInput,
       sectionTwoValues?.applicationInput,
       watch("domainValue"),
       watch("applicationValue"),
@@ -283,7 +281,6 @@ const NewProject = () => {
       applicationInput: "Application",
     };
 
-    // Identify missing required fields
     const nullValues = requiredFields
       .map((field, index) =>
         field === null || field === "" || field === undefined
@@ -292,20 +289,17 @@ const NewProject = () => {
       )
       .filter(Boolean);
 
-    // Map missing fields to their display names
     const formattedNullValues = nullValues.map((field) => fieldNames[field]);
 
-    // Set error display for missing fields
     setValue("errorDisplay", formattedNullValues);
 
-    // Check if there are missing fields to determine dialog display
     if (
       watch("buhValue") === null ||
       watch("accountValue") === null ||
       watch("ddValue") === null ||
       watch("projectName").trim() === "" ||
       watch("projectName").trim() === null ||
-      !sectionTwoValues || // Check if sectionTwoValues is missing
+      !sectionTwoValues ||
       sectionTwoValues.domainInput === null ||
       sectionTwoValues.domainInput === undefined ||
       sectionTwoValues.applicationInput === null ||
@@ -352,7 +346,6 @@ const NewProject = () => {
   }, []);
 
   useEffect(() => {
-    // setChecked(row.status);
     const fetchDropdownData = async () => {
       const responseData = await fetchColumnData(apiUrl, setValue);
       responseData.map(async (data) => {
@@ -389,8 +382,6 @@ const NewProject = () => {
       watch("projectName").trim(),
       watch("buhValue"),
       watch("ddValue"),
-      // watch("domainValue"),
-      // watch("applicationValue"),
       watch("updatedValuesTwo"),
       watch("updatedValuesFour"),
       watch("updatedValuesThree"),
@@ -628,9 +619,9 @@ const NewProject = () => {
 
       <Accordion
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
@@ -652,9 +643,9 @@ const NewProject = () => {
       <Accordion
         defaultExpanded
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
@@ -684,7 +675,6 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
-              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
               Upload SOW
             </Typography>
           </Box>
@@ -697,7 +687,6 @@ const NewProject = () => {
             projectName={watch("projectName")}
             apiUrl={apiUrl}
             viewProject={onClick}
-            // disableButton={!onClick}
             startDate={watch("sowStartDate")}
             endDate={watch("sowEndDate")}
             setValue={setValue}
@@ -707,13 +696,13 @@ const NewProject = () => {
           />
         </AccordionDetails>
       </Accordion>
-      {/* Section Two */}
+
       <Accordion
         defaultExpanded
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
@@ -752,33 +741,27 @@ const NewProject = () => {
             domainInput={watch("domain")}
             viewProject={onClick}
             applicationInput={watch("app")}
-            // domainValue={watch("domainValue")}
-            // applicationValue={watch("applicationValue")}
-            // setValue={setValue}
             row={row}
             onSelectedValuesChange={handleSelectedValuesChangeSectionTwo}
             onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionTwo}
-          // disableButton={!onClick}
           />
         </AccordionDetails>
       </Accordion>
-      {/* </Accordion> */}
       <Accordion
         defaultExpanded
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
-        {/* Section Three */}
+
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1-content"
           id="panel1-header"
         >
-          {/* <Typography>Expanded by default</Typography> */}
           <Box
             sx={{
               display: "flex",
@@ -800,7 +783,6 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
-              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
               Environment, Infrastructure, System Related Info
             </Typography>
           </Box>
@@ -864,13 +846,13 @@ const NewProject = () => {
       <Accordion
         defaultExpanded
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
-        {/* Section Four */}
+
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1-content"
@@ -897,20 +879,14 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
-              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
               QA & DevOps
             </Typography>
           </Box>
         </AccordionSummary>
         <AccordionDetails>
           <SectionFour
-            // SelectManualTestingMgmt={SelectManualTestingMgmt}
-            // FunctionalandIntegration={FunctionalandIntegration}
-            // PerformanceandLoadTest={PerformanceandLoadTest}
-            // ApplicationSecurityTesting={ApplicationSecurityTesting}
             viewProject={onClick}
             row={row}
-            // disableButton={!onClick}
             SelectManualTestingMgmt={watch("manualTestingManagementTools")}
             FunctionalandIntegration={watch("functionalIntegrationTesting")}
             PerformanceandLoadTest={watch("performanceLoadTestingTools")}
@@ -925,13 +901,13 @@ const NewProject = () => {
           />
         </AccordionDetails>
       </Accordion>
-      {/* Section Five */}
+
       <Accordion
         defaultExpanded
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
@@ -961,7 +937,6 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
-              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
               BI and Marketing
             </Typography>
           </Box>
@@ -970,7 +945,6 @@ const NewProject = () => {
           <SectionFive
             viewProject={onClick}
             row={row}
-            // disableButton={!onClick}
             AnalyticsReporting={watch("analyticsReporting")}
             SelectUserFeedbackandAnalytics={watch("userFeedbackAnalyticsTools")}
             onSelectedValuesChange={handleSelectedValuesChangeSectionFive}
@@ -978,13 +952,13 @@ const NewProject = () => {
           />
         </AccordionDetails>
       </Accordion>
-      {/* Section Six */}
+
       <Accordion
         defaultExpanded
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
@@ -1014,8 +988,7 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
-              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
-              AI and Machine Learning Technologies
+              GenAI
             </Typography>
           </Box>
         </AccordionSummary>
@@ -1023,7 +996,6 @@ const NewProject = () => {
           <SectionSix
             viewProject={onClick}
             row={row}
-            // disableButton={!onClick}
             aiAndMachineLearningTechnologies={watch(
               "aiMachineLearningTechnologies"
             )}

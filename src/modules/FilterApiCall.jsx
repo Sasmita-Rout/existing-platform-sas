@@ -1,7 +1,6 @@
 import { fetchRecords, createUpdateRecord } from "../components/apiServices";
 
 export const fetchFilterData = async (apiUrl, typeOfDropdown, setValue) => {
-    // setLoader(true);
 
     try {
         const promises = typeOfDropdown.map(async (filterName) => {
@@ -14,7 +13,6 @@ export const fetchFilterData = async (apiUrl, typeOfDropdown, setValue) => {
 
         const results = await Promise.all(promises);
 
-        // Process each result and set the corresponding state
         results.forEach(({ filterName, response }) => {
 
             if (filterName === "account_name") {
@@ -28,10 +26,8 @@ export const fetchFilterData = async (apiUrl, typeOfDropdown, setValue) => {
             }
         });
 
-        // setLoader(false);
     } catch (error) {
         console.error("Error fetching data:", error);
-        // setLoader(false);
     }
 };
 
@@ -48,7 +44,6 @@ export const fetchColumnData = async (apiUrl, setValue) => {
         }
     } catch (error) {
         console.error("Error fetching data:", error);
-        // setValue("loader",false);
     }
 };
 
@@ -84,10 +79,10 @@ export const addNewProject = async (
         project_name: projectName || "",
         buh_name: buhName || "",
         dd_name: ddName || "",
-        domains: [allSelectedValuesTwo.domainInput] || [], // Ensure it's an array
+        domains: [allSelectedValuesTwo.domainInput] || [],
         application_class: [allSelectedValuesTwo.applicationInput] || [],
         analytics_reporting: [allSelectedValuesFive.AnalyticsReporting].filter(Boolean),
-        environment: [allSelectedValues.environmentInput].filter(Boolean), // Filter out falsy values
+        environment: [allSelectedValues.environmentInput].filter(Boolean),
         cloud_technologies: [allSelectedValues.cloudTechnologies].filter(Boolean),
         cybersecurity_technologies: [allSelectedValues.cybersecurityTechnologies].filter(Boolean),
         containerization_orchestration: [allSelectedValues.containerizationOrchestration].filter(Boolean),
@@ -136,7 +131,7 @@ export const addNewProject = async (
         ai_machine_learning_technologies: [allSelectedValuesSix.aiAndMachineLearningTechnologies].filter(Boolean),
         user_feedback_analytics_tools: [allSelectedValuesFive.SelectUserFeedbackandAnalytics].filter(Boolean),
         low_code_environments: [allSelectedValues.lowCodeEnv].filter(Boolean),
-        status: checked === true ? "Active" : "Inactive" // Set the status to Active by default
+        status: checked === true ? "Active" : "Inactive"
     };
 
     try {
@@ -168,10 +163,10 @@ export const updateProject = async (
         project_name: projectName || "",
         buh_name: buhName || "",
         dd_name: ddName || "",
-        domains: [updatedValuesTwo.domainInput ? updatedValuesTwo.domainInput : ""] || "", // Ensure it's an array
-        application_class: [updatedValuesTwo.applicationInput ? updatedValuesTwo.applicationInput : ""] || "", // Ensure it's an array
+        domains: [updatedValuesTwo.domainInput ? updatedValuesTwo.domainInput : ""] || "",
+        application_class: [updatedValuesTwo.applicationInput ? updatedValuesTwo.applicationInput : ""] || "",
         analytics_reporting: [updatedValuesFive.AnalyticsReporting].filter(Boolean),
-        environment: [updatedValuesThree.environmentInput].filter(Boolean), // Filter out falsy values
+        environment: [updatedValuesThree.environmentInput].filter(Boolean),
         cloud_technologies: [updatedValuesThree.cloudTechnologies].filter(Boolean),
         cybersecurity_technologies: [updatedValuesThree.cybersecurityTechnologies].filter(Boolean),
         containerization_orchestration: [updatedValuesThree.containerizationOrchestration].filter(Boolean),
@@ -220,7 +215,7 @@ export const updateProject = async (
         ai_machine_learning_technologies: [updatedValuesSix.aiAndMachineLearningTechnologies].filter(Boolean),
         user_feedback_analytics_tools: [updatedValuesFive.SelectUserFeedbackandAnalytics].filter(Boolean),
         low_code_environments: [updatedValuesThree.lowCodeEnv].filter(Boolean),
-        status: checked === true ? "Active" : "Inactive" // Set the status to Active by default
+        status: checked === true ? "Active" : "Inactive"
     };
 
     try {

@@ -1,82 +1,191 @@
-import React, { useEffect } from 'react';
-import { Box, Typography } from "@mui/material";
-import { Filter } from "../../components/molecules/Filter";
-import { DropdownCustom } from "../../components/atoms/DropdownCustom";
+import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  ListSubheader,
+  CircularProgress,
+  TextField,
+  Divider,
+} from "@mui/material";
 
-const SectionFive = ({ row, viewProject, disableButton, onSelectedValuesChange, onSelectedViewValuesChange, ...props }) => {
+const SectionFive = ({ row, viewProject, onSelectedValuesChange, onSelectedViewValuesChange }) => {
+  const [options, setOptions] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Handler for single select autocomplete
-  const [selectedValues, setSelectedValues] = React.useState({});
-  const [viewValues, setViewValues] = React.useState({});
-  const [updatedValues, setUpdateValues] = React.useState({});
+  const [selectedValues, setSelectedValues] = useState({});
+  const [viewValues, setViewValues] = useState({});
 
-  const handleSelect = (key, newValue) => {
-    setSelectedValues((prevValues) => {
-      const updatedValues = { ...prevValues, [key]: newValue };
-      if (onSelectedValuesChange) {
-        onSelectedValuesChange(updatedValues);
-      }
-      return updatedValues;
-    });
-  };
-
-  const handleViewSelect = (key, newValue) => {
-    setUpdateValues((prevValues) => {
-      const updatedValues = { ...prevValues, [key]: newValue }; // Update only selected dropdowns
-      onSelectedViewValuesChange?.(updatedValues); // Send only the latest selections
-      return updatedValues;
-    });
-  };
-
-  const handleFilterSelect = (key, newValue) => {
-    if (viewProject) {
-      handleViewSelect(key, newValue);
-    } else {
-      handleSelect(key, newValue);
-    }
-  };
-
-  useEffect(() => {
-    onSelectedValuesChange(viewValues);
-  }, [viewValues])
-
-  useEffect(() => {
-    if (viewProject) {
-      const updatedValues = {
-        AnalyticsReporting: row["analytics_reporting"], SelectUserFeedbackandAnalytics: row["user_feedback_analytics_tools"],
-      };
-      setViewValues(updatedValues);
-    }
-  }, [viewProject])
   const inputs = [
-    { key: 'AnalyticsReporting', labels: 'Select Analytics & Reporting' },
-    { key: 'SelectUserFeedbackandAnalytics', labels: 'Select User Feedback and Analytics' },
+    { key: 'analytics_reporting', labels: 'Select Analytics & Reporting' },
+    { key: 'user_feedback_analytics_tools', labels: 'Select User Feedback and Analytics' },
   ];
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const results = await Promise.all(
+          inputs.map((input) =>
+            fetch(
+              `https://intranet.accionlabs.com/pmoreporting/platform_data/column_dropdown?dropdown_type=${input.key}`
+            ).then((r) => r.json())
+          )
+        );
+        const dataObj = {};
+        inputs.forEach((input, idx) => {
+          dataObj[input.key] = results[idx]?.values || [];
+        });
+        setOptions(dataObj);
+      } catch (err) {
+        console.error("Error fetching dropdowns:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAll();
+  }, []);
+
+  useEffect(() => {
+    if (viewProject) {
+      setViewValues({
+        analytics_reporting: row["analytics_reporting"] || [],
+        user_feedback_analytics_tools: row["user_feedback_analytics_tools"] || [],
+      });
+    }
+  }, [viewProject, row]);
+
+  useEffect(() => {
+    if (viewProject) {
+      onSelectedViewValuesChange?.(viewValues);
+    } else {
+      onSelectedValuesChange?.(selectedValues);
+    }
+  }, [viewValues, selectedValues, viewProject]);
+
+  const handleToggle = (key, item) => {
+    if (viewProject) {
+      setViewValues((prev) => {
+        const oldArr = prev[key] || [];
+        const newArr = oldArr.includes(item)
+          ? oldArr.filter((v) => v !== item)
+          : [...oldArr, item];
+        const updated = { ...prev, [key]: newArr };
+        onSelectedViewValuesChange?.(updated);
+        return updated;
+      });
+    } else {
+      setSelectedValues((prev) => {
+        const oldArr = prev[key] || [];
+        const newArr = oldArr.includes(item)
+          ? oldArr.filter((v) => v !== item)
+          : [...oldArr, item];
+        const updated = { ...prev, [key]: newArr };
+        onSelectedValuesChange?.(updated);
+        return updated;
+      });
+    }
+  };
+
+  const filterItems = (arr) =>
+    arr.filter((item) =>
+      item.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+  const allSelected = [
+    ...new Set([
+      ...(selectedValues.analytics_reporting || []),
+      ...(selectedValues.user_feedback_analytics_tools || []),
+      ...(viewValues.analytics_reporting || []),
+      ...(viewValues.user_feedback_analytics_tools || []),
+    ]),
+  ];
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
       <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-        {inputs.map(({ key, labels }) => (
-          <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
-            <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
-              {labels}
-            </Typography>
-            <DropdownCustom
-              input={props[key] || []}
-              row={row}
-              placeholder={labels}
-              onFocus="Select..."
-              onBlur={labels}
-              handleSelect={(newValue) =>
-                handleFilterSelect(key, newValue)
-              }
-              selectedValues={
-                viewProject ? viewValues[key] : selectedValues[key]
-              }
-              onSelectedValuesChange={onSelectedValuesChange}
-              props={props}
-            />
-          </Box>
-        ))}
+        <Box sx={{ width: 625 }}>
+          <FormControl fullWidth>
+            <InputLabel>BI and Marketing</InputLabel>
+
+            {loading ? (
+              <CircularProgress size={24} />
+            ) : (
+              <Select
+                multiple
+                value={allSelected}
+                renderValue={(selectedVals) => selectedVals.join(", ")}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 400,
+                      width: 400,
+                    },
+                  },
+                }}
+                onClose={(event) => {
+                  if (event?.target?.tagName === 'INPUT') event.stopPropagation();
+                }}
+              >
+                <MenuItem
+                  disableRipple
+                  disableTouchRipple
+                  style={{ cursor: "default" }}
+                  onKeyDown={(e) => e.stopPropagation()}
+                >
+                  <TextField
+                    size="small"
+                    fullWidth
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </MenuItem>
+
+                <Divider />
+
+                {inputs.map((input) => {
+                  const filteredItems = filterItems(options[input.key] || []);
+                  const currentValues = viewProject
+                    ? viewValues[input.key] || []
+                    : selectedValues[input.key] || [];
+
+                  return (
+                    <React.Fragment key={input.key}>
+                      <ListSubheader sx={{ bgcolor: "#f5f5f5" }}>
+                        {input.labels}
+                      </ListSubheader>
+
+                      {filteredItems.length === 0 && (
+                        <MenuItem disabled>
+                          <em>No matches</em>
+                        </MenuItem>
+                      )}
+
+                      {filteredItems.map((item) => {
+                        const checked = currentValues.includes(item);
+                        return (
+                          <MenuItem
+                            key={`${input.key}:${item}`}
+                            value={item}
+                            onClick={() => handleToggle(input.key, item)}
+                          >
+                            <Checkbox checked={checked} />
+                            <ListItemText primary={item} />
+                          </MenuItem>
+                        );
+                      })}
+                    </React.Fragment>
+                  );
+                })}
+              </Select>
+            )}
+          </FormControl>
+        </Box>
       </Box>
     </div>
   );
