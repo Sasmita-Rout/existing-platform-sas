@@ -438,7 +438,7 @@ const PlatformProject = () => {
             <Stack mt={2} direction="row" justifyContent="space-between">
               {/* <Boxes boxes={boxes} /> */}
               <Stack display={"inline-block"} >
-                <PrimaryButton
+                {/* <PrimaryButton
                   startIcon={<PieChart />}
                   sx={{ mr: 2 }}
                   onClick={() =>
@@ -460,7 +460,7 @@ const PlatformProject = () => {
                   }
                 >
                   Tools and Metrics Data Reports
-                </PrimaryButton>
+                </PrimaryButton> */}
               </Stack>
             </Stack>
             <Box mb={2}>

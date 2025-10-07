@@ -13,6 +13,25 @@ import {
   Divider,
 } from "@mui/material";
 
+import AddIcon from '@mui/icons-material/Add';
+import IconButton from '@mui/material/IconButton';
+import Chip from '@mui/material/Chip';
+
+const MAX_CHECKBOX_ITEMS = 5;
+
+const CustomInputMenuItem = React.forwardRef(({ children, ...props }, ref) => (
+  <MenuItem
+    {...props}
+    ref={ref}
+    disableRipple
+    disableTouchRipple
+    style={{ cursor: 'default' }}
+    onClick={(e) => e.stopPropagation()}
+  >
+    {children}
+  </MenuItem>
+));
+
 const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewValuesChange }) => {
   const [options, setOptions] = useState({});
   const [loading, setLoading] = useState(true);
@@ -21,6 +40,9 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
   const [selectedValues, setSelectedValues] = useState({});
   const [viewValues, setViewValues] = useState({});
 
+  const [newTechnology, setNewTechnology] = useState("");
+  const [activeCategory, setActiveCategory] = useState("");
+
   const inputs = [
     { key: 'manual_testing_management_tools', labels: 'Select Manual Testing & Mgmt' },
     { key: 'functional_integration_testing', labels: 'Select Functional and Integration...' },
@@ -28,6 +50,29 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
     { key: 'application_security_testing_tools', labels: 'Select Application Security Testing' },
     { key: 'devops_infrastructure_as_code_iac', labels: 'Select DevOps' },
   ];
+
+  // Add handleAddCustomTechnology function
+  const handleAddCustomTechnology = (key) => {
+    if (!newTechnology.trim()) return;
+
+    if (viewProject) {
+      setViewValues((prev) => {
+        const arr = prev[key] || [];
+        const updated = { ...prev, [key]: [...arr, newTechnology.trim()] };
+        onSelectedViewValuesChange?.(updated);
+        return updated;
+      });
+    } else {
+      setSelectedValues((prev) => {
+        const arr = prev[key] || [];
+        const updated = { ...prev, [key]: [...arr, newTechnology.trim()] };
+        onSelectedValuesChange?.(updated);
+        return updated;
+      });
+    }
+    setNewTechnology("");
+    setActiveCategory("");
+  };
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -117,90 +162,251 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
     ]),
   ];
 
+  // return (
+  //   <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
+  //     <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+  //       <Box sx={{ width: 625 }}>
+  //         <FormControl fullWidth>
+  //           <InputLabel>QA & DevOps</InputLabel>
+
+  //           {loading ? (
+  //             <CircularProgress size={24} />
+  //           ) : (
+  //             <Select
+  //               multiple
+  //               value={allSelected}
+  //               renderValue={(selectedVals) => selectedVals.join(", ")}
+  //               MenuProps={{
+  //                 PaperProps: {
+  //                   style: {
+  //                     maxHeight: 400,
+  //                     width: 400,
+  //                   },
+  //                 },
+  //               }}
+  //               onClose={(event) => {
+  //                 if (event?.target?.tagName === 'INPUT') event.stopPropagation();
+  //               }}
+  //             >
+  //               <MenuItem
+  //                 disableRipple
+  //                 disableTouchRipple
+  //                 style={{ cursor: "default" }}
+  //                 onKeyDown={(e) => e.stopPropagation()}
+  //               >
+  //                 <TextField
+  //                   size="small"
+  //                   fullWidth
+  //                   placeholder="Search..."
+  //                   value={searchTerm}
+  //                   onChange={(e) => setSearchTerm(e.target.value)}
+  //                 />
+  //               </MenuItem>
+
+  //               <Divider />
+
+  //               {inputs.map((input) => {
+  //                 const filteredItems = filterItems(options[input.key] || []);
+  //                 const currentValues = viewProject
+  //                   ? viewValues[input.key] || []
+  //                   : selectedValues[input.key] || [];
+
+  //                 return (
+  //                   <React.Fragment key={input.key}>
+  //                     <ListSubheader sx={{ bgcolor: "#f5f5f5" }}>
+  //                       {input.labels}
+  //                     </ListSubheader>
+
+  //                     {filteredItems.length === 0 && (
+  //                       <MenuItem disabled>
+  //                         <em>No matches</em>
+  //                       </MenuItem>
+  //                     )}
+
+  //                     {filteredItems.map((item) => {
+  //                       const checked = currentValues.includes(item);
+  //                       return (
+  //                         <MenuItem
+  //                           key={`${input.key}:${item}`}
+  //                           value={item}
+  //                           onClick={() => handleToggle(input.key, item)}
+  //                         >
+  //                           <Checkbox checked={checked} />
+  //                           <ListItemText primary={item} />
+  //                         </MenuItem>
+  //                       );
+  //                     })}
+  //                   </React.Fragment>
+  //                 );
+  //               })}
+  //             </Select>
+  //           )}
+  //         </FormControl>
+  //       </Box>
+  //     </Box>
+  //   </div>
+  // );
+
   return (
-    <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
-      <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-        <Box sx={{ width: 625 }}>
-          <FormControl fullWidth>
-            <InputLabel>QA & DevOps</InputLabel>
+  <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
+    <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+      <Box sx={{ width: 625 }}>
+        <FormControl fullWidth>
+          <InputLabel>QA & DevOps</InputLabel>
+          {loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <Select
+              multiple
+              value={allSelected}
+              renderValue={(selectedVals) => selectedVals.join(", ")}
+              MenuProps={{
+                PaperProps: {
+                  style: { maxHeight: 400, width: 400 },
+                },
+              }}
+            >
+              {/* Search Input */}
+              <CustomInputMenuItem>
+                <TextField
+                  size="small"
+                  fullWidth
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    setSearchTerm(e.target.value);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </CustomInputMenuItem>
 
-            {loading ? (
-              <CircularProgress size={24} />
-            ) : (
-              <Select
-                multiple
-                value={allSelected}
-                renderValue={(selectedVals) => selectedVals.join(", ")}
-                MenuProps={{
-                  PaperProps: {
-                    style: {
-                      maxHeight: 400,
-                      width: 400,
-                    },
-                  },
-                }}
-                onClose={(event) => {
-                  if (event?.target?.tagName === 'INPUT') event.stopPropagation();
-                }}
-              >
-                <MenuItem
-                  disableRipple
-                  disableTouchRipple
-                  style={{ cursor: "default" }}
-                  onKeyDown={(e) => e.stopPropagation()}
-                >
-                  <TextField
-                    size="small"
-                    fullWidth
-                    placeholder="Search..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </MenuItem>
+              <Divider />
 
-                <Divider />
+              {/* Categories */}
+              {inputs.map((input) => {
+                const filteredItems = filterItems(options[input.key] || []);
+                const currentValues = viewProject
+                  ? viewValues[input.key] || []
+                  : selectedValues[input.key] || [];
 
-                {inputs.map((input) => {
-                  const filteredItems = filterItems(options[input.key] || []);
-                  const currentValues = viewProject
-                    ? viewValues[input.key] || []
-                    : selectedValues[input.key] || [];
+                // Get only first 5 items for checkboxes
+                const checkboxItems = filteredItems.slice(0, MAX_CHECKBOX_ITEMS);
+                const remainingCount = filteredItems.length - MAX_CHECKBOX_ITEMS;
 
-                  return (
-                    <React.Fragment key={input.key}>
-                      <ListSubheader sx={{ bgcolor: "#f5f5f5" }}>
-                        {input.labels}
-                      </ListSubheader>
+                return (
+                  <React.Fragment key={input.key}>
+                    {/* Category Header */}
+                    <ListSubheader sx={{ bgcolor: "#f5f5f5" }}>
+                      {input.labels}
+                    </ListSubheader>
 
-                      {filteredItems.length === 0 && (
-                        <MenuItem disabled>
-                          <em>No matches</em>
-                        </MenuItem>
-                      )}
-
-                      {filteredItems.map((item) => {
-                        const checked = currentValues.includes(item);
-                        return (
-                          <MenuItem
-                            key={`${input.key}:${item}`}
-                            value={item}
-                            onClick={() => handleToggle(input.key, item)}
+                    {/* Custom Input Field */}
+                    {!viewProject && (
+                      <CustomInputMenuItem>
+                        <Box sx={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: 1,
+                          width: '100%',
+                          px: 1 
+                        }}>
+                          <TextField
+                            size="small"
+                            fullWidth
+                            placeholder="Add custom technology..."
+                            value={activeCategory === input.key ? newTechnology : ''}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              setActiveCategory(input.key);
+                              setNewTechnology(e.target.value);
+                            }}
+                            onKeyDown={(e) => {
+                              e.stopPropagation();
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleAddCustomTechnology(input.key);
+                              }
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <IconButton
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddCustomTechnology(input.key);
+                            }}
                           >
-                            <Checkbox checked={checked} />
-                            <ListItemText primary={item} />
-                          </MenuItem>
-                        );
-                      })}
-                    </React.Fragment>
-                  );
-                })}
-              </Select>
-            )}
-          </FormControl>
-        </Box>
+                            <AddIcon />
+                          </IconButton>
+                        </Box>
+                      </CustomInputMenuItem>
+                    )}
+
+                    {/* Checkbox Items (Limited to 5) */}
+                    {checkboxItems.map((item) => (
+                      <MenuItem
+                        key={`${input.key}:${item}`}
+                        value={item}
+                        onClick={() => handleToggle(input.key, item)}
+                      >
+                        <Checkbox checked={currentValues.includes(item)} />
+                        <ListItemText primary={item} />
+                      </MenuItem>
+                    ))}
+
+                    {/* Remaining Items Note */}
+                    {/* {remainingCount > 0 && (
+                      <MenuItem disabled>
+                        <ListItemText 
+                          secondary={`${remainingCount} more items available. Use custom input to add them.`}
+                          sx={{ fontSize: '0.75rem', color: 'text.secondary' }}
+                        />
+                      </MenuItem>
+                    )} */}
+
+                    {/* Custom Added Items */}
+                    {currentValues
+                      .filter(item => !options[input.key]?.includes(item))
+                      .map((item) => (
+                        <MenuItem
+                          key={`${input.key}:${item}`}
+                          value={item}
+                          onClick={() => handleToggle(input.key, item)}
+                        >
+                          <Checkbox checked={true} />
+                          <ListItemText 
+                            primary={
+                              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                {item}
+                                <Chip 
+                                  size="small" 
+                                  label="Custom" 
+                                  color="primary"
+                                  sx={{ ml: 1, height: 20 }}
+                                />
+                              </Box>
+                            }
+                          />
+                        </MenuItem>
+                      ))}
+
+                    {/* No Items Message */}
+                    {filteredItems.length === 0 && currentValues.length === 0 && (
+                      <MenuItem disabled>
+                        <em>No items available</em>
+                      </MenuItem>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </Select>
+          )}
+        </FormControl>
       </Box>
-    </div>
-  );
+    </Box>
+  </div>
+);
 };
 
 export default SectionFour;

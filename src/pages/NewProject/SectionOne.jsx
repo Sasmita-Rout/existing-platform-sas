@@ -17,6 +17,7 @@ import apiUrlConfig from "../../config/apiUrlConfig";
 import { getUploadSowFileDetails, downloadSowFile } from "../../modules/FilterApiCall";
 import FileDownloadOffIcon from '@mui/icons-material/FileDownloadOff';
 
+
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -41,6 +42,40 @@ export default function SectionOne(props) {
   const [endsowDate, setEndsowDate] = useState()
   const [loading, setLoading] = useState(false)
   const [archLoading, setArchLoading] = useState(false)
+
+  const [sowFilePath, setSowFilePath] = useState("");
+  const [pathUpdateLoading, setPathUpdateLoading] = useState(false);
+
+  // function to handle path update
+  const updateSowFilePath = async () => {
+    setPathUpdateLoading(true);
+    try {
+      const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&account_name=${accountValue}&project_name=${projectName}`;
+      
+      const formData = new FormData();
+      formData.append("file_path", sowFilePath);
+      
+      const config = {
+        method: "POST",
+        mode: "cors",
+        body: formData,
+      };
+
+      const response = await fetch(url, config);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      // Update the displayed filename after successful update
+      setsowFileName(sowFilePath);
+      
+    } catch (error) {
+      console.error("Error updating file path:", error);
+    } finally {
+      setPathUpdateLoading(false);
+    }
+  };
 
   async function uploadFile(endpoint, sowFile, archFile) {
     const formData = new FormData();
@@ -166,231 +201,293 @@ export default function SectionOne(props) {
       callUpload()
     }
   }, [onSubmit])
-
   return (
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
-      <Box
-        sx={{
+      <Box sx={{ /* existing styles */ }}>
+        <Box sx={{
           display: "flex",
-          justifyContent: "space-between",
+          flexDirection: "column",
+          gap: 1.5,
           width: "100%",
-          marginTop: "15px",
-          gap: 3,
-        }}
-      >
-        {/* {!viewProject ?
-          <>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                borderRadius: "5px",
-                padding: "20px",
-                gap: 1,
-                width: "60%",
-                border: `3px solid ${grey[400]}`,
-                borderStyle: "dotted",
+          maxWidth: "600px",
+          paddingRight: "90px",
+          marginRight: "130px",
+        }}>
+          <Typography sx={{ fontSize: 14 }} variant="subtitle1">
+            SOW File Path
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <TextField
+              value={sowFilePath}
+              onChange={(e) => setSowFilePath(e.target.value)}
+              label="Enter your sharepoint SOW file path"
+              variant="outlined"
+              InputProps={{
+                readOnly: viewProject,
               }}
-            >
-              <Typography style={{ fontSize: "15px", marginTop: "20px" }}>
-                UPLOAD SOW
-              </Typography>
-              <CloudUploadOutlinedIcon
-                style={{ marginBottom: "10px", fontSize: "40px", color: `red` }}
-              />
-              <Typography style={{ marginBottom: "3px", fontSize: "15px" }}>
-                Select your file or drag and drop
-              </Typography>
-              <Typography
-                style={{
-                  marginBottom: "10px",
-                  fontSize: "15px",
-                  color: `${grey[500]}`,
-                }}
-              >
-                (pdf, jpg, docx accepted)
-              </Typography>
-              <Button
-                sx={{ padding: "10px", backgroundColor: "#0E5FD9" }}
-                component="label"
-                variant="contained"
-              >
-                Browse
-                <VisuallyHiddenInput
-                  type="file"
-                  accept=".pdf, .jpg, .jpeg, .docx"
-                  onChange={(event) => setValue("sowSelectedFile", event?.target?.files)}
-                  multiple
-                />
-              </Button>
-              {selectedFile && (
-                <Typography sx={{ marginTop: "10px", color: `${grey[600]}` }}>
-                  Selected file: {selectedFile?.name} (
-                  {(selectedFile?.size / 1024).toFixed(2)} KB)
-                </Typography>
-              )}
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                borderRadius: "5px",
-                padding: "20px",
-                gap: 1,
-                width: "60%",
-                border: `3px solid ${grey[400]}`,
-                borderStyle: "dotted",
-              }}
-            >
-              <Typography style={{ fontSize: "15px", marginTop: "20px" }}>
-                UPLOAD ARCHITECHTURE
-              </Typography>
-              <CloudUploadOutlinedIcon
-                style={{ marginBottom: "10px", fontSize: "40px", color: `red` }}
-              />
-              <Typography style={{ marginBottom: "3px", fontSize: "15px" }}>
-                Select your file or drag and drop
-              </Typography>
-              <Typography
-                style={{
-                  marginBottom: "10px",
-                  fontSize: "15px",
-                  color: `${grey[500]}`,
-                }}
-              >
-                (pdf, jpg, docx accepted)
-              </Typography>
-              <Button
-                sx={{ padding: "10px", backgroundColor: "#0E5FD9" }}
-                component="label"
-                variant="contained"
-              >
-                Browse
-                <VisuallyHiddenInput
-                  type="file"
-                  accept=".pdf, .jpg, .jpeg, .docx"
-                  onChange={(event) => setValue("architectureSelectedFile", event?.target?.files)}
-                  multiple
-                />
-              </Button>
-              {architectureSelectedFile && (
-                <Typography sx={{ marginTop: "10px", color: `${grey[600]}` }}>
-                  Selected file: {architectureSelectedFile?.name} (
-                  {(architectureSelectedFile?.size / 1024).toFixed(2)} KB)
-                </Typography>
-              )}
-            </Box>
-          </>
-          :
-          <>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                borderRadius: "5px",
-                padding: "20px",
-                gap: 1,
-                width: "60%",
-                border: `3px solid ${grey[400]}`,
-                borderStyle: "dotted",
-              }}
-            >
-              <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red", fontFamily: "bold" }}>
-                DOWNLOAD SOW
-              </Typography>
-              <Typography style={{ fontSize: "15px", marginTop: "20px" }}>
-                Download the Uploaded SOW File here...
-              </Typography>
-              <FileDownloadIcon />
+              fullWidth
+            />
+            {!viewProject && (
               <LoadingButton
-                loading={loading}
+                loading={pathUpdateLoading}
                 loadingPosition="start"
                 startIcon={<SaveIcon />}
-                onClick={downloadFile}
-                variant="contained">Download File</LoadingButton>
-              {!isFileFound &&
-                <>
-                  <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red" }}>
-                    No File Found to Download
-                  </Typography>
-                  <FileDownloadOffIcon />
-                </>
-              }
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                borderRadius: "5px",
-                padding: "20px",
-                gap: 1,
-                width: "60%",
-                border: `3px solid ${grey[400]}`,
-                borderStyle: "dotted",
-              }}
-            >
-              <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red", fontFamily: "bold" }}>
-                DOWNLOAD ARCHITECHTURE
-              </Typography>
-              <Typography style={{ fontSize: "15px", marginTop: "20px" }}>
-                Download the Uploaded Architecture File here...
-              </Typography>
-              <FileDownloadIcon />
-              <LoadingButton
-                loading={archLoading}
-                loadingPosition="start"
-                startIcon={<SaveIcon />}
-                onClick={downloadArchFile}
-                variant="contained">Download File</LoadingButton>
-              {!isArchFileFound &&
-                <>
-                  <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red" }}>
-                    No File Found to Download
-                  </Typography>
-                  <FileDownloadOffIcon />
-                </>
-              }
-            </Box>
-          </>
-        } */}
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 1.5,
-            width: "30%",
-            paddingRight: "90px",
-            marginRight: "130px",
-          }}
-        >
-          <Typography sx={{ fontSize: 14 }} variant="subtitle1">SOW Start Date</Typography>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            {viewProject && startsowDate}
-            {!viewProject && <DatePicker
-              value={startDate}
-              onChange={(newValue) => setValue("sowStartDate", newValue)}
-              inputFormat="DD-MM-YYYY"
-              format="DD-MM-YYYY"
-              renderInput={(params) => <TextField {...params} />}
-            />}
-            <Typography sx={{ fontSize: 14 }} variant="subtitle1">SOW End Date</Typography>
-            {viewProject && endsowDate}
-            {!viewProject && <DatePicker
-              value={endDate}
-              minDate={startDate}
-              onChange={(newValue) => setValue("sowEndDate", newValue)}
-              inputFormat="DD-MM-YYYY"
-              format="DD-MM-YYYY"
-              renderInput={(params) => <TextField {...params} />}
-            />}
-          </LocalizationProvider>
+                variant="contained"
+                onClick={updateSowFilePath}
+                sx={{ minWidth: '100px', margin: '0 auto' }}
+              >
+                Save
+              </LoadingButton>
+            )}
+          </Box>
+          {sowFileName && (
+            <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>
+              Current path: {sowFileName}
+            </Typography>
+          )}
         </Box>
       </Box>
     </div>
   );
+  // return (
+  //   <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+  //     <Box
+  //       sx={{
+  //         display: "flex",
+  //         justifyContent: "space-between",
+  //         width: "100%",
+  //         marginTop: "15px",
+  //         gap: 3,
+  //       }}
+  //     >
+  //       {/* {!viewProject ?
+  //         <>
+  //           <Box
+  //             sx={{
+  //               display: "flex",
+  //               flexDirection: "column",
+  //               alignItems: "center",
+  //               borderRadius: "5px",
+  //               padding: "20px",
+  //               gap: 1,
+  //               width: "60%",
+  //               border: `3px solid ${grey[400]}`,
+  //               borderStyle: "dotted",
+  //             }}
+  //           >
+  //             <Typography style={{ fontSize: "15px", marginTop: "20px" }}>
+  //               UPLOAD SOW
+  //             </Typography>
+  //             // <CloudUploadOutlinedIcon
+  //             //   style={{ marginBottom: "10px", fontSize: "40px", color: `red` }}
+  //             // />
+  //             <Typography style={{ marginBottom: "3px", fontSize: "15px" }}>
+  //               Select your file or drag and drop
+  //             </Typography>
+  //             <Typography
+  //               style={{
+  //                 marginBottom: "10px",
+  //                 fontSize: "15px",
+  //                 color: `${grey[500]}`,
+  //               }}
+  //             >
+  //               (pdf, jpg, docx accepted)
+  //             </Typography>
+  //             <Button
+  //               sx={{ padding: "10px", backgroundColor: "#0E5FD9" }}
+  //               component="label"
+  //               variant="contained"
+  //             >
+  //               Browse
+  //               <VisuallyHiddenInput
+  //                 type="file"
+  //                 accept=".pdf, .jpg, .jpeg, .docx"
+  //                 onChange={(event) => setValue("sowSelectedFile", event?.target?.files)}
+  //                 multiple
+  //               />
+  //             </Button>
+  //             {selectedFile && (
+  //               <Typography sx={{ marginTop: "10px", color: `${grey[600]}` }}>
+  //                 Selected file: {selectedFile?.name} (
+  //                 {(selectedFile?.size / 1024).toFixed(2)} KB)
+  //               </Typography>
+  //             )}
+  //           </Box>
+  //           <Box
+  //             sx={{
+  //               display: "flex",
+  //               flexDirection: "column",
+  //               alignItems: "center",
+  //               borderRadius: "5px",
+  //               padding: "20px",
+  //               gap: 1,
+  //               width: "60%",
+  //               border: `3px solid ${grey[400]}`,
+  //               borderStyle: "dotted",
+  //             }}
+  //           >
+  //             <Typography style={{ fontSize: "15px", marginTop: "20px" }}>
+  //               UPLOAD ARCHITECHTURE
+  //             </Typography>
+  //             <CloudUploadOutlinedIcon
+  //               style={{ marginBottom: "10px", fontSize: "40px", color: `red` }}
+  //             />
+  //             <Typography style={{ marginBottom: "3px", fontSize: "15px" }}>
+  //               Select your file or drag and drop
+  //             </Typography>
+  //             <Typography
+  //               style={{
+  //                 marginBottom: "10px",
+  //                 fontSize: "15px",
+  //                 color: `${grey[500]}`,
+  //               }}
+  //             >
+  //               (pdf, jpg, docx accepted)
+  //             </Typography>
+  //             <Button
+  //               sx={{ padding: "10px", backgroundColor: "#0E5FD9" }}
+  //               component="label"
+  //               variant="contained"
+  //             >
+  //               Browse
+  //               <VisuallyHiddenInput
+  //                 type="file"
+  //                 accept=".pdf, .jpg, .jpeg, .docx"
+  //                 onChange={(event) => setValue("architectureSelectedFile", event?.target?.files)}
+  //                 multiple
+  //               />
+  //             </Button>
+  //             {architectureSelectedFile && (
+  //               <Typography sx={{ marginTop: "10px", color: `${grey[600]}` }}>
+  //                 Selected file: {architectureSelectedFile?.name} (
+  //                 {(architectureSelectedFile?.size / 1024).toFixed(2)} KB)
+  //               </Typography>
+  //             )}
+  //           </Box>
+  //         </>
+  //         :
+  //         <>
+  //           <Box
+  //             sx={{
+  //               display: "flex",
+  //               flexDirection: "column",
+  //               alignItems: "center",
+  //               borderRadius: "5px",
+  //               padding: "20px",
+  //               gap: 1,
+  //               width: "60%",
+  //               border: `3px solid ${grey[400]}`,
+  //               borderStyle: "dotted",
+  //             }}
+  //           >
+  //             <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red", fontFamily: "bold" }}>
+  //               DOWNLOAD SOW
+  //             </Typography>
+  //             <Typography style={{ fontSize: "15px", marginTop: "20px" }}>
+  //               Download the Uploaded SOW File here...
+  //             </Typography>
+  //             <FileDownloadIcon />
+  //             <LoadingButton
+  //               loading={loading}
+  //               loadingPosition="start"
+  //               startIcon={<SaveIcon />}
+  //               onClick={downloadFile}
+  //               variant="contained">Download File</LoadingButton>
+  //             {!isFileFound &&
+  //               <>
+  //                 <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red" }}>
+  //                   No File Found to Download
+  //                 </Typography>
+  //                 <FileDownloadOffIcon />
+  //               </>
+  //             }
+  //           </Box>
+  //           <Box
+  //             sx={{
+  //               display: "flex",
+  //               flexDirection: "column",
+  //               alignItems: "center",
+  //               borderRadius: "5px",
+  //               padding: "20px",
+  //               gap: 1,
+  //               width: "60%",
+  //               border: `3px solid ${grey[400]}`,
+  //               borderStyle: "dotted",
+  //             }}
+  //           >
+  //             <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red", fontFamily: "bold" }}>
+  //               DOWNLOAD ARCHITECHTURE
+  //             </Typography>
+  //             <Typography style={{ fontSize: "15px", marginTop: "20px" }}>
+  //               Download the Uploaded Architecture File here...
+  //             </Typography>
+  //             <FileDownloadIcon />
+  //             <LoadingButton
+  //               loading={archLoading}
+  //               loadingPosition="start"
+  //               startIcon={<SaveIcon />}
+  //               onClick={downloadArchFile}
+  //               variant="contained">Download File</LoadingButton>
+  //             {!isArchFileFound &&
+  //               <>
+  //                 <Typography style={{ fontSize: "15px", marginTop: "20px", color: "red" }}>
+  //                   No File Found to Download
+  //                 </Typography>
+  //                 <FileDownloadOffIcon />
+  //               </>
+  //             }
+  //           </Box>
+  //         </>
+  //       } */}
+
+  //       <Box
+  //         sx={{
+  //           display: "flex",
+  //           flexDirection: "column",
+  //           gap: 1.5,
+  //           width: "30%",
+  //           paddingRight: "90px",
+  //           marginRight: "130px",
+  //         }}
+  //       >
+  //         {/* <Typography sx={{ fontSize: 14 }} variant="subtitle1">SOW Start Date</Typography> */}
+  //         {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+  //           {viewProject && startsowDate}
+  //           {!viewProject && <DatePicker
+  //             value={startDate}
+  //             onChange={(newValue) => setValue("sowStartDate", newValue)}
+  //             inputFormat="DD-MM-YYYY"
+  //             format="DD-MM-YYYY"
+  //             renderInput={(params) => <TextField {...params} />}
+  //           />}
+  //           <Typography sx={{ fontSize: 14 }} variant="subtitle1">SOW End Date</Typography>
+  //           {viewProject && endsowDate}
+  //           {!viewProject && <DatePicker
+  //             value={endDate}
+  //             minDate={startDate}
+  //             onChange={(newValue) => setValue("sowEndDate", newValue)}
+  //             inputFormat="DD-MM-YYYY"
+  //             format="DD-MM-YYYY"
+  //             renderInput={(params) => <TextField {...params} />}
+  //           />}
+  //         </LocalizationProvider> */}
+  //         <Typography sx={{ fontSize: 14 }} variant="subtitle1">
+  //           SOW File Path
+  //         </Typography>
+  //         <TextField
+  //           value={sowFileName || ""}
+  //           label="Enter your sharepoint SOW file path"
+  //           variant="outlined"
+  //           InputProps={{
+  //             readOnly: true,
+  //           }}
+  //           sx={{ marginBottom: 2 }}
+  //         />
+
+  //       </Box>
+  //     </Box>
+  //   </div>
+  // );
+
+
 }
