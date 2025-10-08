@@ -357,6 +357,23 @@ const NewProject = () => {
     };
     fetchDropdownData();
   }, []);
+
+  // helper function to sanitize form data
+  const sanitizeFormData = (data) => {
+    const sanitized = {};
+    Object.entries(data).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        sanitized[key] = value.length === 0 ? null : value;
+        if (Array.isArray(value[0]) && value[0].length === 0) {
+          sanitized[key] = null;
+        }
+      } else {
+        sanitized[key] = value;
+      }
+    });
+    return sanitized;
+  };
+
   const createNewProject = async () => {
     const response = await addNewProject(
       pmoUser,
@@ -374,33 +391,99 @@ const NewProject = () => {
     return response;
   };
 
+  // const updateCurrentProject = async () => {
+  //   const response = await updateProject(
+  //     row.id,
+  //     pmoUser,
+  //     watch("accountValue"),
+  //     watch("projectName").trim(),
+  //     watch("buhValue"),
+  //     watch("ddValue"),
+  //     watch("updatedValuesTwo"),
+  //     watch("updatedValuesFour"),
+  //     watch("updatedValuesThree"),
+  //     watch("updatedValuesFive"),
+  //     watch("updatedValuesSix"),
+  //     checked
+  //   );
+  //   if (response.project_id) {
+  //     setValue(
+  //       "message",
+  //       `Your Project "${watch("projectName").trim()}" Updated Successfully`
+  //     );
+  //     setValue("open", true);
+  //     setTimeout(() => {
+  //       navigate("/PlatformProject");
+  //     }, 1500);
+  //   }
+  //   setValue("openDialog", false);
+  //   return response;
+  // };
   const updateCurrentProject = async () => {
-    const response = await updateProject(
-      row.id,
-      pmoUser,
-      watch("accountValue"),
-      watch("projectName").trim(),
-      watch("buhValue"),
-      watch("ddValue"),
-      watch("updatedValuesTwo"),
-      watch("updatedValuesFour"),
-      watch("updatedValuesThree"),
-      watch("updatedValuesFive"),
-      watch("updatedValuesSix"),
-      checked
-    );
-    if (response.project_id) {
-      setValue(
-        "message",
-        `Your Project "${watch("projectName").trim()}" Updated Successfully`
+    try {
+      // Prepare update payload
+      const updatePayload = {
+        id: row.id,
+        submitter_email_id: pmoUser,
+        account_name: watch("accountValue"),
+        project_name: watch("projectName")?.trim(),
+        buh_name: watch("buhValue"),
+        dd_name: watch("ddValue"),
+        status: checked,
+        // Section data with sanitization
+        ...sanitizeFormData({
+          ...watch("updatedValuesTwo"),
+          ...watch("updatedValuesThree"),
+          ...watch("updatedValuesFour"),
+          ...watch("updatedValuesFive"),
+          ...watch("updatedValuesSix"),
+        })
+      };
+
+      // Validate required fields before update
+      const requiredFields = [
+        'account_name',
+        'project_name',
+        'buh_name',
+        'dd_name',
+        'domains',
+        'application_class'
+      ];
+
+      const missingFields = requiredFields.filter(field => !updatePayload[field]);
+      
+      if (missingFields.length > 0) {
+        setValue("errorDisplay", missingFields);
+        setValue("errorDailogBox", true);
+        return;
+      }
+
+      const response = await updateProject(
+        row.id,
+        pmoUser,
+        updatePayload.account_name,
+        updatePayload.project_name,
+        updatePayload.buh_name,
+        updatePayload.dd_name,
+        updatePayload.domains,
+        updatePayload.application_class,
+        sanitizeFormData(watch("updatedValuesThree")),
+        sanitizeFormData(watch("updatedValuesFour")),
+        sanitizeFormData(watch("updatedValuesFive")),
+        sanitizeFormData(watch("updatedValuesSix")),
+        checked
       );
+
+      if (response.project_id) {
+        setValue("message", `Project "${updatePayload.project_name}" updated successfully`);
+        setValue("open", true);
+        setTimeout(() => navigate("/PlatformProject"), 1500);
+      }
+    } catch (error) {
+      console.error('Update failed:', error);
+      setValue("message", "Failed to update project. Please try again.");
       setValue("open", true);
-      setTimeout(() => {
-        navigate("/PlatformProject");
-      }, 1500);
     }
-    setValue("openDialog", false);
-    return response;
   };
 
   const errorMessage =
@@ -412,6 +495,58 @@ const NewProject = () => {
   const toggleChecked = (prev) => {
     setChecked(prev.target.checked);
   };
+
+  // Adding validation before update
+  // const handleUpdate = () => {
+  //   const validateSection = (section) => {
+  //     return Object.values(section || {}).every(value => 
+  //       value !== null && value !== undefined && value !== ''
+  //     );
+  //   };
+
+  //   if (!validateSection(watch("updatedValuesTwo"))) {
+  //     setValue("errorDisplay", ["Domains and Application Class"]);
+  //     setValue("errorDailogBox", true);
+  //     return;
+  //   }
+
+  //   updateCurrentProject();
+  // };
+
+  const handleUpdate = async () => {
+      try {
+          // Get the current values for validation
+          const currentValues = watch("updatedValuesTwo");
+          
+          // Validate domains and application_class
+          if (!currentValues?.domainInput || !currentValues?.applicationInput) {
+              setValue("errorDisplay", ["Domains", "Application Class"]);
+              setValue("errorDailogBox", true);
+              return;
+          }
+
+          const response = await updateCurrentProject();
+          
+          if (response.project_id) {
+              setValue("message", `Project "${watch("projectName")?.trim()}" updated successfully`);
+              setValue("open", true);
+              setTimeout(() => navigate("/PlatformProject"), 1500);
+          }
+      } catch (error) {
+          console.error("Update failed:", error);
+          setValue("message", "Failed to update project. Please check domains and application class.");
+          setValue("open", true);
+      }
+  };
+  const UpdateButton = () => (
+    <Button
+      variant="contained"
+      sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
+      onClick={handleUpdate}
+    >
+      Update
+    </Button>
+  );
 
   return (
     <>

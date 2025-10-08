@@ -1,4 +1,100 @@
-import React, { useEffect } from "react";
+// import React, { useEffect } from "react";
+// import { Filter } from "../components/molecules/index";
+// import Button from "@mui/material/Button";
+// import Grid from "@mui/material/Grid2";
+
+// export default function FilterOptions({
+//   buhInput,
+//   accountInput,
+//   ddInput,
+//   projectInput,
+//   onBuhChange,
+//   onAccountChange,
+//   onDdChange,
+//   onProjectChange,
+// }) {
+//   const [buhValue, setBuhValue] = React.useState(null);
+//   const [accountValue, setAccountValue] = React.useState(null);
+//   const [ddValue, setDdValue] = React.useState(null);
+//   const [projectValue, setProjectValue] = React.useState(null);
+
+//   const buhFilterPlaceholder = "Select BUH";
+//   const accountFilterPlaceholder = "Select Account";
+//   const ddFilterPlaceholder = "Select DD";
+//   const projectFilterPlaceholder = "Select Project";
+
+//   const handleClearAll = () => {
+//     setBuhValue(null);
+//     setAccountValue(null);
+//     setDdValue(null);
+//     setProjectValue(null);
+//   };
+
+//   useEffect(() => {
+//     onDdChange(ddValue);
+//     onBuhChange(buhValue);
+//     onAccountChange(accountValue);
+//     onProjectChange(projectValue);
+//   }, [buhValue, accountValue, ddValue, projectValue]);
+
+//   return (
+//     <Grid container>
+//       <Grid size={2.7}>
+//         <Filter
+//           input={buhInput}
+//           handleOnSelect={(event, newValue) => setBuhValue(newValue)}
+//           selectedValues={buhValue}
+//           isMultiSelect={false}
+//           placeholder={buhFilterPlaceholder}
+//         />
+//       </Grid>
+
+//       <Grid size={2.7}>
+//         <Filter
+//           input={ddInput}
+//           handleOnSelect={(event, newValue) => setDdValue(newValue)}
+//           selectedValues={ddValue}
+//           isMultiSelect={false}
+//           placeholder={ddFilterPlaceholder}
+//         />
+//       </Grid>
+
+//       <Grid size={2.7}>
+//         <Filter
+//           input={accountInput}
+//           handleOnSelect={(event, newValue) => setAccountValue(newValue)}
+//           selectedValues={accountValue}
+//           isMultiSelect={false}
+//           placeholder={accountFilterPlaceholder}
+//         />
+//       </Grid>
+
+//       <Grid size={2.7}>
+//         <Filter
+//           input={projectInput}
+//           handleOnSelect={(event, newValue) => setProjectValue(newValue)}
+//           selectedValues={projectValue}
+//           isMultiSelect={false}
+//           placeholder={projectFilterPlaceholder}
+//         />
+//       </Grid>
+//       <Grid size={1}>
+//         <Button
+//           style={{
+//             backgroundColor: "grey",
+//             color: "white",
+//             height: "100%",
+//           }}
+//           onClick={handleClearAll}
+//         >
+//           Reset
+//         </Button>
+//       </Grid>
+//     </Grid>
+//   );
+// }
+
+import React, { useEffect, useState } from "react";
 import { Filter } from "../components/molecules/index";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid2";
@@ -13,71 +109,163 @@ export default function FilterOptions({
   onDdChange,
   onProjectChange,
 }) {
-  const [buhValue, setBuhValue] = React.useState(null);
-  const [accountValue, setAccountValue] = React.useState(null);
-  const [ddValue, setDdValue] = React.useState(null);
-  const [projectValue, setProjectValue] = React.useState(null);
+  const [loading, setLoading] = useState(true);
+  const [buhValue, setBuhValue] = useState(null);
+  const [accountValue, setAccountValue] = useState(null);
+  const [ddValue, setDdValue] = useState(null);
+  const [projectValue, setProjectValue] = useState(null);
 
-  const buhFilterPlaceholder = "Select BUH";
-  const accountFilterPlaceholder = "Select Account";
-  const ddFilterPlaceholder = "Select DD";
-  const projectFilterPlaceholder = "Select Project";
+  // State for filtered options
+  const [filteredDdOptions, setFilteredDdOptions] = useState(ddInput || []);
+  const [filteredAccountOptions, setFilteredAccountOptions] = useState(accountInput || []);
+  const [filteredProjectOptions, setFilteredProjectOptions] = useState(projectInput || []);
+
+  // Function to fetch filtered data based on current selections
+  const fetchFilteredData = async () => {
+    try {
+      // Build query params based on selected values
+      const queryParams = new URLSearchParams();
+      if (buhValue) queryParams.append('buh_name', buhValue);
+      if (ddValue) queryParams.append('dd_name', ddValue);
+      if (accountValue) queryParams.append('account_name', accountValue);
+      if (projectValue) queryParams.append('project_name', projectValue);
+      queryParams.append('page', '1');
+      queryParams.append('page_size', '100');
+
+      const response = await fetch(
+        `https://intranet.accionlabs.com/pmoreporting/platform_data/search_advanced?${queryParams.toString()}`
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching filtered data:', error);
+      return null;
+    }
+  };
+
+  // Handle BUH selection
+  const handleBuhChange = async (event, newValue) => {
+    setBuhValue(newValue);
+    onBuhChange(newValue);
+
+    try {
+      const data = await fetchFilteredData();
+      if (data?.records) {
+        // Update DD options based on BUH selection
+        const uniqueDds = [...new Set(data.records.map(record => record.dd_name))].filter(Boolean);
+        setFilteredDdOptions(uniqueDds);
+      }
+    } catch (error) {
+      console.error('Error updating DD options:', error);
+    }
+  };
+
+  // Handle DD selection
+  const handleDdChange = async (event, newValue) => {
+    setDdValue(newValue);
+    onDdChange(newValue);
+
+    try {
+      const data = await fetchFilteredData();
+      if (data?.records) {
+        // Update Account options based on DD selection
+        const uniqueAccounts = [...new Set(data.records.map(record => record.account_name))].filter(Boolean);
+        setFilteredAccountOptions(uniqueAccounts);
+      }
+    } catch (error) {
+      console.error('Error updating Account options:', error);
+    }
+  };
+
+  // Handle Account selection
+  const handleAccountChange = async (event, newValue) => {
+    setAccountValue(newValue);
+    onAccountChange(newValue);
+
+    try {
+      const data = await fetchFilteredData();
+      if (data?.records) {
+        // Update Project options based on Account selection
+        const uniqueProjects = [...new Set(data.records.map(record => record.project_name))].filter(Boolean);
+        setFilteredProjectOptions(uniqueProjects);
+      }
+    } catch (error) {
+      console.error('Error updating Project options:', error);
+    }
+  };
+
+  // Handle Project selection
+  const handleProjectChange = (event, newValue) => {
+    setProjectValue(newValue);
+    onProjectChange(newValue);
+  };
 
   const handleClearAll = () => {
     setBuhValue(null);
-    setAccountValue(null);
     setDdValue(null);
+    setAccountValue(null);
     setProjectValue(null);
+    // Reset to original options
+    setFilteredDdOptions(ddInput || []);
+    setFilteredAccountOptions(accountInput || []);
+    setFilteredProjectOptions(projectInput || []);
+    onBuhChange(null);
+    onDdChange(null);
+    onAccountChange(null);
+    onProjectChange(null);
   };
 
+  // Initialize filters with props
   useEffect(() => {
-    onDdChange(ddValue);
-    onBuhChange(buhValue);
-    onAccountChange(accountValue);
-    onProjectChange(projectValue);
-  }, [buhValue, accountValue, ddValue, projectValue]);
+    setFilteredDdOptions(ddInput || []);
+    setFilteredAccountOptions(accountInput || []);
+    setFilteredProjectOptions(projectInput || []);
+    setLoading(false);
+  }, [ddInput, accountInput, projectInput]);
 
   return (
-    <Grid container>
+    <Grid container spacing={2}>
       <Grid size={2.7}>
         <Filter
-          input={buhInput}
-          handleOnSelect={(event, newValue) => setBuhValue(newValue)}
+          input={buhInput || []}
+          handleOnSelect={handleBuhChange}
           selectedValues={buhValue}
           isMultiSelect={false}
-          placeholder={buhFilterPlaceholder}
+          placeholder="Select BUH"
+          disabled={loading}
         />
       </Grid>
 
       <Grid size={2.7}>
         <Filter
-          input={ddInput}
-          handleOnSelect={(event, newValue) => setDdValue(newValue)}
+          input={filteredDdOptions}
+          handleOnSelect={handleDdChange}
           selectedValues={ddValue}
           isMultiSelect={false}
-          placeholder={ddFilterPlaceholder}
+          placeholder="Select DD"
         />
       </Grid>
 
       <Grid size={2.7}>
         <Filter
-          input={accountInput}
-          handleOnSelect={(event, newValue) => setAccountValue(newValue)}
+          input={filteredAccountOptions}
+          handleOnSelect={handleAccountChange}
           selectedValues={accountValue}
           isMultiSelect={false}
-          placeholder={accountFilterPlaceholder}
+          placeholder="Select Account"
         />
       </Grid>
 
       <Grid size={2.7}>
         <Filter
-          input={projectInput}
-          handleOnSelect={(event, newValue) => setProjectValue(newValue)}
+          input={filteredProjectOptions}
+          handleOnSelect={handleProjectChange}
           selectedValues={projectValue}
           isMultiSelect={false}
-          placeholder={projectFilterPlaceholder}
+          placeholder="Select Project"
         />
       </Grid>
+
       <Grid size={1}>
         <Button
           style={{
