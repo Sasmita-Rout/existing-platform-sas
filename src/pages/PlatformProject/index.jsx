@@ -240,9 +240,24 @@ const PlatformProject = () => {
         null,
         "GET"
       );
-      const updatedData = response.records.map((item, index) => ({
+
+      // Sort by most recent first (by id descending)
+      const sortedData = response.records.sort((a, b) => {
+        // Try to sort by id (newest first)
+        if (a.id && b.id) {
+          return b.id - a.id;
+        }
+        // Fallback to submitting_time if available
+        if (a.submitting_time && b.submitting_time) {
+          return new Date(b.submitting_time) - new Date(a.submitting_time);
+        }
+        return 0;
+      });
+
+      const updatedData = sortedData.map((item, index) => ({
         ...item,
       }));
+
       setTableData({
         records: updatedData,
         total_pages: response.total_pages,
@@ -293,7 +308,20 @@ const PlatformProject = () => {
             setAdvanceSearch(true);
           }
           if (response.records !== 0) {
-            const updatedData = response.records.map((item, index) => ({
+            // Sort by most recent first (by id descending)
+            const sortedData = response.records.sort((a, b) => {
+              // Try to sort by id (newest first)
+              if (a.id && b.id) {
+                return b.id - a.id;
+              }
+              // Fallback to submitting_time if available
+              if (a.submitting_time && b.submitting_time) {
+                return new Date(b.submitting_time) - new Date(a.submitting_time);
+              }
+              return 0;
+            });
+
+            const updatedData = sortedData.map((item, index) => ({
               ...item,
             }));
 
@@ -326,7 +354,20 @@ const PlatformProject = () => {
           );
           setAdvanceSearch(false);
 
-          const updatedData = response.records.map((item, index) => ({
+          // Sort by most recent first (by id descending)
+          const sortedData = response.records.sort((a, b) => {
+            // Try to sort by id (newest first)
+            if (a.id && b.id) {
+              return b.id - a.id;
+            }
+            // Fallback to submitting_time if available
+            if (a.submitting_time && b.submitting_time) {
+              return new Date(b.submitting_time) - new Date(a.submitting_time);
+            }
+            return 0;
+          });
+
+          const updatedData = sortedData.map((item, index) => ({
             ...item,
           }));
 

@@ -46,15 +46,31 @@ export default function SectionOne(props) {
   const [sowFilePath, setSowFilePath] = useState("");
   const [pathUpdateLoading, setPathUpdateLoading] = useState(false);
 
+  // Validation check for save button
+  const isSaveDisabled = () => {
+    return !accountValue || !projectName || !sowFilePath.trim();
+  };
+
   // function to handle path update
   const updateSowFilePath = async () => {
+    // Validate required fields before saving
+    if (!accountValue || !projectName) {
+      alert("Please select Account Name and Project Name before saving the SOW file path.");
+      return;
+    }
+
+    if (!sowFilePath.trim()) {
+      alert("Please enter a SOW file path before saving.");
+      return;
+    }
+
     setPathUpdateLoading(true);
     try {
       const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&account_name=${accountValue}&project_name=${projectName}`;
-      
+
       const formData = new FormData();
       formData.append("file_path", sowFilePath);
-      
+
       const config = {
         method: "POST",
         mode: "cors",
@@ -69,9 +85,11 @@ export default function SectionOne(props) {
       const result = await response.json();
       // Update the displayed filename after successful update
       setsowFileName(sowFilePath);
-      
+      // alert("SOW file path saved successfully!");
+
     } catch (error) {
       console.error("Error updating file path:", error);
+      alert("Failed to save SOW file path. Please try again.");
     } finally {
       setPathUpdateLoading(false);
     }
@@ -234,12 +252,18 @@ export default function SectionOne(props) {
                 startIcon={<SaveIcon />}
                 variant="contained"
                 onClick={updateSowFilePath}
+                disabled={isSaveDisabled()}
                 sx={{ minWidth: '100px', margin: '0 auto' }}
               >
                 Save
               </LoadingButton>
             )}
           </Box>
+          {!viewProject && (!accountValue || !projectName) && (
+            <Typography sx={{ fontSize: 12, color: 'error.main', mt: 1 }}>
+              {/* Please select Account Name and Project Name before saving the SOW file path. */}
+            </Typography>
+          )}
           {sowFileName && (
             <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>
               Current path: {sowFileName}

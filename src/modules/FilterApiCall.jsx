@@ -58,6 +58,17 @@ export const columnValues = async (apiUrl, value) => {
     return (response && response["values"] ? response["values"].sort() : [])
 }
 
+export const fetchAllColumnDropdowns = async (apiUrl) => {
+    const url = `${apiUrl}/platform_data/column_dropdown`;
+    const response = await fetchRecords(
+        url,
+        false,
+        false,
+        false
+    );
+    return response || {};
+}
+
 export const addNewProject = async (
     pmoUser,
     accountName,

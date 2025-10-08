@@ -45,6 +45,7 @@ export function Filter({
                                             <FilterListIcon />
                                         </InputAdornment>
                                     )}
+                                    {params.InputProps.startAdornment}
                                 </>
                             ),
                         }}

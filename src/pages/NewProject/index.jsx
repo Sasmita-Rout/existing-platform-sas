@@ -42,6 +42,7 @@ import {
   addNewProject,
   updateProject,
 } from "../../modules/FilterApiCall";
+import { fetchRecords } from "../../components/apiServices";
 import apiUrlConfig from "../../config/apiUrlConfig";
 import { useUserStore } from "../../zustand";
 
@@ -214,17 +215,46 @@ const NewProject = () => {
     alerting_tools: (value) => setValue("alertingTools", value),
     dependency_analysis: (value) => setValue("dependencyAnalysis", value),
   };
+
   useEffect(() => {
-    if (onClick) {
+    if (onClick && row) {
+      console.log('NewProject useEffect - row.domains:', row["domains"]);
+      console.log('NewProject useEffect - row.application_class:', row["application_class"]);
+
+      // Helper to convert comma-separated strings to arrays
+      const parseValue = (value) => {
+        if (!value || value === '') return [];
+        if (Array.isArray(value)) return value;
+        // Split by comma and trim whitespace
+        return value.split(',').map(item => item.trim()).filter(item => item !== '');
+      };
+
+      // Set basic project info
       setValue("accountValue", row["account_name"]);
       setValue("buhValue", row["buh_name"]);
       setValue("ddValue", row["dd_name"]);
       setValue("projectName", row["project_name"]);
-      setValue("domainValue", row["domains"]);
-      setValue("applicationValue", row["application_class"]);
+
+      // Set domain and application class for both storage and display
+      const domains = parseValue(row["domains"]);
+      const appClass = parseValue(row["application_class"]);
+      console.log('NewProject useEffect - parsed domains:', domains);
+      console.log('NewProject useEffect - parsed appClass:', appClass);
+
+      setValue("domainValue", domains);
+      setValue("applicationValue", appClass);
+      setValue("domain", domains);  // For dropdown display
+      setValue("app", appClass);     // For dropdown display
       setChecked(row.status);
+
+      // Populate all technology fields using settersMap
+      Object.keys(settersMap).forEach((fieldName) => {
+        if (row[fieldName] !== undefined && row[fieldName] !== null) {
+          settersMap[fieldName](parseValue(row[fieldName]));
+        }
+      });
     }
-  }, [onClick]);
+  }, [onClick, row]);
 
   const handleClose = () => {
     setValue("open", false);

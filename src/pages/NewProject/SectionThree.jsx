@@ -29,8 +29,18 @@ const CustomInputMenuItem = React.forwardRef(({ children, ...props }, ref) => (
 ));
 
 const ensureArray = (value) => {
-  if (!value) return [];
-  return Array.isArray(value) ? value : [value];
+  if (!value || value === '') return [];
+  if (Array.isArray(value)) {
+    // Remove duplicates and filter out empty values
+    return [...new Set(value)].filter(item => item && item !== '');
+  }
+  // Split by comma and trim whitespace for comma-separated strings
+  if (typeof value === 'string' && value.includes(',')) {
+    const items = value.split(',').map(item => item.trim()).filter(item => item !== '');
+    // Remove duplicates
+    return [...new Set(items)];
+  }
+  return [value];
 };
 
 export default function SectionThree({
@@ -150,20 +160,28 @@ export default function SectionThree({
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const results = await Promise.all(
-          inputs.map((input) =>
-            fetch(
-              `https://intranet.accionlabs.com/pmoreporting/platform_data/column_dropdown?dropdown_type=${input.key}`
-            ).then((r) => r.json())
-          )
-        );
+        console.log('SectionThree - Starting fetch...');
+        const response = await fetch(
+          `https://intranet.accionlabs.com/pmoreporting/platform_data/column_dropdown`
+        ).then((r) => r.json());
+
+        console.log('SectionThree - API Response:', response);
+
+        // Handle both response formats: {values: {...}} or direct object
+        const result = response.values || response;
+        console.log('SectionThree - Normalized result:', result);
+
         const dataObj = {};
-        inputs.forEach((input, idx) => {
-          dataObj[input.key] = results[idx]?.values || [];
+        inputs.forEach((input) => {
+          const apiValues = result[input.key];
+          dataObj[input.key] = apiValues && apiValues.length > 0 ? apiValues : [];
+          console.log(`SectionThree - ${input.key}:`, dataObj[input.key]?.length, 'items');
         });
+        console.log('SectionThree - Fetched options:', dataObj);
         setOptions(dataObj);
       } catch (err) {
-        console.error("Error fetching dropdowns:", err);
+        console.error("SectionThree - Error fetching dropdowns:", err);
+        setOptions({});
       } finally {
         setLoading(false);
       }
@@ -172,22 +190,25 @@ export default function SectionThree({
   }, []);
 
   useEffect(() => {
-    if (viewProject) {
+    if (viewProject && row) {
+      console.log('SectionThree - viewProject and row detected');
       const initial = {};
       inputs.forEach(({ key }) => {
-        initial[key] = row[key] || [];
+        const value = row[key];
+        console.log(`SectionThree - row[${key}]:`, value, 'type:', typeof value);
+        if (Array.isArray(value)) {
+          initial[key] = value;
+        } else if (value) {
+          initial[key] = ensureArray(value);
+        } else {
+          initial[key] = [];
+        }
+        console.log(`SectionThree - initial[${key}]:`, initial[key]);
       });
+      console.log('SectionThree - Setting viewValues:', initial);
       setViewValues(initial);
     }
   }, [viewProject, row]);
-
-  useEffect(() => {
-    if (viewProject) {
-      onSelectedViewValuesChange?.(viewValues);
-    } else {
-      onSelectedValuesChange?.(selectedValues);
-    }
-  }, [viewValues, selectedValues, viewProject]);
 
   const allSelected = [
     ...new Set(
@@ -293,6 +314,7 @@ export default function SectionThree({
               multiple
               value={allSelected}
               renderValue={(vals) => vals.join(", ")}
+              onClose={() => setSearchTerm("")}
               MenuProps={{
                 PaperProps: {
                   style: { maxHeight: 500, width: 400 },
@@ -303,12 +325,14 @@ export default function SectionThree({
                 <TextField
                   size="small"
                   fullWidth
+                  autoFocus
                   placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => {
                     e.stopPropagation();
                     setSearchTerm(e.target.value);
                   }}
+                  onKeyDown={(e) => e.stopPropagation()}
                   onClick={(e) => e.stopPropagation()}
                 />
               </CustomInputMenuItem>
@@ -321,15 +345,10 @@ export default function SectionThree({
                   ? viewValues[input.key] || []
                   : selectedValues[input.key] || [];
 
-                // Get only first 5 items for checkboxes
-                const checkboxItems = filtered.slice(0, MAX_CHECKBOX_ITEMS);
-                // Get remaining items as a note
-                const remainingCount = filtered.length - MAX_CHECKBOX_ITEMS;
-
                 return (
                   <React.Fragment key={input.key}>
-                    <ListSubheader 
-                      sx={{ 
+                    <ListSubheader
+                      sx={{
                         bgcolor: "#f5f5f5",
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -339,48 +358,46 @@ export default function SectionThree({
                       {input.labels}
                     </ListSubheader>
 
-                    {!viewProject && (
-                      <CustomInputMenuItem>
-                        <Box sx={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: 1,
-                          width: '100%' 
-                        }}>
-                          <TextField
-                            size="small"
-                            fullWidth
-                            placeholder="Add custom technology..."
-                            value={activeCategory === input.key ? newTechnology : ''}
-                            onChange={(e) => {
-                              e.stopPropagation();
-                              setActiveCategory(input.key);
-                              setNewTechnology(e.target.value);
-                            }}
-                            onKeyDown={(e) => {
-                              e.stopPropagation();
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                handleAddCustomTechnology(input.key);
-                              }
-                            }}
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <IconButton
-                            size="small"
-                            onClick={(e) => {
-                              e.stopPropagation();
+                    <CustomInputMenuItem>
+                      <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        width: '100%'
+                      }}>
+                        <TextField
+                          size="small"
+                          fullWidth
+                          placeholder="Add custom technology..."
+                          value={activeCategory === input.key ? newTechnology : ''}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            setActiveCategory(input.key);
+                            setNewTechnology(e.target.value);
+                          }}
+                          onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
                               handleAddCustomTechnology(input.key);
-                            }}
-                          >
-                            <AddIcon />
-                          </IconButton>
-                        </Box>
-                      </CustomInputMenuItem>
-                    )}
+                            }
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                        <IconButton
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddCustomTechnology(input.key);
+                          }}
+                        >
+                          <AddIcon />
+                        </IconButton>
+                      </Box>
+                    </CustomInputMenuItem>
 
-                    {/* Display only first 5 items as checkboxes */}
-                    {checkboxItems.map((item) => {
+                    {/* Display all filtered items as checkboxes */}
+                    {filtered.map((item) => {
                       const checked = ensureArray(currentValues).includes(item);
                       return (
                         <MenuItem
@@ -404,13 +421,13 @@ export default function SectionThree({
                           onClick={() => handleToggle(input.key, item)}
                         >
                           <Checkbox checked={true} />
-                          <ListItemText 
+                          <ListItemText
                             primary={
                               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 {item}
-                                <Chip 
-                                  size="small" 
-                                  label="Custom" 
+                                <Chip
+                                  size="small"
+                                  label="Custom"
                                   sx={{ ml: 1, height: 20 }}
                                 />
                               </Box>

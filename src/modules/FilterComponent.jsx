@@ -109,12 +109,13 @@ export default function FilterComponent({ technologyInput, onValuesChange }) {
         <Filter
           input={languageDropdown}
           handleOnSelect={handleOnSelect}
-          selectedValues={[]}
+          selectedValues={selectedValues}
           isMultiSelect={true}
           placeholder="Select Options"
           onFocus="Select..."
           onBlur="Select Options"
           showIcon={true}
+          disabled={!selectedValue}
         />
 
         <Button variant="contained" onClick={handleButtonClick} sx={{ maxHeight: 55, marginRight: 5 }}>

@@ -34,8 +34,18 @@ const CustomInputMenuItem = React.forwardRef(({ children, ...props }, ref) => (
 ));
 
 const ensureArray = (value) => {
-  if (!value) return [];
-  return Array.isArray(value) ? value : [value];
+  if (!value || value === '') return [];
+  if (Array.isArray(value)) {
+    // Remove duplicates and filter out empty values
+    return [...new Set(value)].filter(item => item && item !== '');
+  }
+  // Split by comma and trim whitespace for comma-separated strings
+  if (typeof value === 'string' && value.includes(',')) {
+    const items = value.split(',').map(item => item.trim()).filter(item => item !== '');
+    // Remove duplicates
+    return [...new Set(items)];
+  }
+  return [value];
 };
 
 const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewValuesChange }) => {
@@ -140,17 +150,14 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
     const fetchAll = async () => {
       try {
         setOptions(DEFAULT_GENAI_TOOLS);
-        const results = await Promise.all(
-          inputs.map((input) =>
-            fetch(
-              `https://intranet.accionlabs.com/pmoreporting/platform_data/column_dropdown?dropdown_type=${input.key}`
-            ).then((r) => r.json())
-          )
-        );
+        const result = await fetch(
+          `https://intranet.accionlabs.com/pmoreporting/platform_data/column_dropdown`
+        ).then((r) => r.json());
+
         const dataObj = {};
-        inputs.forEach((input, idx) => {
-          const apiValues = results[idx]?.values;
-          dataObj[input.key] = results[idx]?.values.length > 0 
+        inputs.forEach((input) => {
+          const apiValues = result[input.key];
+          dataObj[input.key] = apiValues && apiValues.length > 0
           ? apiValues
           : DEFAULT_GENAI_TOOLS[input.key] || [];
         });
@@ -166,10 +173,18 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
   }, []);
 
   useEffect(() => {
-    if (viewProject) {
+    if (viewProject && row) {
       const initial = {};
       inputs.forEach(({ key }) => {
-        initial[key] = row[key] || [];
+        // Ensure the value is always an array
+        const value = row[key];
+        if (Array.isArray(value)) {
+          initial[key] = value;
+        } else if (value) {
+          initial[key] = [value];
+        } else {
+          initial[key] = [];
+        }
       });
       setViewValues(initial);
     }
@@ -194,6 +209,7 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
                 multiple
                 value={allSelected}
                 renderValue={(selectedVals) => selectedVals.join(", ")}
+                onClose={() => setSearchTerm("")}
                 MenuProps={{
                   PaperProps: {
                     style: { maxHeight: 400, width: 400 },
@@ -204,12 +220,14 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
                   <TextField
                     size="small"
                     fullWidth
+                    autoFocus
                     placeholder="Search..."
                     value={searchTerm}
                     onChange={(e) => {
                       e.stopPropagation();
                       setSearchTerm(e.target.value);
                     }}
+                    onKeyDown={(e) => e.stopPropagation()}
                     onClick={(e) => e.stopPropagation()}
                   />
                 </CustomInputMenuItem>
@@ -222,57 +240,53 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
                     ? viewValues[input.key] || []
                     : selectedValues[input.key] || [];
 
-                  const checkboxItems = filteredItems.slice(0, MAX_CHECKBOX_ITEMS);
-                  const remainingCount = filteredItems.length - MAX_CHECKBOX_ITEMS;
-
                   return (
                     <React.Fragment key={input.key}>
                       <ListSubheader sx={{ bgcolor: "#f5f5f5" }}>
                         {input.labels}
                       </ListSubheader>
 
-                      {!viewProject && (
-                        <CustomInputMenuItem>
-                          <Box sx={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: 1,
-                            width: '100%',
-                            px: 1 
-                          }}>
-                            <TextField
-                              size="small"
-                              fullWidth
-                              placeholder="Add custom tool..."
-                              value={activeCategory === input.key ? newTechnology : ''}
-                              onChange={(e) => {
-                                e.stopPropagation();
-                                setActiveCategory(input.key);
-                                setNewTechnology(e.target.value);
-                              }}
-                              onKeyDown={(e) => {
-                                e.stopPropagation();
-                                if (e.key === 'Enter') {
-                                  e.preventDefault();
-                                  handleAddCustomTechnology(input.key);
-                                }
-                              }}
-                              onClick={(e) => e.stopPropagation()}
-                            />
-                            <IconButton
-                              size="small"
-                              onClick={(e) => {
-                                e.stopPropagation();
+                      <CustomInputMenuItem>
+                        <Box sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                          width: '100%',
+                          px: 1
+                        }}>
+                          <TextField
+                            size="small"
+                            fullWidth
+                            placeholder="Add custom tool..."
+                            value={activeCategory === input.key ? newTechnology : ''}
+                            onChange={(e) => {
+                              e.stopPropagation();
+                              setActiveCategory(input.key);
+                              setNewTechnology(e.target.value);
+                            }}
+                            onKeyDown={(e) => {
+                              e.stopPropagation();
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
                                 handleAddCustomTechnology(input.key);
-                              }}
-                            >
-                              <AddIcon />
-                            </IconButton>
-                          </Box>
-                        </CustomInputMenuItem>
-                      )}
+                              }
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <IconButton
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddCustomTechnology(input.key);
+                            }}
+                          >
+                            <AddIcon />
+                          </IconButton>
+                        </Box>
+                      </CustomInputMenuItem>
 
-                      {checkboxItems.map((item) => (
+                      {/* Display all filtered items as checkboxes */}
+                      {filteredItems.map((item) => (
                         <MenuItem
                           key={`${input.key}:${item}`}
                           value={item}
@@ -292,13 +306,13 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
                             onClick={() => handleToggle(input.key, item)}
                           >
                             <Checkbox checked={true} />
-                            <ListItemText 
+                            <ListItemText
                               primary={
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                   {item}
-                                  <Chip 
-                                    size="small" 
-                                    label="Custom" 
+                                  <Chip
+                                    size="small"
+                                    label="Custom"
                                     color="primary"
                                     sx={{ ml: 1, height: 20 }}
                                   />
