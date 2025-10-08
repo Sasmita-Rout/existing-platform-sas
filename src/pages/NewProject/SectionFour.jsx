@@ -32,6 +32,11 @@ const CustomInputMenuItem = React.forwardRef(({ children, ...props }, ref) => (
   </MenuItem>
 ));
 
+const ensureArray = (value) => {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
+};
+
 const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewValuesChange }) => {
   const [options, setOptions] = useState({});
   const [loading, setLoading] = useState(true);
@@ -42,7 +47,13 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
 
   const [newTechnology, setNewTechnology] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
-
+  // Safe getter for current values
+  const getCurrentValues = (key) => {
+    if (viewProject) {
+      return ensureArray(viewValues[key]);
+    }
+    return ensureArray(selectedValues[key]);
+  };
   const inputs = [
     { key: 'manual_testing_management_tools', labels: 'Select Manual Testing & Mgmt' },
     { key: 'functional_integration_testing', labels: 'Select Functional and Integration...' },
@@ -366,7 +377,7 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
                     )} */}
 
                     {/* Custom Added Items */}
-                    {currentValues
+                    {ensureArray(currentValues)
                       .filter(item => !options[input.key]?.includes(item))
                       .map((item) => (
                         <MenuItem
@@ -392,7 +403,7 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
                       ))}
 
                     {/* No Items Message */}
-                    {filteredItems.length === 0 && currentValues.length === 0 && (
+                    {filteredItems.length === 0 && ensureArray(currentValues).length === 0 && (
                       <MenuItem disabled>
                         <em>No items available</em>
                       </MenuItem>

@@ -28,6 +28,11 @@ const CustomInputMenuItem = React.forwardRef(({ children, ...props }, ref) => (
   </MenuItem>
 ));
 
+const ensureArray = (value) => {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
+};
+
 export default function SectionThree({
   row,
   viewProject,
@@ -376,7 +381,7 @@ export default function SectionThree({
 
                     {/* Display only first 5 items as checkboxes */}
                     {checkboxItems.map((item) => {
-                      const checked = currentValues.includes(item);
+                      const checked = ensureArray(currentValues).includes(item);
                       return (
                         <MenuItem
                           key={`${input.key}:${item}`}
@@ -400,7 +405,7 @@ export default function SectionThree({
                       )} */}
 
                     {/* Display custom added items */}
-                    {currentValues
+                    {ensureArray(currentValues)
                       .filter(item => !options[input.key]?.includes(item))
                       .map((item) => (
                         <MenuItem
@@ -424,7 +429,7 @@ export default function SectionThree({
                         </MenuItem>
                       ))}
 
-                    {filtered.length === 0 && currentValues.length === 0 && (
+                    {filtered.length === 0 && ensureArray(currentValues).length === 0 && (
                       <MenuItem disabled>
                         <em>No items</em>
                       </MenuItem>

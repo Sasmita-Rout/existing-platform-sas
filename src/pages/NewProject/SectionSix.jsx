@@ -33,6 +33,11 @@ const CustomInputMenuItem = React.forwardRef(({ children, ...props }, ref) => (
   </MenuItem>
 ));
 
+const ensureArray = (value) => {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
+};
+
 const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewValuesChange }) => {
   const [options, setOptions] = useState({});
   const [loading, setLoading] = useState(true);
@@ -273,7 +278,7 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
                           value={item}
                           onClick={() => handleToggle(input.key, item)}
                         >
-                          <Checkbox checked={currentValues.includes(item)} />
+                          <Checkbox checked={ensureArray(currentValues).includes(item)} />
                           <ListItemText primary={item} />
                         </MenuItem>
                       ))}
@@ -312,7 +317,7 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
                           </MenuItem>
                         ))}
 
-                      {filteredItems.length === 0 && currentValues.length === 0 && (
+                      {filteredItems.length === 0 && ensureArray(currentValues).length === 0 && (
                         <MenuItem disabled>
                           <em>No items available</em>
                         </MenuItem>

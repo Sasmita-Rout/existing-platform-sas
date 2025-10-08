@@ -248,7 +248,11 @@ const NewProject = () => {
     setValue("updatedValuesFour", selectedValues);
   };
   const handleSelectedValuesChangeSectionFive = (selectedValues) => {
-    setValue("allSelectedValuesFive", selectedValues);
+    const formattedValues = {
+      AnalyticsReporting: ensureArray(selectedValues?.AnalyticsReporting),
+      SelectUserFeedbackandAnalytics: ensureArray(selectedValues?.SelectUserFeedbackandAnalytics)
+  };
+    setValue("allSelectedValuesFive", formattedValues);
   };
   const handleSelectedViewValuesChangeSectionFive = (selectedValues) => {
     setValue("updatedValuesFive", selectedValues);
@@ -391,103 +395,84 @@ const NewProject = () => {
     return response;
   };
 
-  // const updateCurrentProject = async () => {
-  //   const response = await updateProject(
-  //     row.id,
-  //     pmoUser,
-  //     watch("accountValue"),
-  //     watch("projectName").trim(),
-  //     watch("buhValue"),
-  //     watch("ddValue"),
-  //     watch("updatedValuesTwo"),
-  //     watch("updatedValuesFour"),
-  //     watch("updatedValuesThree"),
-  //     watch("updatedValuesFive"),
-  //     watch("updatedValuesSix"),
-  //     checked
-  //   );
-  //   if (response.project_id) {
-  //     setValue(
-  //       "message",
-  //       `Your Project "${watch("projectName").trim()}" Updated Successfully`
-  //     );
-  //     setValue("open", true);
-  //     setTimeout(() => {
-  //       navigate("/PlatformProject");
-  //     }, 1500);
-  //   }
-  //   setValue("openDialog", false);
-  //   return response;
-  // };
   const updateCurrentProject = async () => {
     try {
-      // Prepare update payload
-      const updatePayload = {
-        id: row.id,
-        submitter_email_id: pmoUser,
-        account_name: watch("accountValue"),
-        project_name: watch("projectName")?.trim(),
-        buh_name: watch("buhValue"),
-        dd_name: watch("ddValue"),
-        status: checked,
-        // Section data with sanitization
-        ...sanitizeFormData({
-          ...watch("updatedValuesTwo"),
-          ...watch("updatedValuesThree"),
-          ...watch("updatedValuesFour"),
-          ...watch("updatedValuesFive"),
-          ...watch("updatedValuesSix"),
-        })
+      // Get current values from the form sections
+      const sectionTwoValues = watch("updatedValuesTwo");
+      const sectionThreeValues = watch("updatedValuesThree");
+      const sectionFourValues = watch("updatedValuesFour");
+      const sectionFiveValues = watch("updatedValuesFive");
+      const sectionSixValues = watch("updatedValuesSix");
+
+      // Validate required fields
+      const requiredFields = {
+        accountValue: "Account",
+        projectName: "Project Name",
+        buhValue: "BUH",
+        ddValue: "DD"
       };
 
-      // Validate required fields before update
-      const requiredFields = [
-        'account_name',
-        'project_name',
-        'buh_name',
-        'dd_name',
-        'domains',
-        'application_class'
-      ];
+      const missingFields = Object.entries(requiredFields)
+        .filter(([key]) => !watch(key) || (typeof watch(key) === 'string' && !watch(key).trim()))
+        .map(([, label]) => label);
 
-      const missingFields = requiredFields.filter(field => !updatePayload[field]);
-      
+      // Check if domains and application_class are provided
+      // For update mode, check both updatedValuesTwo and the initial row values
+      const hasDomain = sectionTwoValues?.domainInput || watch("domainValue") || row?.domains;
+      const hasApplication = sectionTwoValues?.applicationInput || watch("applicationValue") || row?.application_class;
+
+      if (!hasDomain) {
+        missingFields.push("Domain");
+      }
+      if (!hasApplication) {
+        missingFields.push("Application Class");
+      }
+
       if (missingFields.length > 0) {
         setValue("errorDisplay", missingFields);
         setValue("errorDailogBox", true);
         return;
       }
 
+      // Prepare section two values with fallbacks to original row data
+      const finalSectionTwoValues = {
+        domainInput: sectionTwoValues?.domainInput || watch("domainValue") || row?.domains,
+        applicationInput: sectionTwoValues?.applicationInput || watch("applicationValue") || row?.application_class,
+        ...sectionTwoValues
+      };
+
+      // Call the updateProject API function
       const response = await updateProject(
         row.id,
         pmoUser,
-        updatePayload.account_name,
-        updatePayload.project_name,
-        updatePayload.buh_name,
-        updatePayload.dd_name,
-        updatePayload.domains,
-        updatePayload.application_class,
-        sanitizeFormData(watch("updatedValuesThree")),
-        sanitizeFormData(watch("updatedValuesFour")),
-        sanitizeFormData(watch("updatedValuesFive")),
-        sanitizeFormData(watch("updatedValuesSix")),
+        watch("accountValue"),
+        watch("projectName").trim(),
+        watch("buhValue"),
+        watch("ddValue"),
+        finalSectionTwoValues,
+        sectionFourValues,
+        sectionThreeValues,
+        sectionFiveValues,
+        sectionSixValues,
         checked
       );
 
-      if (response.project_id) {
-        setValue("message", `Project "${updatePayload.project_name}" updated successfully`);
+      if (response && response.project_id) {
+        setValue("message", `Your Project "${watch("projectName").trim()}" Updated Successfully`);
         setValue("open", true);
-        setTimeout(() => navigate("/PlatformProject"), 1500);
+        setTimeout(() => {
+          navigate("/PlatformProject");
+        }, 1500);
       }
     } catch (error) {
-      console.error('Update failed:', error);
-      setValue("message", "Failed to update project. Please try again.");
+      console.error("Update failed:", error);
+      setValue("message", error.message || "Failed to update project. Please try again.");
       setValue("open", true);
     }
   };
 
   const errorMessage =
-    `Please fill up these fields as they are mandotory: ${watch("errorDisplay")}`.replace(
+    `Please fill up these fields as they are mandatory: ${watch("errorDisplay")}`.replace(
       /,/g,
       ", "
     );
@@ -496,57 +481,10 @@ const NewProject = () => {
     setChecked(prev.target.checked);
   };
 
-  // Adding validation before update
-  // const handleUpdate = () => {
-  //   const validateSection = (section) => {
-  //     return Object.values(section || {}).every(value => 
-  //       value !== null && value !== undefined && value !== ''
-  //     );
-  //   };
-
-  //   if (!validateSection(watch("updatedValuesTwo"))) {
-  //     setValue("errorDisplay", ["Domains and Application Class"]);
-  //     setValue("errorDailogBox", true);
-  //     return;
-  //   }
-
-  //   updateCurrentProject();
-  // };
-
-  const handleUpdate = async () => {
-      try {
-          // Get the current values for validation
-          const currentValues = watch("updatedValuesTwo");
-          
-          // Validate domains and application_class
-          if (!currentValues?.domainInput || !currentValues?.applicationInput) {
-              setValue("errorDisplay", ["Domains", "Application Class"]);
-              setValue("errorDailogBox", true);
-              return;
-          }
-
-          const response = await updateCurrentProject();
-          
-          if (response.project_id) {
-              setValue("message", `Project "${watch("projectName")?.trim()}" updated successfully`);
-              setValue("open", true);
-              setTimeout(() => navigate("/PlatformProject"), 1500);
-          }
-      } catch (error) {
-          console.error("Update failed:", error);
-          setValue("message", "Failed to update project. Please check domains and application class.");
-          setValue("open", true);
-      }
+  const ensureArray = (value) => {
+    if (!value) return [];
+    return Array.isArray(value) ? value : [value];
   };
-  const UpdateButton = () => (
-    <Button
-      variant="contained"
-      sx={{ textTransform: "none", backgroundColor: "#0E5FD9" }}
-      onClick={handleUpdate}
-    >
-      Update
-    </Button>
-  );
 
   return (
     <>
@@ -927,52 +865,52 @@ const NewProject = () => {
             viewProject={onClick}
             row={row}
             // disableButton={!onClick}
-            environmentInput={watch("env")}
-            cloudTechnologies={watch("cloudTechnologies")}
-            enterprisePlatforms={watch("enterprisePlatforms")}
-            etlAndMdmTools={watch("dataEngineeringEtlMdmTools")}
-            devops={watch("devopsInfrastructureAsCodeIac")}
-            lowCodeEnv={watch("lowCodeEnvironments")}
-            vcs={watch("versionControlSystemVcs")}
-            edgeComputing={watch("edgeComputing")}
-            relationalDb={watch("relationalDatabasesSql")}
-            nosqlDb={watch("noSqlDatabases")}
-            inMemoryDbs={watch("inMemoryDatabases")}
-            mobileCloudComputing={watch("mobileCloudComputing")}
-            systemMonitoringAndPerformance={watch(
+            environmentInput={ensureArray(watch("env"))}
+            cloudTechnologies={ensureArray(watch("cloudTechnologies"))}
+            enterprisePlatforms={ensureArray(watch("enterprisePlatforms"))}
+            etlAndMdmTools={ensureArray(watch("dataEngineeringEtlMdmTools"))}
+            devops={ensureArray(watch("devopsInfrastructureAsCodeIac"))}
+            lowCodeEnv={ensureArray(watch("lowCodeEnvironments"))}
+            vcs={ensureArray(watch("versionControlSystemVcs"))}
+            edgeComputing={ensureArray(watch("edgeComputing"))}
+            relationalDb={ensureArray(watch("relationalDatabasesSql"))}
+            nosqlDb={ensureArray(watch("noSqlDatabases"))}
+            inMemoryDbs={ensureArray(watch("inMemoryDatabases"))}
+            mobileCloudComputing={ensureArray(watch("mobileCloudComputing"))}
+            systemMonitoringAndPerformance={ensureArray(watch(
               "systemMonitoringPerformanceTools"
-            )}
-            directoryServices={watch("directoryServicesIdentityManagement")}
-            ides={watch("ides")}
-            cmsApp={watch("cmsApplications")}
-            iPaas={watch("ipaasIntegrationPlatformAsAService")}
-            frontendDevelopment={watch("frontendDevelopment")}
-            serverSide={watch("serverSideBackendFrameworks")}
-            fullStack={watch("fullStackDevelopment")}
-            mobileDevelopment={watch("mobileDevelopment")}
-            apiDevelopment={watch("apiDevelopmentDataAccessTechnologies")}
-            applicationIntegrationTools={watch("applicationIntegrationTools")}
-            unitTestingFrameworks={watch("unitTestingFrameworks")}
-            programmingLanguages={watch("programmingLanguages")}
-            codeQualityTools={watch("codeQualityTools")}
-            testCoverage={watch("testCoverage")}
-            productivityMeasurement={watch("productivityMeasurement")}
-            cybersecurityTechnologies={watch("cybersecurityTechnologies")}
-            containerizationOrchestration={watch("containerizationOrchestration")}
-            serverlessComputing={watch("serverlessComputing")}
-            headlessCms={watch("headlessCms")}
-            architectureMethodology={watch("architectureMethodology")}
-            designPatterns={watch("designPatterns")}
-            developmentMaturityAssessment={watch("developmentMaturityAssessment")}
-            softwareCompositionAnalysis={watch("softwareCompositionAnalysis")}
-            apiTestingTools={watch("apiTestingTools")}
-            behavioralTestingTools={watch("behavioralTestingTools")}
-            deploymentMethodologies={watch("deploymentMethodologies")}
-            cicdTools={watch("cicdTools")}
-            alertingTools={watch("alertingTools")}
-            dependencyAnalysis={watch("dependencyAnalysis")}
-            versionControlSystemVcs={watch("versionControlSystemVcs")}
-            tracing={watch("tracing")}
+            ))}
+            directoryServices={ensureArray(watch("directoryServicesIdentityManagement"))}
+            ides={ensureArray(watch("ides"))}
+            cmsApp={ensureArray(watch("cmsApplications"))}
+            iPaas={ensureArray(watch("ipaasIntegrationPlatformAsAService"))}
+            frontendDevelopment={ensureArray(watch("frontendDevelopment"))}
+            serverSide={ensureArray(watch("serverSideBackendFrameworks"))}
+            fullStack={ensureArray(watch("fullStackDevelopment"))}
+            mobileDevelopment={ensureArray(watch("mobileDevelopment"))}
+            apiDevelopment={ensureArray(watch("apiDevelopmentDataAccessTechnologies"))}
+            applicationIntegrationTools={ensureArray(watch("applicationIntegrationTools"))}
+            unitTestingFrameworks={ensureArray(watch("unitTestingFrameworks"))}
+            programmingLanguages={ensureArray(watch("programmingLanguages"))}
+            codeQualityTools={ensureArray(watch("codeQualityTools"))}
+            testCoverage={ensureArray(watch("testCoverage"))}
+            productivityMeasurement={ensureArray(watch("productivityMeasurement"))}
+            cybersecurityTechnologies={ensureArray(watch("cybersecurityTechnologies"))}
+            containerizationOrchestration={ensureArray(watch("containerizationOrchestration"))}
+            serverlessComputing={ensureArray(watch("serverlessComputing"))}
+            headlessCms={ensureArray(watch("headlessCms"))}
+            architectureMethodology={ensureArray(watch("architectureMethodology"))}
+            designPatterns={ensureArray(watch("designPatterns"))}
+            developmentMaturityAssessment={ensureArray(watch("developmentMaturityAssessment"))}
+            softwareCompositionAnalysis={ensureArray(watch("softwareCompositionAnalysis"))}
+            apiTestingTools={ensureArray(watch("apiTestingTools"))}
+            behavioralTestingTools={ensureArray(watch("behavioralTestingTools"))}
+            deploymentMethodologies={ensureArray(watch("deploymentMethodologies"))}
+            cicdTools={ensureArray(watch("cicdTools"))}
+            alertingTools={ensureArray(watch("alertingTools"))}
+            dependencyAnalysis={ensureArray(watch("dependencyAnalysis"))}
+            versionControlSystemVcs={ensureArray(watch("versionControlSystemVcs"))}
+            tracing={ensureArray(watch("tracing"))}
             onSelectedValuesChange={handleSelectedValuesChangeSectionThree}
             onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionThree}
           />
@@ -1080,8 +1018,8 @@ const NewProject = () => {
           <SectionFive
             viewProject={onClick}
             row={row}
-            AnalyticsReporting={watch("analyticsReporting")}
-            SelectUserFeedbackandAnalytics={watch("userFeedbackAnalyticsTools")}
+            AnalyticsReporting={ensureArray(watch("analyticsReporting"))}
+            SelectUserFeedbackandAnalytics={ensureArray(watch("userFeedbackAnalyticsTools"))}
             onSelectedValuesChange={handleSelectedValuesChangeSectionFive}
             onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionFive}
           />

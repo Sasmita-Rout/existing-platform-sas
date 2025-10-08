@@ -31,8 +31,12 @@ const CustomInputMenuItem = React.forwardRef(({ children, ...props }, ref) => (
     {children}
   </MenuItem>
 ));
+const ensureArray = (value) => {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
+};
 
-const SectionFive = ({ row, viewProject, onSelectedValuesChange, onSelectedViewValuesChange }) => {
+const SectionFive = ({ row, viewProject, onSelectedValuesChange, onSelectedViewValuesChange, AnalyticsReporting = [] , SelectUserFeedbackandAnalytics = [] }) => {
   const [options, setOptions] = useState({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -111,6 +115,23 @@ const SectionFive = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
     }
   }, [viewValues, selectedValues, viewProject]);
 
+  // Safe getter for current values
+  const getCurrentValues = (key) => {
+    if (viewProject) {
+      return ensureArray(viewValues[key]);
+    }
+    return ensureArray(selectedValues[key]);
+  };
+  // Modified allSelected to use ensureArray
+  const allSelected = [
+    ...new Set([
+      ...ensureArray(selectedValues.analytics_reporting),
+      ...ensureArray(selectedValues.user_feedback_analytics_tools),
+      ...ensureArray(viewValues.analytics_reporting),
+      ...ensureArray(viewValues.user_feedback_analytics_tools),
+    ]),
+  ];
+
   const handleToggle = (key, item) => {
     if (viewProject) {
       setViewValues((prev) => {
@@ -140,14 +161,7 @@ const SectionFive = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
       item.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-  const allSelected = [
-    ...new Set([
-      ...(selectedValues.analytics_reporting || []),
-      ...(selectedValues.user_feedback_analytics_tools || []),
-      ...(viewValues.analytics_reporting || []),
-      ...(viewValues.user_feedback_analytics_tools || []),
-    ]),
-  ];
+  
 
   // return (
   //   <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
@@ -270,9 +284,9 @@ const SectionFive = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
 
                 {inputs.map((input) => {
                   const filteredItems = filterItems(options[input.key] || []);
-                  const currentValues = viewProject
-                    ? viewValues[input.key] || []
-                    : selectedValues[input.key] || [];
+                  const currentValues = getCurrentValues(input.key);
+                    // ? viewValues[input.key] || []
+                    // : selectedValues[input.key] || [];
 
                   // Get only first 5 items for checkboxes
                   const checkboxItems = filteredItems.slice(0, MAX_CHECKBOX_ITEMS);
@@ -349,7 +363,7 @@ const SectionFive = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
                       )} */}
 
                       {/* Custom Added Items */}
-                      {currentValues
+                      {ensureArray(currentValues)
                         .filter(item => !options[input.key]?.includes(item))
                         .map((item) => (
                           <MenuItem
@@ -374,7 +388,7 @@ const SectionFive = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
                           </MenuItem>
                         ))}
 
-                      {filteredItems.length === 0 && currentValues.length === 0 && (
+                      {filteredItems.length === 0 && ensureArray(currentValues).length === 0 && (
                         <MenuItem disabled>
                           <em>No items available</em>
                         </MenuItem>
