@@ -283,16 +283,7 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
                         </MenuItem>
                       ))}
 
-                      {/* {remainingCount > 0 && (
-                        <MenuItem disabled>
-                          <ListItemText 
-                            secondary={`${remainingCount} more items available. Use custom input to add them.`}
-                            sx={{ fontSize: '0.75rem', color: 'text.secondary' }}
-                          />
-                        </MenuItem>
-                      )} */}
-
-                      {currentValues
+                      {ensureArray(currentValues)
                         .filter(item => !options[input.key]?.includes(item))
                         .map((item) => (
                           <MenuItem

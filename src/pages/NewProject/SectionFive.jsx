@@ -163,90 +163,6 @@ const SectionFive = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
 
   
 
-  // return (
-  //   <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
-  //     <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-  //       <Box sx={{ width: 625 }}>
-  //         <FormControl fullWidth>
-  //           <InputLabel>BI and Marketing</InputLabel>
-
-  //           {loading ? (
-  //             <CircularProgress size={24} />
-  //           ) : (
-  //             <Select
-  //               multiple
-  //               value={allSelected}
-  //               renderValue={(selectedVals) => selectedVals.join(", ")}
-  //               MenuProps={{
-  //                 PaperProps: {
-  //                   style: {
-  //                     maxHeight: 400,
-  //                     width: 400,
-  //                   },
-  //                 },
-  //               }}
-  //               onClose={(event) => {
-  //                 if (event?.target?.tagName === 'INPUT') event.stopPropagation();
-  //               }}
-  //             >
-  //               <MenuItem
-  //                 disableRipple
-  //                 disableTouchRipple
-  //                 style={{ cursor: "default" }}
-  //                 onKeyDown={(e) => e.stopPropagation()}
-  //               >
-  //                 <TextField
-  //                   size="small"
-  //                   fullWidth
-  //                   placeholder="Search..."
-  //                   value={searchTerm}
-  //                   onChange={(e) => setSearchTerm(e.target.value)}
-  //                 />
-  //               </MenuItem>
-
-  //               <Divider />
-
-  //               {inputs.map((input) => {
-  //                 const filteredItems = filterItems(options[input.key] || []);
-  //                 const currentValues = viewProject
-  //                   ? viewValues[input.key] || []
-  //                   : selectedValues[input.key] || [];
-
-  //                 return (
-  //                   <React.Fragment key={input.key}>
-  //                     <ListSubheader sx={{ bgcolor: "#f5f5f5" }}>
-  //                       {input.labels}
-  //                     </ListSubheader>
-
-  //                     {filteredItems.length === 0 && (
-  //                       <MenuItem disabled>
-  //                         <em>No matches</em>
-  //                       </MenuItem>
-  //                     )}
-
-  //                     {filteredItems.map((item) => {
-  //                       const checked = currentValues.includes(item);
-  //                       return (
-  //                         <MenuItem
-  //                           key={`${input.key}:${item}`}
-  //                           value={item}
-  //                           onClick={() => handleToggle(input.key, item)}
-  //                         >
-  //                           <Checkbox checked={checked} />
-  //                           <ListItemText primary={item} />
-  //                         </MenuItem>
-  //                       );
-  //                     })}
-  //                   </React.Fragment>
-  //                 );
-  //               })}
-  //             </Select>
-  //           )}
-  //         </FormControl>
-  //       </Box>
-  //     </Box>
-  //   </div>
-  // );
   return (
     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
       <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -285,8 +201,6 @@ const SectionFive = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
                 {inputs.map((input) => {
                   const filteredItems = filterItems(options[input.key] || []);
                   const currentValues = getCurrentValues(input.key);
-                    // ? viewValues[input.key] || []
-                    // : selectedValues[input.key] || [];
 
                   // Get only first 5 items for checkboxes
                   const checkboxItems = filteredItems.slice(0, MAX_CHECKBOX_ITEMS);
@@ -351,16 +265,6 @@ const SectionFive = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
                           <ListItemText primary={item} />
                         </MenuItem>
                       ))}
-
-                      {/* Remaining Items Note */}
-                      {/* {remainingCount > 0 && (
-                        <MenuItem disabled>
-                          <ListItemText 
-                            secondary={`${remainingCount} more items available. Use custom input to add them.`}
-                            sx={{ fontSize: '0.75rem', color: 'text.secondary' }}
-                          />
-                        </MenuItem>
-                      )} */}
 
                       {/* Custom Added Items */}
                       {ensureArray(currentValues)

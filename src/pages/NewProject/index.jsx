@@ -130,7 +130,7 @@ const NewProject = () => {
       accountValue: null,
       ddValue: null,
       projectName: null,
-      errorDailogBox: false,
+      errorDialogBox: false,
       message: "",
       sowStartDate: null,
       sowEndDate: null,
@@ -309,7 +309,7 @@ const NewProject = () => {
       sectionTwoValues.applicationInput === null ||
       sectionTwoValues.applicationInput === undefined
     ) {
-      setValue("errorDailogBox", true);
+      setValue("errorDialogBox", true);
     } else {
       setValue("openDialog", true);
     }
@@ -430,7 +430,7 @@ const NewProject = () => {
 
       if (missingFields.length > 0) {
         setValue("errorDisplay", missingFields);
-        setValue("errorDailogBox", true);
+        setValue("errorDialogBox", true);
         return;
       }
 
@@ -512,8 +512,8 @@ const NewProject = () => {
       </Snackbar>
 
       <Dialog
-        open={watch("errorDailogBox")}
-        onClose={() => setValue("errorDailogBox", false)}
+        open={watch("errorDialogBox")}
+        onClose={() => setValue("errorDialogBox", false)}
         aria-labelledby="confirmation-dialog-title"
         aria-describedby="confirmation-dialog-description"
       >
@@ -533,7 +533,7 @@ const NewProject = () => {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => setValue("errorDailogBox", false)}
+            onClick={() => setValue("errorDialogBox", false)}
             sx={{
               marginTop: "10px",
               marginRight: "260px",
@@ -864,7 +864,6 @@ const NewProject = () => {
           <SectionThree
             viewProject={onClick}
             row={row}
-            // disableButton={!onClick}
             environmentInput={ensureArray(watch("env"))}
             cloudTechnologies={ensureArray(watch("cloudTechnologies"))}
             enterprisePlatforms={ensureArray(watch("enterprisePlatforms"))}

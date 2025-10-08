@@ -394,16 +394,6 @@ export default function SectionThree({
                       );
                     })}
 
-                    {/* Show note about remaining items if any */}
-                      {/* {remainingCount > 0 && (
-                        <MenuItem disabled>
-                          <ListItemText 
-                            secondary={`${remainingCount} more items available. Please use custom input to add them.`}
-                            sx={{ fontSize: '0.75rem', color: 'text.secondary' }}
-                          />
-                        </MenuItem>
-                      )} */}
-
                     {/* Display custom added items */}
                     {ensureArray(currentValues)
                       .filter(item => !options[input.key]?.includes(item))
