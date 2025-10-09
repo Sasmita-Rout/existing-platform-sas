@@ -350,20 +350,31 @@ const NewProject = () => {
   };
 
   const handleConfirmSubmit = async () => {
-    setValue("onSubmit", true);
-    const response = await createNewProject();
-    console.log("Form submitted!", response);
-    if (response.id) {
-      setValue(
-        "message",
-        `Your Project "${watch("projectName").trim()}" Created Successfully`
-      );
-      setValue("open", true);
-      setTimeout(() => {
-        navigate("/PlatformProject");
-      }, 1500);
+    // Prevent multiple submissions
+    if (watch("onSubmit")) {
+      return;
     }
+
+    setValue("onSubmit", true);
     setValue("openDialog", false);
+
+    try {
+      const response = await createNewProject();
+      console.log("Form submitted!", response);
+      if (response.id) {
+        setValue(
+          "message",
+          `Your Project "${watch("projectName").trim()}" Created Successfully`
+        );
+        setValue("open", true);
+        setTimeout(() => {
+          navigate("/PlatformProject");
+        }, 1500);
+      }
+    } catch (error) {
+      console.error("Submission failed:", error);
+      setValue("onSubmit", false);
+    }
   };
 
   const goToPlatformPage = () => {
@@ -464,11 +475,10 @@ const NewProject = () => {
         return;
       }
 
-      // Prepare section two values with fallbacks to original row data
+      // Prepare section two values - use updated values if present, otherwise keep original
       const finalSectionTwoValues = {
-        domainInput: sectionTwoValues?.domainInput || watch("domainValue") || row?.domains,
-        applicationInput: sectionTwoValues?.applicationInput || watch("applicationValue") || row?.application_class,
-        ...sectionTwoValues
+        domainInput: sectionTwoValues?.domainInput !== undefined ? sectionTwoValues.domainInput : (watch("domainValue") || row?.domains),
+        applicationInput: sectionTwoValues?.applicationInput !== undefined ? sectionTwoValues.applicationInput : (watch("applicationValue") || row?.application_class)
       };
 
       // Call the updateProject API function
@@ -707,6 +717,7 @@ const NewProject = () => {
           <Button
             onClick={handleConfirmSubmit}
             variant="contained"
+            disabled={watch("onSubmit")}
             sx={{
               fontWeight: "bold",
               marginRight: "120px",
@@ -715,7 +726,7 @@ const NewProject = () => {
               marginBottom: "15px",
             }}
           >
-            Confirm
+            {watch("onSubmit") ? "Submitting..." : "Confirm"}
           </Button>
         </DialogActions>
       </Dialog>
