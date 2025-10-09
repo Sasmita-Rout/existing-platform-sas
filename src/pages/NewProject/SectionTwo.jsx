@@ -32,16 +32,10 @@ export default function SectionTwo({ onSelectedValuesChange, onSelectedViewValue
         });
     };
 
-    useEffect(() => {
-        if (Object.keys(viewValues).length > 0) {
-            onSelectedValuesChange(viewValues);
-        }
-    }, [viewValues]);
-
-
     const handleFilterSelect = (key, newValue) => {
         viewProject ? handleViewSelect(key, newValue) : handleSelect(key, newValue);
     };
+
     useEffect(() => {
         console.log('SectionTwo useEffect - viewProject:', viewProject, 'row:', row);
         if (viewProject && row) {
@@ -51,9 +45,13 @@ export default function SectionTwo({ onSelectedValuesChange, onSelectedViewValue
             const parseValue = (value) => {
                 console.log('SectionTwo parseValue - input:', value, 'type:', typeof value);
                 if (!value || value === '') return [];
-                if (Array.isArray(value)) return value;
-                // Split by comma and trim whitespace
-                return value.split(',').map(item => item.trim()).filter(item => item !== '');
+                if (Array.isArray(value)) {
+                    // Remove duplicates from array
+                    return [...new Set(value)].filter(item => item && item !== '');
+                }
+                // Split by comma, trim, filter empty, and remove duplicates
+                const items = value.split(',').map(item => item.trim()).filter(item => item !== '');
+                return [...new Set(items)];
             };
 
             const viewVals = {

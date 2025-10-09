@@ -79,6 +79,26 @@ export const addNewProject = async (
     sowFilePath
 
 ) => {
+    console.log("\n" + "=".repeat(80));
+    console.log("📡 addNewProject API FUNCTION");
+    console.log("=".repeat(80));
+
+    console.log("\n📥 Received Parameters:");
+    console.log("  - pmoUser:", pmoUser?.mail);
+    console.log("  - accountName:", accountName);
+    console.log("  - projectName:", projectName);
+    console.log("  - buhName:", buhName);
+    console.log("  - ddName:", ddName);
+    console.log("  - checked:", checked);
+    console.log("  - sowFilePath:", sowFilePath);
+
+    console.log("\n📦 Section Values Received:");
+    console.log("  📘 allSelectedValuesTwo:", JSON.stringify(allSelectedValuesTwo, null, 2));
+    console.log("  📗 allSelectedValues:", JSON.stringify(allSelectedValues, null, 2));
+    console.log("  📙 allSelectedValuesFour:", JSON.stringify(allSelectedValuesFour, null, 2));
+    console.log("  📕 allSelectedValuesFive:", JSON.stringify(allSelectedValuesFive, null, 2));
+    console.log("  📓 allSelectedValuesSix:", JSON.stringify(allSelectedValuesSix, null, 2));
+
     const date = new Date();
 
     const formattedDateTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T` +
@@ -87,9 +107,28 @@ export const addNewProject = async (
     // Helper to ensure array and filter
     const ensureArrayAndFilter = (value) => {
         if (!value) return [];
-        const arr = Array.isArray(value) ? value : [value];
-        return arr.filter(Boolean);
+        if (Array.isArray(value)) {
+            return [...new Set(value)].filter(Boolean);
+        }
+        // If it's a string, return as single-item array
+        return [value].filter(Boolean);
     };
+
+    // Convert to arrays first
+    const domainsArray = ensureArrayAndFilter(allSelectedValuesTwo?.domainInput);
+    const applicationClassArray = ensureArrayAndFilter(allSelectedValuesTwo?.applicationInput);
+
+    // Backend expects comma-separated strings, not arrays
+    const domainsString = domainsArray.join(', ');
+    const applicationClassString = applicationClassArray.join(', ');
+
+    console.log("\n🔍 Domain/Application Processing:");
+    console.log("  - Raw domainInput:", allSelectedValuesTwo?.domainInput);
+    console.log("  - Raw applicationInput:", allSelectedValuesTwo?.applicationInput);
+    console.log("  - After ensureArrayAndFilter domains:", domainsArray);
+    console.log("  - After ensureArrayAndFilter application_class:", applicationClassArray);
+    console.log("  - Final domains (string):", domainsString);
+    console.log("  - Final application_class (string):", applicationClassString);
 
     const data = {
         submitter_email_id: pmoUser["mail"],
@@ -98,8 +137,8 @@ export const addNewProject = async (
         project_name: projectName || "",
         buh_name: buhName || "",
         dd_name: ddName || "",
-        domains: ensureArrayAndFilter(allSelectedValuesTwo.domainInput),
-        application_class: ensureArrayAndFilter(allSelectedValuesTwo.applicationInput),
+        domains: domainsString,
+        application_class: applicationClassString,
         analytics_reporting: ensureArrayAndFilter(allSelectedValuesFive.AnalyticsReporting),
         environment: ensureArrayAndFilter(allSelectedValues.environment || allSelectedValues.environmentInput),
         cloud_technologies: ensureArrayAndFilter(allSelectedValues.cloud_technologies || allSelectedValues.cloudTechnologies),
@@ -158,11 +197,20 @@ export const addNewProject = async (
         status: checked === true ? "Active" : "Inactive"
     };
 
+    console.log("\n📤 Final Payload to be sent:");
+    console.log(JSON.stringify(data, null, 2));
+    console.log("\n🌐 API Endpoint:", url);
+
     try {
+        console.log("\n🔄 Sending POST request...");
         const response = await createUpdateRecord(null, url, data, "POST");
+        console.log("\n✅ Response received:", response);
+        console.log("=".repeat(80));
         return response;
     } catch (error) {
-        console.error("Error adding new project:", error);
+        console.error("\n❌ Error adding new project:", error);
+        console.log("=".repeat(80));
+        throw error;
     }
 };
 
@@ -182,6 +230,19 @@ export const updateProject = async (
     checked,
     sowFilePath
 ) => {
+    console.log("\n" + "=".repeat(80));
+    console.log("📡 updateProject API FUNCTION");
+    console.log("=".repeat(80));
+
+    console.log("\n📥 Received Parameters:");
+    console.log("  - id:", id);
+    console.log("  - pmoUser:", pmoUser?.mail);
+    console.log("  - accountName:", accountName);
+    console.log("  - projectName:", projectName);
+
+    console.log("\n📦 Section Values Received:");
+    console.log("  📘 updatedValuesTwo:", JSON.stringify(updatedValuesTwo, null, 2));
+
     const date = new Date();
     const formattedDateTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T` +
         `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
@@ -199,6 +260,22 @@ export const updateProject = async (
         return [value].filter(Boolean);
     };
 
+    // Convert to arrays and remove duplicates
+    const domainsFormatted = formatArray(updatedValuesTwo?.domainInput);
+    const applicationClassFormatted = formatArray(updatedValuesTwo?.applicationInput);
+
+    // Backend expects comma-separated strings, not arrays
+    const domainsString = domainsFormatted.join(', ');
+    const applicationClassString = applicationClassFormatted.join(', ');
+
+    console.log("\n🔍 Domain/Application Processing (UPDATE):");
+    console.log("  - Raw domainInput:", updatedValuesTwo?.domainInput);
+    console.log("  - Raw applicationInput:", updatedValuesTwo?.applicationInput);
+    console.log("  - After formatArray domains:", domainsFormatted);
+    console.log("  - After formatArray application_class:", applicationClassFormatted);
+    console.log("  - Final domains (string):", domainsString);
+    console.log("  - Final application_class (string):", applicationClassString);
+
     const url = `update_project/${id}`;
     const data = {
         submitter_email_id: pmoUser["mail"],
@@ -207,71 +284,79 @@ export const updateProject = async (
         project_name: projectName || "",
         buh_name: buhName || "",
         dd_name: ddName || "",
-        domains: formatArray(updatedValuesTwo?.domainInput),
-        application_class: formatArray(updatedValuesTwo?.applicationInput),
-        analytics_reporting: ensureArray(updatedValuesFive?.AnalyticsReporting),
-        environment: ensureArray(updatedValuesThree?.environmentInput),
-        cloud_technologies: ensureArray(updatedValuesThree?.cloudTechnologies),
-        cybersecurity_technologies: ensureArray(updatedValuesThree?.cybersecurityTechnologies),
-        containerization_orchestration: ensureArray(updatedValuesThree?.containerizationOrchestration),
-        serverless_computing: ensureArray(updatedValuesThree?.serverlessComputing),
-        headless_cms: ensureArray(updatedValuesThree?.headlessCms),
-        architecture_methodology: ensureArray(updatedValuesThree?.architectureMethodology),
-        design_patterns: ensureArray(updatedValuesThree?.designPatterns),
-        development_maturity_assessment: ensureArray(updatedValuesThree?.developmentMaturityAssessment),
-        software_composition_analysis: ensureArray(updatedValuesThree?.softwareCompositionAnalysis),
-        api_testing_tools: ensureArray(updatedValuesThree?.apiTestingTools),
-        behavioral_testing_tools: ensureArray(updatedValuesThree?.behavioralTestingTools),
-        deployment_methodologies: ensureArray(updatedValuesThree?.deploymentMethodologies),
-        cicd_tools: ensureArray(updatedValuesThree?.cicdTools),
-        alerting_tools: ensureArray(updatedValuesThree?.alertingTools),
-        dependency_analysis: ensureArray(updatedValuesThree?.dependencyAnalysis),
-        data_engineering_etl_mdm_tools: ensureArray(updatedValuesThree?.etlAndMdmTools),
-        mobile_cloud_computing: ensureArray(updatedValuesThree?.mobileCloudComputing),
-        edge_computing: ensureArray(updatedValuesThree?.edgeComputing),
-        enterprise_platforms: ensureArray(updatedValuesThree?.enterprisePlatforms),
-        cms_applications: ensureArray(updatedValuesThree?.cmsApp),
-        relational_databases_sql: ensureArray(updatedValuesThree?.relationalDb),
-        nosql_databases: ensureArray(updatedValuesThree?.nosqlDb),
-        in_memory_databases: ensureArray(updatedValuesThree?.inMemoryDbs),
-        system_monitoring_performance_tools: ensureArray(updatedValuesThree?.systemMonitoringAndPerformance),
+        domains: domainsString,
+        application_class: applicationClassString,
+        analytics_reporting: ensureArray(updatedValuesFive?.AnalyticsReporting || updatedValuesFive?.analytics_reporting),
+        environment: ensureArray(updatedValuesThree?.environment || updatedValuesThree?.environmentInput),
+        cloud_technologies: ensureArray(updatedValuesThree?.cloud_technologies || updatedValuesThree?.cloudTechnologies),
+        cybersecurity_technologies: ensureArray(updatedValuesThree?.cybersecurity_technologies || updatedValuesThree?.cybersecurityTechnologies),
+        containerization_orchestration: ensureArray(updatedValuesThree?.containerization_orchestration || updatedValuesThree?.containerizationOrchestration),
+        serverless_computing: ensureArray(updatedValuesThree?.serverless_computing || updatedValuesThree?.serverlessComputing),
+        headless_cms: ensureArray(updatedValuesThree?.headless_cms || updatedValuesThree?.headlessCms),
+        architecture_methodology: ensureArray(updatedValuesThree?.architecture_methodology || updatedValuesThree?.architectureMethodology),
+        design_patterns: ensureArray(updatedValuesThree?.design_patterns || updatedValuesThree?.designPatterns),
+        development_maturity_assessment: ensureArray(updatedValuesThree?.development_maturity_assessment || updatedValuesThree?.developmentMaturityAssessment),
+        software_composition_analysis: ensureArray(updatedValuesThree?.software_composition_analysis || updatedValuesThree?.softwareCompositionAnalysis),
+        api_testing_tools: ensureArray(updatedValuesThree?.api_testing_tools || updatedValuesThree?.apiTestingTools),
+        behavioral_testing_tools: ensureArray(updatedValuesThree?.behavioral_testing_tools || updatedValuesThree?.behavioralTestingTools),
+        deployment_methodologies: ensureArray(updatedValuesThree?.deployment_methodologies || updatedValuesThree?.deploymentMethodologies),
+        cicd_tools: ensureArray(updatedValuesThree?.cicd_tools || updatedValuesThree?.cicdTools),
+        alerting_tools: ensureArray(updatedValuesThree?.alerting_tools || updatedValuesThree?.alertingTools),
+        dependency_analysis: ensureArray(updatedValuesThree?.dependency_analysis || updatedValuesThree?.dependencyAnalysis),
+        data_engineering_etl_mdm_tools: ensureArray(updatedValuesThree?.data_engineering_etl_mdm_tools || updatedValuesThree?.etlAndMdmTools),
+        mobile_cloud_computing: ensureArray(updatedValuesThree?.mobile_cloud_computing || updatedValuesThree?.mobileCloudComputing),
+        edge_computing: ensureArray(updatedValuesThree?.edge_computing || updatedValuesThree?.edgeComputing),
+        enterprise_platforms: ensureArray(updatedValuesThree?.enterprise_platforms || updatedValuesThree?.enterprisePlatforms),
+        cms_applications: ensureArray(updatedValuesThree?.cms_applications || updatedValuesThree?.cmsApp),
+        relational_databases_sql: ensureArray(updatedValuesThree?.relational_databases_sql || updatedValuesThree?.relationalDb),
+        nosql_databases: ensureArray(updatedValuesThree?.nosql_databases || updatedValuesThree?.nosqlDb),
+        in_memory_databases: ensureArray(updatedValuesThree?.in_memory_databases || updatedValuesThree?.inMemoryDbs),
+        system_monitoring_performance_tools: ensureArray(updatedValuesThree?.system_monitoring_performance_tools || updatedValuesThree?.systemMonitoringAndPerformance),
         ides: ensureArray(updatedValuesThree?.ides),
-        version_control_system_vcs: ensureArray(updatedValuesThree?.vcs),
-        frontend_development: ensureArray(updatedValuesThree?.frontendDevelopment),
-        server_side_backend_frameworks: ensureArray(updatedValuesThree?.serverSide),
-        mobile_development: ensureArray(updatedValuesThree?.mobileDevelopment),
-        full_stack_development: ensureArray(updatedValuesThree?.fullStack),
-        programming_languages: ensureArray(updatedValuesThree?.programmingLanguages),
-        api_development_data_access_technologies: ensureArray(updatedValuesThree?.apiDevelopment),
-        application_integration_tools: ensureArray(updatedValuesThree?.applicationIntegrationTools),
-        test_coverage: ensureArray(updatedValuesThree?.testCoverage),
-        productivity_measurement: ensureArray(updatedValuesThree?.productivityMeasurement),
+        version_control_system_vcs: ensureArray(updatedValuesThree?.version_control_system_vcs || updatedValuesThree?.vcs),
+        frontend_development: ensureArray(updatedValuesThree?.frontend_development || updatedValuesThree?.frontendDevelopment),
+        server_side_backend_frameworks: ensureArray(updatedValuesThree?.server_side_backend_frameworks || updatedValuesThree?.serverSide),
+        mobile_development: ensureArray(updatedValuesThree?.mobile_development || updatedValuesThree?.mobileDevelopment),
+        full_stack_development: ensureArray(updatedValuesThree?.full_stack_development || updatedValuesThree?.fullStack),
+        programming_languages: ensureArray(updatedValuesThree?.programming_languages || updatedValuesThree?.programmingLanguages),
+        api_development_data_access_technologies: ensureArray(updatedValuesThree?.api_development_data_access_technologies || updatedValuesThree?.apiDevelopment),
+        application_integration_tools: ensureArray(updatedValuesThree?.application_integration_tools || updatedValuesThree?.applicationIntegrationTools),
+        test_coverage: ensureArray(updatedValuesThree?.test_coverage || updatedValuesThree?.testCoverage),
+        productivity_measurement: ensureArray(updatedValuesThree?.productivity_measurement || updatedValuesThree?.productivityMeasurement),
         tracing: ensureArray(updatedValuesThree?.tracing),
-        unit_testing_frameworks: ensureArray(updatedValuesThree?.unitTestingFrameworks),
-        functional_integration_testing: ensureArray(updatedValuesFour?.FunctionalandIntegration),
-        performance_load_testing_tools: ensureArray(updatedValuesFour?.PerformanceandLoadTest),
-        manual_testing_management_tools: ensureArray(updatedValuesFour?.SelectManualTestingMgmt),
-        application_security_testing_tools: ensureArray(updatedValuesFour?.ApplicationSecurityTesting),
-        devops_infrastructure_as_code_iac: ensureArray(updatedValuesFour?.devopsInfrastructureAsCodeIac),
-        directory_services_identity_management: ensureArray(updatedValuesThree?.directoryServices),
-        code_quality_tools: ensureArray(updatedValuesThree?.codeQualityTools),
-        ipaas_integration_platform_as_a_service: ensureArray(updatedValuesThree?.iPaas),
+        unit_testing_frameworks: ensureArray(updatedValuesThree?.unit_testing_frameworks || updatedValuesThree?.unitTestingFrameworks),
+        functional_integration_testing: ensureArray(updatedValuesFour?.functional_integration_testing || updatedValuesFour?.FunctionalandIntegration),
+        performance_load_testing_tools: ensureArray(updatedValuesFour?.performance_load_testing_tools || updatedValuesFour?.PerformanceandLoadTest),
+        manual_testing_management_tools: ensureArray(updatedValuesFour?.manual_testing_management_tools || updatedValuesFour?.SelectManualTestingMgmt),
+        application_security_testing_tools: ensureArray(updatedValuesFour?.application_security_testing_tools || updatedValuesFour?.ApplicationSecurityTesting),
+        devops_infrastructure_as_code_iac: ensureArray(updatedValuesFour?.devops_infrastructure_as_code_iac || updatedValuesFour?.devopsInfrastructureAsCodeIac),
+        directory_services_identity_management: ensureArray(updatedValuesThree?.directory_services_identity_management || updatedValuesThree?.directoryServices),
+        code_quality_tools: ensureArray(updatedValuesThree?.code_quality_tools || updatedValuesThree?.codeQualityTools),
+        ipaas_integration_platform_as_a_service: ensureArray(updatedValuesThree?.ipaas_integration_platform_as_a_service || updatedValuesThree?.iPaas),
         ai_machine_learning_technologies: ensureArray(updatedValuesSix?.aiAndMachineLearningTechnologies || updatedValuesSix?.ai_machine_learning_technologies),
         sdlc_improvement: ensureArray(updatedValuesSix?.sdlc_improvement),
         agentic_ai_platforms: ensureArray(updatedValuesSix?.agentic_ai_platforms),
         workflow_automation_tools: ensureArray(updatedValuesSix?.workflow_automation_tools),
         enterprise_genai_platforms: ensureArray(updatedValuesSix?.enterprise_genai_platforms),
-        user_feedback_analytics_tools: ensureArray(updatedValuesFive?.SelectUserFeedbackandAnalytics),
-        low_code_environments: ensureArray(updatedValuesThree?.lowCodeEnv),
+        user_feedback_analytics_tools: ensureArray(updatedValuesFive?.user_feedback_analytics_tools || updatedValuesFive?.SelectUserFeedbackandAnalytics),
+        low_code_environments: ensureArray(updatedValuesThree?.low_code_environments || updatedValuesThree?.lowCodeEnv),
         sow_file_path: sowFilePath || "",
         status: checked === true ? "Active" : "Inactive"
     };
 
+    console.log("\n📤 Final UPDATE Payload:");
+    console.log(JSON.stringify(data, null, 2));
+    console.log("\n🌐 API Endpoint:", url);
+
     try {
+        console.log("\n🔄 Sending PUT request...");
         const response = await createUpdateRecord(null, url, data, "PUT");
+        console.log("\n✅ UPDATE Response received:", response);
+        console.log("=".repeat(80));
         return response;
     } catch (error) {
-        console.error("Error updating project:", error);
+        console.error("\n❌ Error updating project:", error);
+        console.log("=".repeat(80));
         throw error; // Re-throw to handle in the component
     }
 };
