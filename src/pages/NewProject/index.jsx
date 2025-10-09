@@ -266,28 +266,24 @@ const NewProject = () => {
     setValue("open", false);
   };
   const handleSelectedValuesChangeSectionTwo = (selectedValues) => {
-    console.log("🔵 Section 2 - selectedValues:", selectedValues);
     setValue("allSelectedValuesTwo", selectedValues);
   };
   const handleSelectedViewValuesChangeSectionTwo = (selectedValues) => {
     setValue("updatedValuesTwo", selectedValues);
   };
   const handleSelectedValuesChangeSectionThree = (selectedValues) => {
-    console.log("🟢 Section 3 - selectedValues:", selectedValues);
     setValue("allSelectedValues", selectedValues);
   };
   const handleSelectedViewValuesChangeSectionThree = (selectedValues) => {
     setValue("updatedValuesThree", selectedValues);
   };
   const handleSelectedValuesChangeSectionFour = (selectedValues) => {
-    console.log("🟡 Section 4 - selectedValues:", selectedValues);
     setValue("allSelectedValuesFour", selectedValues);
   };
   const handleSelectedViewValuesChangeSectionFour = (selectedValues) => {
     setValue("updatedValuesFour", selectedValues);
   };
   const handleSelectedValuesChangeSectionFive = (selectedValues) => {
-    console.log("🟠 Section 5 - selectedValues:", selectedValues);
     const formattedValues = {
       AnalyticsReporting: ensureArray(selectedValues?.AnalyticsReporting),
       SelectUserFeedbackandAnalytics: ensureArray(selectedValues?.SelectUserFeedbackandAnalytics)
@@ -298,7 +294,6 @@ const NewProject = () => {
     setValue("updatedValuesFive", selectedValues);
   };
   const handleSelectedValuesChangeSectionSix = (selectedValues) => {
-    console.log("🟣 Section 6 - selectedValues:", selectedValues);
     setValue("allSelectedValuesSix", selectedValues);
   };
   const handleSelectedViewValuesChangeSectionSix = (selectedValues) => {
@@ -431,73 +426,31 @@ const NewProject = () => {
   };
 
   const createNewProject = async () => {
-    console.log("=".repeat(80));
-    console.log("🚀 CREATE NEW PROJECT - Starting...");
-    console.log("=".repeat(80));
-
-    console.log("📋 Basic Info:");
-    console.log("  - Account:", watch("accountValue"));
-    console.log("  - Project:", watch("projectName"));
-    console.log("  - BUH:", watch("buhValue"));
-    console.log("  - DD:", watch("ddValue"));
-    console.log("  - Status:", checked ? "Active" : "Inactive");
-    console.log("  - SOW Path:", watch("sowFilePath"));
-
-    console.log("\n📦 Section Data:");
-    const section2 = watch("allSelectedValuesTwo");
-    const section3 = watch("allSelectedValues");
-    const section4 = watch("allSelectedValuesFour");
-    const section5 = watch("allSelectedValuesFive");
-    const section6 = watch("allSelectedValuesSix");
-
-    console.log("  📘 Section 2 (allSelectedValuesTwo):", JSON.stringify(section2, null, 2));
-    console.log("  📗 Section 3 (allSelectedValues):", JSON.stringify(section3, null, 2));
-    console.log("  📙 Section 4 (allSelectedValuesFour):", JSON.stringify(section4, null, 2));
-    console.log("  📕 Section 5 (allSelectedValuesFive):", JSON.stringify(section5, null, 2));
-    console.log("  📓 Section 6 (allSelectedValuesSix):", JSON.stringify(section6, null, 2));
-
-    console.log("\n🔄 Calling addNewProject API...");
-
     const response = await addNewProject(
       pmoUser,
       watch("accountValue"),
       watch("projectName").trim(),
       watch("buhValue"),
       watch("ddValue"),
-      section2,
-      section3,
-      section4,
-      section5,
-      section6,
+      watch("allSelectedValuesTwo"),
+      watch("allSelectedValues"),
+      watch("allSelectedValuesFour"),
+      watch("allSelectedValuesFive"),
+      watch("allSelectedValuesSix"),
       checked,
       watch("sowFilePath")
     );
-
-    console.log("\n✅ API Response:", response);
-    console.log("=".repeat(80));
-
     return response;
   };
 
   const updateCurrentProject = async () => {
     try {
-      console.log("=".repeat(80));
-      console.log("🔄 UPDATE PROJECT - Starting...");
-      console.log("=".repeat(80));
-
       // Get current values from the form sections
       const sectionTwoValues = watch("updatedValuesTwo");
       const sectionThreeValues = watch("updatedValuesThree");
       const sectionFourValues = watch("updatedValuesFour");
       const sectionFiveValues = watch("updatedValuesFive");
       const sectionSixValues = watch("updatedValuesSix");
-
-      console.log("\n📦 Updated Section Values:");
-      console.log("  📘 updatedValuesTwo:", JSON.stringify(sectionTwoValues, null, 2));
-      console.log("  📗 updatedValuesThree:", JSON.stringify(sectionThreeValues, null, 2));
-      console.log("  📙 updatedValuesFour:", JSON.stringify(sectionFourValues, null, 2));
-      console.log("  📕 updatedValuesFive:", JSON.stringify(sectionFiveValues, null, 2));
-      console.log("  📓 updatedValuesSix:", JSON.stringify(sectionSixValues, null, 2));
 
       // Validate required fields
       const requiredFields = {
@@ -534,14 +487,6 @@ const NewProject = () => {
         domainInput: sectionTwoValues?.domainInput !== undefined ? sectionTwoValues.domainInput : (watch("domainValue") || row?.domains),
         applicationInput: sectionTwoValues?.applicationInput !== undefined ? sectionTwoValues.applicationInput : (watch("applicationValue") || row?.application_class)
       };
-
-      console.log("\n🔍 Final Section Two Values:");
-      console.log("  - domainInput:", finalSectionTwoValues.domainInput);
-      console.log("  - applicationInput:", finalSectionTwoValues.applicationInput);
-      console.log("  - Original row domains:", row?.domains);
-      console.log("  - Original row application_class:", row?.application_class);
-
-      console.log("\n🔄 Calling updateProject API...");
 
       // Call the updateProject API function
       const response = await updateProject(

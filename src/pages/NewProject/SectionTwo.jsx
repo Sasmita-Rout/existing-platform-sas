@@ -8,11 +8,6 @@ export default function SectionTwo({ onSelectedValuesChange, onSelectedViewValue
     row,
     viewProject, ...props }) {
 
-    console.log('SectionTwo RENDER - viewProject:', viewProject);
-    console.log('SectionTwo RENDER - props.domainInput:', props.domainInput);
-    console.log('SectionTwo RENDER - props.applicationInput:', props.applicationInput);
-    console.log('SectionTwo RENDER - row:', row);
-
     const [selectedValues, setSelectedValues] = useState({});
     const [viewValues, setViewValues] = useState({});
     const [updateValues, setUpdateValues] = useState({})
@@ -37,13 +32,8 @@ export default function SectionTwo({ onSelectedValuesChange, onSelectedViewValue
     };
 
     useEffect(() => {
-        console.log('SectionTwo useEffect - viewProject:', viewProject, 'row:', row);
         if (viewProject && row) {
-            console.log('SectionTwo useEffect - row.domains:', row["domains"]);
-            console.log('SectionTwo useEffect - row.application_class:', row["application_class"]);
-
             const parseValue = (value) => {
-                console.log('SectionTwo parseValue - input:', value, 'type:', typeof value);
                 if (!value || value === '') return [];
                 if (Array.isArray(value)) {
                     // Remove duplicates from array
@@ -58,7 +48,6 @@ export default function SectionTwo({ onSelectedValuesChange, onSelectedViewValue
                 domainInput: parseValue(row["domains"]),
                 applicationInput: parseValue(row["application_class"]),
             };
-            console.log('SectionTwo useEffect - setting viewVals:', viewVals);
             setViewValues(viewVals);
         }
     }, [viewProject, row]);
@@ -74,7 +63,6 @@ export default function SectionTwo({ onSelectedValuesChange, onSelectedViewValue
                 {inputs.map(({ key, labels }) => {
                     const inputValue = props[key] || [];
                     const selectedValue = viewProject ? viewValues[key] : selectedValues[key];
-                    console.log(`SectionTwo RENDER ${key} - input:`, inputValue, 'selected:', selectedValue);
 
                     // Convert array to single value for DropdownCustom
                     const singleSelectedValue = Array.isArray(selectedValue)

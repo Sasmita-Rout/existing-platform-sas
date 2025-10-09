@@ -79,26 +79,6 @@ export const addNewProject = async (
     sowFilePath
 
 ) => {
-    console.log("\n" + "=".repeat(80));
-    console.log("📡 addNewProject API FUNCTION");
-    console.log("=".repeat(80));
-
-    console.log("\n📥 Received Parameters:");
-    console.log("  - pmoUser:", pmoUser?.mail);
-    console.log("  - accountName:", accountName);
-    console.log("  - projectName:", projectName);
-    console.log("  - buhName:", buhName);
-    console.log("  - ddName:", ddName);
-    console.log("  - checked:", checked);
-    console.log("  - sowFilePath:", sowFilePath);
-
-    console.log("\n📦 Section Values Received:");
-    console.log("  📘 allSelectedValuesTwo:", JSON.stringify(allSelectedValuesTwo, null, 2));
-    console.log("  📗 allSelectedValues:", JSON.stringify(allSelectedValues, null, 2));
-    console.log("  📙 allSelectedValuesFour:", JSON.stringify(allSelectedValuesFour, null, 2));
-    console.log("  📕 allSelectedValuesFive:", JSON.stringify(allSelectedValuesFive, null, 2));
-    console.log("  📓 allSelectedValuesSix:", JSON.stringify(allSelectedValuesSix, null, 2));
-
     const date = new Date();
 
     const formattedDateTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T` +
@@ -114,21 +94,11 @@ export const addNewProject = async (
         return [value].filter(Boolean);
     };
 
-    // Convert to arrays first
+    // Convert to arrays first, then to comma-separated strings for backend
     const domainsArray = ensureArrayAndFilter(allSelectedValuesTwo?.domainInput);
     const applicationClassArray = ensureArrayAndFilter(allSelectedValuesTwo?.applicationInput);
-
-    // Backend expects comma-separated strings, not arrays
     const domainsString = domainsArray.join(', ');
     const applicationClassString = applicationClassArray.join(', ');
-
-    console.log("\n🔍 Domain/Application Processing:");
-    console.log("  - Raw domainInput:", allSelectedValuesTwo?.domainInput);
-    console.log("  - Raw applicationInput:", allSelectedValuesTwo?.applicationInput);
-    console.log("  - After ensureArrayAndFilter domains:", domainsArray);
-    console.log("  - After ensureArrayAndFilter application_class:", applicationClassArray);
-    console.log("  - Final domains (string):", domainsString);
-    console.log("  - Final application_class (string):", applicationClassString);
 
     const data = {
         submitter_email_id: pmoUser["mail"],
@@ -197,19 +167,11 @@ export const addNewProject = async (
         status: checked === true ? "Active" : "Inactive"
     };
 
-    console.log("\n📤 Final Payload to be sent:");
-    console.log(JSON.stringify(data, null, 2));
-    console.log("\n🌐 API Endpoint:", url);
-
     try {
-        console.log("\n🔄 Sending POST request...");
         const response = await createUpdateRecord(null, url, data, "POST");
-        console.log("\n✅ Response received:", response);
-        console.log("=".repeat(80));
         return response;
     } catch (error) {
-        console.error("\n❌ Error adding new project:", error);
-        console.log("=".repeat(80));
+        console.error("Error adding new project:", error);
         throw error;
     }
 };
@@ -230,19 +192,6 @@ export const updateProject = async (
     checked,
     sowFilePath
 ) => {
-    console.log("\n" + "=".repeat(80));
-    console.log("📡 updateProject API FUNCTION");
-    console.log("=".repeat(80));
-
-    console.log("\n📥 Received Parameters:");
-    console.log("  - id:", id);
-    console.log("  - pmoUser:", pmoUser?.mail);
-    console.log("  - accountName:", accountName);
-    console.log("  - projectName:", projectName);
-
-    console.log("\n📦 Section Values Received:");
-    console.log("  📘 updatedValuesTwo:", JSON.stringify(updatedValuesTwo, null, 2));
-
     const date = new Date();
     const formattedDateTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T` +
         `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
@@ -260,21 +209,11 @@ export const updateProject = async (
         return [value].filter(Boolean);
     };
 
-    // Convert to arrays and remove duplicates
+    // Convert to arrays, remove duplicates, then to comma-separated strings for backend
     const domainsFormatted = formatArray(updatedValuesTwo?.domainInput);
     const applicationClassFormatted = formatArray(updatedValuesTwo?.applicationInput);
-
-    // Backend expects comma-separated strings, not arrays
     const domainsString = domainsFormatted.join(', ');
     const applicationClassString = applicationClassFormatted.join(', ');
-
-    console.log("\n🔍 Domain/Application Processing (UPDATE):");
-    console.log("  - Raw domainInput:", updatedValuesTwo?.domainInput);
-    console.log("  - Raw applicationInput:", updatedValuesTwo?.applicationInput);
-    console.log("  - After formatArray domains:", domainsFormatted);
-    console.log("  - After formatArray application_class:", applicationClassFormatted);
-    console.log("  - Final domains (string):", domainsString);
-    console.log("  - Final application_class (string):", applicationClassString);
 
     const url = `update_project/${id}`;
     const data = {
@@ -344,20 +283,12 @@ export const updateProject = async (
         status: checked === true ? "Active" : "Inactive"
     };
 
-    console.log("\n📤 Final UPDATE Payload:");
-    console.log(JSON.stringify(data, null, 2));
-    console.log("\n🌐 API Endpoint:", url);
-
     try {
-        console.log("\n🔄 Sending PUT request...");
         const response = await createUpdateRecord(null, url, data, "PUT");
-        console.log("\n✅ UPDATE Response received:", response);
-        console.log("=".repeat(80));
         return response;
     } catch (error) {
-        console.error("\n❌ Error updating project:", error);
-        console.log("=".repeat(80));
-        throw error; // Re-throw to handle in the component
+        console.error("Error updating project:", error);
+        throw error;
     }
 };
 
