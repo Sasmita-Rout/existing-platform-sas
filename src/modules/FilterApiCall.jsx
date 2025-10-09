@@ -75,7 +75,8 @@ export const addNewProject = async (
     projectName,
     buhName,
     ddName,
-    allSelectedValuesTwo, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix, checked
+    allSelectedValuesTwo, allSelectedValues, allSelectedValuesFour, allSelectedValuesFive, allSelectedValuesSix, checked,
+    sowFilePath
 
 ) => {
     const date = new Date();
@@ -153,6 +154,7 @@ export const addNewProject = async (
         enterprise_genai_platforms: ensureArrayAndFilter(allSelectedValuesSix.enterprise_genai_platforms),
         user_feedback_analytics_tools: ensureArrayAndFilter(allSelectedValuesFive.SelectUserFeedbackandAnalytics || allSelectedValuesFive.user_feedback_analytics_tools),
         low_code_environments: ensureArrayAndFilter(allSelectedValues.low_code_environments || allSelectedValues.lowCodeEnv),
+        sow_file_path: sowFilePath || "",
         status: checked === true ? "Active" : "Inactive"
     };
 
@@ -172,12 +174,13 @@ export const updateProject = async (
     projectName,
     buhName,
     ddName,
-    updatedValuesTwo, 
-    updatedValuesFour, 
-    updatedValuesThree, 
-    updatedValuesFive, 
-    updatedValuesSix, 
-    checked
+    updatedValuesTwo,
+    updatedValuesFour,
+    updatedValuesThree,
+    updatedValuesFive,
+    updatedValuesSix,
+    checked,
+    sowFilePath
 ) => {
     const date = new Date();
     const formattedDateTime = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}T` +
@@ -260,6 +263,7 @@ export const updateProject = async (
         enterprise_genai_platforms: ensureArray(updatedValuesSix?.enterprise_genai_platforms),
         user_feedback_analytics_tools: ensureArray(updatedValuesFive?.SelectUserFeedbackandAnalytics),
         low_code_environments: ensureArray(updatedValuesThree?.lowCodeEnv),
+        sow_file_path: sowFilePath || "",
         status: checked === true ? "Active" : "Inactive"
     };
 

@@ -1,37 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { grey } from "@mui/material/colors";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import SaveIcon from '@mui/icons-material/Save';
 import LoadingButton from '@mui/lab/LoadingButton';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import Typography from "@mui/material/Typography";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useUserStore } from "../../zustand";
-import apiUrlConfig from "../../config/apiUrlConfig";
 import { getUploadSowFileDetails, downloadSowFile } from "../../modules/FilterApiCall";
 import FileDownloadOffIcon from '@mui/icons-material/FileDownloadOff';
 
-
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
-
 export default function SectionOne(props) {
-  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, accountValue, accountName, projectValue, onSubmit, architectureSelectedFile } = props
+  const { startDate, endDate, setValue, selectedFile, viewProject, apiUrl, projectName, accountValue, accountName, projectValue, onSubmit, architectureSelectedFile, sowFilePath } = props
   const { pmoUser } = useUserStore();
   const [uploadFiles, setUploadFiles] = useState();
   const [sowFileName, setsowFileName] = useState(null);
@@ -43,90 +22,6 @@ export default function SectionOne(props) {
   const [loading, setLoading] = useState(false)
   const [archLoading, setArchLoading] = useState(false)
 
-  const [sowFilePath, setSowFilePath] = useState("");
-  const [pathUpdateLoading, setPathUpdateLoading] = useState(false);
-
-  // Validation check for save button
-  const isSaveDisabled = () => {
-    return !accountValue || !projectName || !sowFilePath.trim();
-  };
-
-  // function to handle path update
-  const updateSowFilePath = async () => {
-    // Validate required fields before saving
-    if (!accountValue || !projectName) {
-      alert("Please select Account Name and Project Name before saving the SOW file path.");
-      return;
-    }
-
-    if (!sowFilePath.trim()) {
-      alert("Please enter a SOW file path before saving.");
-      return;
-    }
-
-    setPathUpdateLoading(true);
-    try {
-      const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&account_name=${accountValue}&project_name=${projectName}`;
-
-      const formData = new FormData();
-      formData.append("file_path", sowFilePath);
-
-      const config = {
-        method: "POST",
-        mode: "cors",
-        body: formData,
-      };
-
-      const response = await fetch(url, config);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      // Update the displayed filename after successful update
-      setsowFileName(sowFilePath);
-      // alert("SOW file path saved successfully!");
-
-    } catch (error) {
-      console.error("Error updating file path:", error);
-      alert("Failed to save SOW file path. Please try again.");
-    } finally {
-      setPathUpdateLoading(false);
-    }
-  };
-
-  async function uploadFile(endpoint, sowFile, archFile) {
-    const formData = new FormData();
-    if (sowFile) {
-      formData.append("sow_file", sowFile, sowFile.name);
-    } else {
-      formData.append("sow_file", "");
-    }
-    if (archFile) {
-      formData.append("architecture_file", archFile, archFile.name);
-    } else {
-      formData.append("architecture_file", "");
-    }
-
-    const config = {
-      method: "POST",
-      mode: "cors",
-      body: formData,
-    };
-
-    try {
-      const response = await fetch(endpoint, config);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      throw error;
-    }
-  }
   useEffect(() => {
     async function viewProjectDates() {
       const result = await getUploadSowFileDetails(apiUrl);
@@ -197,28 +92,6 @@ export default function SectionOne(props) {
     setArchLoading(false)
 
   }
-  useEffect(() => {
-    if (onSubmit) {
-      const callUpload = async () => {
-        const file = selectedFile ? selectedFile : null;
-        const archFile = architectureSelectedFile ? architectureSelectedFile : null;
-        const sowEnd = endDate ? (endDate).toISOString() : "";
-        const sowStart = startDate ? (startDate).toISOString() : "";
-        const url = `${apiUrlConfig?.apiUrl}/upload?user=${pmoUser["email"]}&start_date=${sowStart}&end_date=${sowEnd}&account_name=${accountValue}&project_name=${projectName}`;
-
-        if (file) {
-          setValue("sowSelectedFile", file[0]);
-          if (architectureSelectedFile) {
-            setValue("architectureSelectedFile", archFile[0]);
-          }
-        }
-        await uploadFile(url, file ? file[0] : null, archFile ? archFile[0] : null);
-
-      };
-
-      callUpload()
-    }
-  }, [onSubmit])
   return (
     <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
       <Box sx={{ /* existing styles */ }}>
@@ -236,8 +109,8 @@ export default function SectionOne(props) {
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <TextField
-              value={sowFilePath}
-              onChange={(e) => setSowFilePath(e.target.value)}
+              value={sowFilePath || ""}
+              onChange={(e) => setValue("sowFilePath", e.target.value)}
               label="Enter your sharepoint SOW file path"
               variant="outlined"
               InputProps={{
@@ -245,27 +118,9 @@ export default function SectionOne(props) {
               }}
               fullWidth
             />
-            {!viewProject && (
-              <LoadingButton
-                loading={pathUpdateLoading}
-                loadingPosition="start"
-                startIcon={<SaveIcon />}
-                variant="contained"
-                onClick={updateSowFilePath}
-                disabled={isSaveDisabled()}
-                sx={{ minWidth: '100px', margin: '0 auto' }}
-              >
-                Save
-              </LoadingButton>
-            )}
           </Box>
-          {!viewProject && (!accountValue || !projectName) && (
-            <Typography sx={{ fontSize: 12, color: 'error.main', mt: 1 }}>
-              {/* Please select Account Name and Project Name before saving the SOW file path. */}
-            </Typography>
-          )}
-          {sowFileName && (
-            <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>
+          {sowFileName && viewProject && (
+            <Typography sx={{ fontSize: 12, color: 'text.secondary', mt: 1 }}>
               Current path: {sowFileName}
             </Typography>
           )}

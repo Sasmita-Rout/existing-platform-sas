@@ -138,6 +138,7 @@ const NewProject = () => {
       sowSelectedFile: null,
       architectureSelectedFile: null,
       onSubmit: false,
+      sowFilePath: "",
     },
   });
   const navigate = useNavigate();
@@ -245,6 +246,7 @@ const NewProject = () => {
       setValue("applicationValue", appClass);
       setValue("domain", domains);  // For dropdown display
       setValue("app", appClass);     // For dropdown display
+      setValue("sowFilePath", row["sow_file_path"] || "");
       setChecked(row.status);
 
       // Populate all technology fields using settersMap
@@ -431,7 +433,8 @@ const NewProject = () => {
       watch("allSelectedValuesFour"),
       watch("allSelectedValuesFive"),
       watch("allSelectedValuesSix"),
-      checked
+      checked,
+      watch("sowFilePath")
     );
     return response;
   };
@@ -494,7 +497,8 @@ const NewProject = () => {
         sectionThreeValues,
         sectionFiveValues,
         sectionSixValues,
-        checked
+        checked,
+        watch("sowFilePath")
       );
 
       if (response && response.project_id) {
@@ -807,6 +811,7 @@ const NewProject = () => {
             selectedFile={watch("sowSelectedFile")}
             architectureSelectedFile={watch("architectureSelectedFile")}
             onSubmit={watch("onSubmit")}
+            sowFilePath={watch("sowFilePath")}
           />
         </AccordionDetails>
       </Accordion>
