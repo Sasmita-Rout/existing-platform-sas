@@ -11,31 +11,29 @@ import apiUrlConfig from "../config/apiUrlConfig";
 import { columnValues } from "../modules/FilterApiCall"
 
 export default function FilterComponent({ technologyInput, onValuesChange }) {
-  const [selectedValues, setSelectedValues] = React.useState([]); // For multi-select
-  const [selectedValue, setSelectedValue] = React.useState(null); // For single select
-  const [languageDropdown, setLanguageDropdown] = React.useState([]); // Language dropdown dynamically
+  const [selectedValues, setSelectedValues] = React.useState([]);
+  const [selectedValue, setSelectedValue] = React.useState(null);
+  const [languageDropdown, setLanguageDropdown] = React.useState([]);
 
   const { apiUrl } = apiUrlConfig;
 
-  // Get multi-select filter dropdown based on the selected technology filter
   const getLanguageDropdownValues = async (selectedValue) => {
     if (!selectedValue) {
       setLanguageDropdown([]);
     }
     const toSnakeCase = (str) => {
       return str
-        .replace(/([a-z])([A-Z])/g, '$1_$2') // Insert underscores between lowercase and uppercase letters
-        .replace(/\s+/g, '_') // Replace spaces with underscores
-        .toLowerCase(); // Convert everything to lowercase
+        .replace(/([a-z])([A-Z])/g, '$1_$2')
+        .replace(/\s+/g, '_')
+        .toLowerCase();
     };
-    
-    const formattedSelectedValue = toSnakeCase(selectedValue); 
+
+    const formattedSelectedValue = toSnakeCase(selectedValue);
     const languageResponse = await columnValues(apiUrl, formattedSelectedValue)
 
     setLanguageDropdown(languageResponse);
   };
 
-  // Clear all multi-selected values
   const handleClearAll = () => {
     setSelectedValues([]);
     setSelectedValue([]);
@@ -46,20 +44,17 @@ export default function FilterComponent({ technologyInput, onValuesChange }) {
     onValuesChange(selectedValues);
   }
 
-  // Handler for removing a specific multi-selected value
   const handleRemove = (valueToRemove) => {
     setSelectedValues((prev) => prev.filter((item) => item !== valueToRemove));
     onValuesChange(selectedValues);
     handleButtonClick();
   };
 
-  // Handler for single select autocomplete
   const onChangeSingleFilter = (event, newValue) => {
     setSelectedValue(newValue);
     getLanguageDropdownValues(newValue);
   };
 
-  // Handler for multi-select autocomplete
   const handleOnSelect = (event, newValue) => {
     const uniqueValues = [...selectedValues];
     newValue.forEach((newItem) => {
@@ -70,7 +65,6 @@ export default function FilterComponent({ technologyInput, onValuesChange }) {
     setSelectedValues(uniqueValues);
   };
 
-  // Function to display selected items
   const displaySelectedItem = (selectedItem, onRemove) => (
     <Box
       key={selectedItem}
@@ -101,7 +95,6 @@ export default function FilterComponent({ technologyInput, onValuesChange }) {
     <>
       <h3>RESULTS</h3>
       <Stack flexDirection="row" style={{ marginBottom: 50 }}>
-        {/* Single-select Autocomplete */}
         <Filter
           input={technologyInput}
           handleOnSelect={onChangeSingleFilter}
@@ -110,26 +103,25 @@ export default function FilterComponent({ technologyInput, onValuesChange }) {
           placeholder="Filter By Technologies"
           onFocus="Select..."
           onBlur="Filter By Technologies"
-          showIcon={true} // Show icon for this filter
+          showIcon={true}
         />
 
-        {/* Multi-select Autocomplete */}
         <Filter
           input={languageDropdown}
           handleOnSelect={handleOnSelect}
-          selectedValues={[]}
+          selectedValues={selectedValues}
           isMultiSelect={true}
           placeholder="Select Options"
           onFocus="Select..."
           onBlur="Select Options"
           showIcon={true}
+          disabled={!selectedValue}
         />
 
         <Button variant="contained" onClick={handleButtonClick} sx={{ maxHeight: 55, marginRight: 5 }}>
           Apply
         </Button>
 
-        {/* Display selected items */}
         {selectedValues.length > 0 && (
           <Box
             sx={{
@@ -149,7 +141,6 @@ export default function FilterComponent({ technologyInput, onValuesChange }) {
           </Box>
         )}
 
-        {/* Clear All Button */}
         <Box ml="auto">
           <Button
             style={{

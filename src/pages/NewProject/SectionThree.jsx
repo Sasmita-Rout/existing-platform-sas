@@ -1,229 +1,454 @@
-import React, { useEffect } from "react";
-import { Filter } from "../../components/molecules/index";
-import { Box, Typography } from "@mui/material";
-import { DropdownCustom } from "../../components/atoms/DropdownCustom";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  ListSubheader,
+  CircularProgress,
+  TextField,
+  Divider,
+} from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
+import IconButton from '@mui/material/IconButton';
+import Chip from '@mui/material/Chip';
+const CustomInputMenuItem = React.forwardRef(({ children, ...props }, ref) => (
+  <MenuItem
+    {...props}
+    ref={ref}
+    disableRipple
+    disableTouchRipple
+    style={{ cursor: 'default' }}
+    onClick={(e) => e.stopPropagation()}
+  >
+    {children}
+  </MenuItem>
+));
+
+const ensureArray = (value) => {
+  if (!value || value === '') return [];
+  if (Array.isArray(value)) {
+    // Remove duplicates and filter out empty values
+    return [...new Set(value)].filter(item => item && item !== '');
+  }
+  // Split by comma and trim whitespace for comma-separated strings
+  if (typeof value === 'string' && value.includes(',')) {
+    const items = value.split(',').map(item => item.trim()).filter(item => item !== '');
+    // Remove duplicates
+    return [...new Set(items)];
+  }
+  return [value];
+};
 
 export default function SectionThree({
   row,
   viewProject,
-  disableButton,
   onSelectedValuesChange,
   onSelectedViewValuesChange,
-  ...props
 }) {
-  const [selectedValues, setSelectedValues] = React.useState({});
-  const [viewValues, setViewValues] = React.useState({});
-  const [updateValues, setUpdateValues] = React.useState({})
+  const [options, setOptions] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [customInputs, setCustomInputs] = useState({});
+  const [newTechnology, setNewTechnology] = useState("");
+  const [activeCategory, setActiveCategory] = useState("");
 
-  const handleSelect = (key, newValue) => {
-    setSelectedValues((prevValues) => {
-      const updatedValues = { ...prevValues, [key]: newValue };
-      if (onSelectedValuesChange) {
-        onSelectedValuesChange(updatedValues);
-      }
-      return updatedValues;
-    });
-  };
-
-  const handleViewSelect = (key, newValue) => {
-    setUpdateValues((prevValues) => {
-      const updatedValues = { ...prevValues, [key]: newValue }; // Update only selected dropdowns
-      onSelectedViewValuesChange?.(updatedValues); // Send only the latest selections
-      return updatedValues;
-    });
-  };
-
-  useEffect(() => {
-    onSelectedValuesChange(viewValues);
-  }, [viewValues]);
-
-  const handleFilterSelect = (key, newValue) => {
-    if (viewProject) {
-      handleViewSelect(key, newValue);
-    } else {
-      handleSelect(key, newValue);
-    }
-  };
-
-  useEffect(() => {
-    if (viewProject) {
-      const updatedValues = {
-        environmentInput: row["environment"],
-        cloudTechnologies: row["cloud_technologies"],
-        enterprisePlatforms: row["enterprise_platforms"],
-        etlAndMdmTools: row["data_engineering_etl_mdm_tools"],
-        devops: row["devops_infrastructure_as_code_iac"],
-        lowCodeEnv: row["low_code_environments"],
-        vcs: row["version_control_system_vcs"],
-        edgeComputing: row["edge_computing"],
-        relationalDb: row["relational_databases_sql"],
-        nosqlDb: row["nosql_databases"],
-        inMemoryDbs: row["in_memory_databases"],
-        mobileCloudComputing: row["mobile_cloud_computing"],
-        systemMonitoringAndPerformance:
-          row["system_monitoring_performance_tools"],
-        directoryServices: row["directory_services_identity_management"],
-        ides: row["ides"],
-        cmsApp: row["cms_applications"],
-        iPaas: row["ipaas_integration_platform_as_a_service"],
-        frontendDevelopment: row["frontend_development"],
-        serverSide: row["server_side_backend_frameworks"],
-        fullStack: row["full_stack_development"],
-        mobileDevelopment: row["mobile_development"],
-        apiDevelopment: row["api_development_data_access_technologies"],
-        applicationIntegrationTools: row["application_integration_tools"],
-        unitTestingFrameworks: row["unit_testing_frameworks"],
-        programmingLanguages: row["programming_languages"],
-        codeQualityTools: row["code_quality_tools"],
-        testCoverage: row["test_coverage"],
-        productivityMeasurement: row["productivity_measurement"],
-        tracing: row["tracing"],
-        cybersecurityTechnologies: row["cybersecurity_technologies"],
-        containerizationOrchestration: row["containerization_orchestration"],
-        serverlessComputing: row["serverless_computing"],
-        headlessCms: row["headless_cms"],
-        architectureMethodology: row["architecture_methodology"],
-        designPatterns: row["design_patterns"],
-        developmentMaturityAssessment: row["development_maturity_assessment"],
-        softwareCompositionAnalysis: row["software_composition_analysis"],
-        apiTestingTools: row["api_testing_tools"],
-        behavioralTestingTools: row["behavioral_testing_tools"],
-        deploymentMethodologies: row["deployment_methodologies"],
-        cicdTools: row["cicd_tools"],
-        alertingTools: row["alerting_tools"],
-        dependencyAnalysis: row["dependency_analysis"],
-        versionControlSystemVcs: row["version_control_system_vcs"],
-      };
-      setViewValues(updatedValues);
-    }
-  }, [viewProject]);
+  const [selectedValues, setSelectedValues] = useState({});
+  const [viewValues, setViewValues] = useState({});
 
   const inputs = [
-    { key: "environmentInput", labels: "Select Environment" },
-    { key: "cloudTechnologies", labels: "Select Cloud Technologies" },
-    { key: "enterprisePlatforms", labels: "Select Enterprise Platforms" },
-    { key: "etlAndMdmTools", labels: "Select Data Engg-ETL & MDM Tools" },
-    { key: "devops", labels: "Select Devops" },
-    { key: "lowCodeEnv", labels: "Select Low Code Environments" },
-    { key: "vcs", labels: "Select VCS" },
-    { key: "edgeComputing", labels: "Select Edge Computing" },
-    { key: "relationalDb", labels: "Select Relational Databases(SQL)" },
-    { key: "nosqlDb", labels: "Select NOSQL databases" },
-    { key: "inMemoryDbs", labels: "Select In-Memory databases" },
-    { key: "mobileCloudComputing", labels: "Select Mobile Cloud Computing" },
-    {
-      key: "systemMonitoringAndPerformance",
-      labels: "Select System Monitoring & Performance",
-    },
-    { key: "directoryServices", labels: "Select Directory Services" },
+    { key: "environment", labels: "Select Environment" },
+    { key: "cloud_technologies", labels: "Select Cloud Technologies" },
+    { key: "enterprise_platforms", labels: "Select Enterprise Platforms" },
+    { key: "data_engineering_etl_mdm_tools", labels: "Select Data Engg-ETL & MDM Tools" },
+    { key: "devops_infrastructure_as_code_iac", labels: "Select DevOps" },
+    { key: "low_code_environments", labels: "Select Low Code Environments" },
+    { key: "version_control_system_vcs", labels: "Select VCS" },
+    { key: "edge_computing", labels: "Select Edge Computing" },
+    { key: "relational_databases_sql", labels: "Select Relational Databases (SQL)" },
+    { key: "nosql_databases", labels: "Select NoSQL Databases" },
+    { key: "in_memory_databases", labels: "Select In-Memory Databases" },
+    { key: "mobile_cloud_computing", labels: "Select Mobile Cloud Computing" },
+    { key: "system_monitoring_performance_tools", labels: "Select System Monitoring & Performance" },
+    { key: "directory_services_identity_management", labels: "Select Directory Services" },
     { key: "ides", labels: "Select IDEs" },
-    { key: "cmsApp", labels: "Select CMS Applications" },
-    { key: "iPaas", labels: "Select IPaas" },
-    { key: "frontendDevelopment", labels: "Select Frontend Development" },
-    { key: "serverSide", labels: "Select Server-Side & Back-end" },
-    { key: "fullStack", labels: "Select Full-Stack Development" },
-    { key: "mobileDevelopment", labels: "Select Mobile Development" },
-    {
-      key: "apiDevelopment",
-      labels: "Select Api Development and Data Analytics",
-    },
-    {
-      key: "applicationIntegrationTools",
-      labels: "Select Application Integration Tools",
-    },
-    { key: "unitTestingFrameworks", labels: "Select Unit Testing Frameworks" },
-    { key: "programmingLanguages", labels: "Select Programming Languages" },
-    { key: "codeQualityTools", labels: "Select Code Quality Tools" },
-    { key: "testCoverage", labels: "Select Test Coverage" },
-    { key: "productivityMeasurement", labels: "Select Productive Measurement" },
+    { key: "cms_applications", labels: "Select CMS Applications" },
+    { key: "ipaas_integration_platform_as_a_service", labels: "Select iPaaS" },
+    { key: "frontend_development", labels: "Select Frontend Development" },
+    { key: "server_side_backend_frameworks", labels: "Select Server-Side & Back-End" },
+    { key: "full_stack_development", labels: "Select Full-Stack Development" },
+    { key: "mobile_development", labels: "Select Mobile Development" },
+    { key: "api_development_data_access_technologies", labels: "Select API Development & Data Access" },
+    { key: "application_integration_tools", labels: "Select Application Integration Tools" },
+    { key: "unit_testing_frameworks", labels: "Select Unit Testing Frameworks" },
+    { key: "programming_languages", labels: "Select Programming Languages" },
+    { key: "code_quality_tools", labels: "Select Code Quality Tools" },
+    { key: "test_coverage", labels: "Select Test Coverage" },
+    { key: "productivity_measurement", labels: "Select Productivity Measurement" },
     { key: "tracing", labels: "Select Tracing" },
-    {
-      key: "cybersecurityTechnologies",
-      labels: "Select Cybersecurity Technologies",
-    },
-    {
-      key: "containerizationOrchestration",
-      labels: "Select Containerization Orchestration",
-    },
-    { key: "serverlessComputing", labels: "Select Serverless Computing" },
-    { key: "headlessCms", labels: "Select Headless Cms" },
-    {
-      key: "architectureMethodology",
-      labels: "Select Architecture Methodology",
-    },
-    { key: "designPatterns", labels: "Select Design Patterns" },
-    {
-      key: "developmentMaturityAssessment",
-      labels: "Select Development Maturity Assessment",
-    },
-    {
-      key: "softwareCompositionAnalysis",
-      labels: "Select Software Composition Analysis",
-    },
-    { key: "apiTestingTools", labels: "Select API Testing Tools" },
-    {
-      key: "behavioralTestingTools",
-      labels: "Select Behavioral Testing Tools",
-    },
-    {
-      key: "deploymentMethodologies",
-      labels: "Select Deployment Methodologies",
-    },
-    { key: "cicdTools", labels: "Select CI/CD Tools" },
-    { key: "alertingTools", labels: "Select Alerting Tools" },
-    { key: "dependencyAnalysis", labels: "Select Dependency Analysis" },
+    { key: "cybersecurity_technologies", labels: "Select Cybersecurity Technologies" },
+    { key: "containerization_orchestration", labels: "Select Containerization/Orchestration" },
+    { key: "serverless_computing", labels: "Select Serverless Computing" },
+    { key: "headless_cms", labels: "Select Headless CMS" },
+    { key: "architecture_methodology", labels: "Select Architecture Methodology" },
+    { key: "design_patterns", labels: "Select Design Patterns" },
+    { key: "development_maturity_assessment", labels: "Select Development Maturity Assessment" },
+    { key: "software_composition_analysis", labels: "Select Software Composition Analysis" },
+    { key: "api_testing_tools", labels: "Select API Testing Tools" },
+    { key: "behavioral_testing_tools", labels: "Select Behavioral Testing Tools" },
+    { key: "deployment_methodologies", labels: "Select Deployment Methodologies" },
+    { key: "cicd_tools", labels: "Select CI/CD Tools" },
+    { key: "alerting_tools", labels: "Select Alerting Tools" },
+    { key: "dependency_analysis", labels: "Select Dependency Analysis" },
   ];
 
+  // function to handle custom technology addition
+  const handleAddCustomTechnology = (key) => {
+    if (!newTechnology.trim()) return;
+
+    if (viewProject) {
+      setViewValues((prev) => {
+        const arr = prev[key] || [];
+        const updated = { ...prev, [key]: [...arr, newTechnology.trim()] };
+        onSelectedViewValuesChange?.(updated);
+        return updated;
+      });
+    } else {
+      setSelectedValues((prev) => {
+        const arr = prev[key] || [];
+        const updated = { ...prev, [key]: [...arr, newTechnology.trim()] };
+        onSelectedValuesChange?.(updated);
+        return updated;
+      });
+    }
+    setNewTechnology("");
+    setActiveCategory("");
+  };
+
+  const handleToggle = (key, item) => {
+    if (viewProject) {
+      setViewValues((prev) => {
+        const arr = prev[key] || [];
+        const updatedArr = arr.includes(item)
+          ? arr.filter((v) => v !== item)
+          : [...arr, item];
+        const updated = { ...prev, [key]: updatedArr };
+        onSelectedViewValuesChange?.(updated);
+        return updated;
+      });
+    } else {
+      setSelectedValues((prev) => {
+        const arr = prev[key] || [];
+        const updatedArr = arr.includes(item)
+          ? arr.filter((v) => v !== item)
+          : [...arr, item];
+        const updated = { ...prev, [key]: updatedArr };
+        onSelectedValuesChange?.(updated);
+        return updated;
+      });
+    }
+  };
+
+  const filterItems = (arr) =>
+    arr.filter((item) =>
+      item.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        console.log('SectionThree - Starting fetch...');
+        const response = await fetch(
+          `https://intranet.accionlabs.com/pmoreporting/platform_data/column_dropdown`
+        ).then((r) => r.json());
+
+        console.log('SectionThree - API Response:', response);
+
+        // Handle both response formats: {values: {...}} or direct object
+        const result = response.values || response;
+        console.log('SectionThree - Normalized result:', result);
+
+        const dataObj = {};
+        inputs.forEach((input) => {
+          const apiValues = result[input.key];
+          dataObj[input.key] = apiValues && apiValues.length > 0 ? apiValues : [];
+          console.log(`SectionThree - ${input.key}:`, dataObj[input.key]?.length, 'items');
+        });
+        console.log('SectionThree - Fetched options:', dataObj);
+        setOptions(dataObj);
+      } catch (err) {
+        console.error("SectionThree - Error fetching dropdowns:", err);
+        setOptions({});
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAll();
+  }, []);
+
+  useEffect(() => {
+    if (viewProject && row) {
+      console.log('SectionThree - viewProject and row detected');
+      const initial = {};
+      inputs.forEach(({ key }) => {
+        const value = row[key];
+        console.log(`SectionThree - row[${key}]:`, value, 'type:', typeof value);
+        if (Array.isArray(value)) {
+          initial[key] = value;
+        } else if (value) {
+          initial[key] = ensureArray(value);
+        } else {
+          initial[key] = [];
+        }
+        console.log(`SectionThree - initial[${key}]:`, initial[key]);
+      });
+      console.log('SectionThree - Setting viewValues:', initial);
+      setViewValues(initial);
+    }
+  }, [viewProject, row]);
+
+  const allSelected = [
+    ...new Set(
+      Object.values(viewProject ? viewValues : selectedValues).flat()
+    ),
+  ];
+
+  // return (
+  //   <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", marginTop: "15px" }}>
+  //     <Box sx={{ display: "flex", flex: 1, flexWrap: "wrap", alignItems: "center" }}>
+  //       <Box sx={{ width: 625 }}>
+  //         <FormControl fullWidth>
+  //           <InputLabel>Environment, Infrastructure, System Related Info</InputLabel>
+
+  //           {loading ? (
+  //             <CircularProgress size={24} />
+  //           ) : (
+  //             <Select
+  //               multiple
+  //               value={allSelected}
+  //               renderValue={(vals) => vals.join(", ")}
+  //               MenuProps={{
+  //                 PaperProps: {
+  //                   style: { maxHeight: 500, width: 400 },
+  //                 },
+  //               }}
+  //               onClose={(event) => {
+  //                 if (event?.target?.tagName === "INPUT") event.stopPropagation();
+  //               }}
+  //             >
+  //               <MenuItem
+  //                 disableRipple
+  //                 disableTouchRipple
+  //                 style={{ cursor: "default" }}
+  //                 onKeyDown={(e) => e.stopPropagation()}
+  //               >
+  //                 <TextField
+  //                   size="small"
+  //                   fullWidth
+  //                   placeholder="Search..."
+  //                   value={searchTerm}
+  //                   onChange={(e) => setSearchTerm(e.target.value)}
+  //                 />
+  //               </MenuItem>
+
+  //               <Divider />
+
+  //               {inputs.map((input) => {
+  //                 const filtered = filterItems(options[input.key] || []);
+  //                 const currentValues = viewProject
+  //                   ? viewValues[input.key] || []
+  //                   : selectedValues[input.key] || [];
+
+  //                 return (
+  //                   <React.Fragment key={input.key}>
+  //                     <ListSubheader sx={{ bgcolor: "#f5f5f5" }}>
+  //                       {input.labels}
+  //                     </ListSubheader>
+
+  //                     {filtered.length === 0 && (
+  //                       <MenuItem disabled>
+  //                         <em>No matches</em>
+  //                       </MenuItem>
+  //                     )}
+
+  //                     {filtered.map((item) => {
+  //                       const checked = currentValues.includes(item);
+  //                       return (
+  //                         <MenuItem
+  //                           key={`${input.key}:${item}`}
+  //                           value={item}
+  //                           onClick={() => handleToggle(input.key, item)}
+  //                         >
+  //                           <Checkbox checked={checked} />
+  //                           <ListItemText primary={item} />
+  //                         </MenuItem>
+  //                       );
+  //                     })}
+  //                   </React.Fragment>
+  //                 );
+  //               })}
+  //             </Select>
+  //           )}
+  //         </FormControl>
+  //       </Box>
+  //     </Box>
+  //   </div>
+  // );
+
+  const MAX_CHECKBOX_ITEMS = 5;
+
+  // change the return if needed,
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        flexWrap: "wrap",
-        marginTop: "15px",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          flex: 1,
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}
-      >
-        {inputs.map(({ key, labels }) => (
-          <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
-            {/* <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
-                            {labels}
-                        </Typography>
-                        <Filter
-                            input={props[key] || []}
-                            handleOnSelect={(event, newValue) => handleFilterSelect(key, newValue)}
-                            selectedValues={viewProject ? viewValues[key] : selectedValues[key]}
-                            isMultiSelect={false}
-                            placeholder={labels}
-                            showIcon={false}
-                        // disabled={!disableButton}
-                        /> */}
-            <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
-              {labels}
-            </Typography>
-            <DropdownCustom
-              input={props[key] || []}
-              row={row}
-              onFocus="Select..."
-              onBlur={labels}
-              placeholder={labels}
-              handleSelect={(newValue) => handleFilterSelect(key, newValue)}
-              selectedValues={
-                viewProject ? viewValues[key] : selectedValues[key]
-              }
-              onSelectedValuesChange={onSelectedValuesChange}
-              props={props}
-            />
-          </Box>
-        ))}
+  <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", marginTop: "15px" }}>
+    <Box sx={{ display: "flex", flex: 1, flexWrap: "wrap", alignItems: "center" }}>
+      <Box sx={{ width: 625 }}>
+        <FormControl fullWidth>
+          <InputLabel>Environment, Infrastructure, System Related Info</InputLabel>
+          {loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <Select
+              multiple
+              value={allSelected}
+              renderValue={(vals) => vals.join(", ")}
+              onClose={() => setSearchTerm("")}
+              MenuProps={{
+                PaperProps: {
+                  style: { maxHeight: 500, width: 400 },
+                },
+              }}
+            >
+              <CustomInputMenuItem>
+                <TextField
+                  size="small"
+                  fullWidth
+                  autoFocus
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    setSearchTerm(e.target.value);
+                  }}
+                  onKeyDown={(e) => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </CustomInputMenuItem>
+
+              <Divider />
+
+              {inputs.map((input) => {
+                const filtered = filterItems(options[input.key] || []);
+                const currentValues = viewProject
+                  ? viewValues[input.key] || []
+                  : selectedValues[input.key] || [];
+
+                return (
+                  <React.Fragment key={input.key}>
+                    <ListSubheader
+                      sx={{
+                        bgcolor: "#f5f5f5",
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}
+                    >
+                      {input.labels}
+                    </ListSubheader>
+
+                    <CustomInputMenuItem>
+                      <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
+                        width: '100%'
+                      }}>
+                        <TextField
+                          size="small"
+                          fullWidth
+                          placeholder="Add custom technology..."
+                          value={activeCategory === input.key ? newTechnology : ''}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            setActiveCategory(input.key);
+                            setNewTechnology(e.target.value);
+                          }}
+                          onKeyDown={(e) => {
+                            e.stopPropagation();
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handleAddCustomTechnology(input.key);
+                            }
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                        <IconButton
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddCustomTechnology(input.key);
+                          }}
+                        >
+                          <AddIcon />
+                        </IconButton>
+                      </Box>
+                    </CustomInputMenuItem>
+
+                    {/* Display all filtered items as checkboxes */}
+                    {filtered.map((item) => {
+                      const checked = ensureArray(currentValues).includes(item);
+                      return (
+                        <MenuItem
+                          key={`${input.key}:${item}`}
+                          value={item}
+                          onClick={() => handleToggle(input.key, item)}
+                        >
+                          <Checkbox checked={checked} />
+                          <ListItemText primary={item} />
+                        </MenuItem>
+                      );
+                    })}
+
+                    {/* Display custom added items */}
+                    {ensureArray(currentValues)
+                      .filter(item => !options[input.key]?.includes(item))
+                      .map((item) => (
+                        <MenuItem
+                          key={`${input.key}:${item}`}
+                          value={item}
+                          onClick={() => handleToggle(input.key, item)}
+                        >
+                          <Checkbox checked={true} />
+                          <ListItemText
+                            primary={
+                              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                {item}
+                                <Chip
+                                  size="small"
+                                  label="Custom"
+                                  sx={{ ml: 1, height: 20 }}
+                                />
+                              </Box>
+                            }
+                          />
+                        </MenuItem>
+                      ))}
+
+                    {filtered.length === 0 && ensureArray(currentValues).length === 0 && (
+                      <MenuItem disabled>
+                        <em>No items</em>
+                      </MenuItem>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </Select>
+          )}
+        </FormControl>
       </Box>
-    </div>
-  );
+    </Box>
+  </div>
+);
 }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Filter } from "../../components/molecules/index";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import EmergencyIcon from "@mui/icons-material/Emergency";
@@ -22,62 +21,76 @@ export default function SectionTwo({ onSelectedValuesChange, onSelectedViewValue
     };
     const handleViewSelect = (key, newValue) => {
         setUpdateValues((prevValues) => {
-          const updatedValues = { ...prevValues, [key]: newValue }; // Update only selected dropdowns
-          onSelectedViewValuesChange?.(updatedValues); // Send only the latest selections
-          return updatedValues;
+            const updatedValues = { ...prevValues, [key]: newValue };
+            onSelectedViewValuesChange?.(updatedValues);
+            return updatedValues;
         });
-      };
-
-    useEffect(() => {
-        if (Object.keys(viewValues).length > 0) {
-            onSelectedValuesChange(viewValues);
-        }
-    }, [viewValues]);
-
+    };
 
     const handleFilterSelect = (key, newValue) => {
         viewProject ? handleViewSelect(key, newValue) : handleSelect(key, newValue);
     };
+
     useEffect(() => {
-        if (viewProject) {
-            setViewValues({
-                domainInput: row["domains"],
-                applicationInput: row["application_class"],
-            });
+        if (viewProject && row) {
+            const parseValue = (value) => {
+                if (!value || value === '') return [];
+                if (Array.isArray(value)) {
+                    // Remove duplicates from array
+                    return [...new Set(value)].filter(item => item && item !== '');
+                }
+                // Split by comma, trim, filter empty, and remove duplicates
+                const items = value.split(',').map(item => item.trim()).filter(item => item !== '');
+                return [...new Set(items)];
+            };
+
+            const viewVals = {
+                domainInput: parseValue(row["domains"]),
+                applicationInput: parseValue(row["application_class"]),
+            };
+            setViewValues(viewVals);
         }
     }, [viewProject, row]);
 
     const inputs = [
         { key: 'domainInput', labels: 'Select Domain' },
-        { key: 'applicationInput', labels: 'Appliction Class' },
+        { key: 'applicationInput', labels: 'Application Class' },
     ];
 
     return (
         <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', marginTop: "15px" }}>
             <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-                {inputs.map(({ key, labels }) => (
-                    <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
-                        <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
-                            {labels}
-                            <EmergencyIcon style={{ fontSize: "small", color: "red" }} />
-                        </Typography>
-                        <DropdownCustom
-                            input={props[key] || []}
-                            row={row}
-                            placeholder={labels}
-                            onFocus="Select..."
-                            onBlur={labels}
-                            handleSelect={(newValue) =>
-                                handleFilterSelect(key, newValue)
-                            }
-                            selectedValues={
-                                viewProject ? viewValues[key] : selectedValues[key]
-                            }
-                            onSelectedValuesChange={onSelectedValuesChange}
-                            props={props}
-                        />
-                    </Box>
-                ))}
+                {inputs.map(({ key, labels }) => {
+                    const inputValue = props[key] || [];
+                    const selectedValue = viewProject ? viewValues[key] : selectedValues[key];
+
+                    // Convert array to single value for DropdownCustom
+                    const singleSelectedValue = Array.isArray(selectedValue)
+                        ? (selectedValue.length > 0 ? selectedValue[0] : null)
+                        : selectedValue;
+
+                    return (
+                        <Box sx={{ marginRight: 2, marginTop: 2 }} key={key}>
+                            <Typography variant="subtitle1" sx={{ fontSize: 14 }} gutterBottom>
+                                {labels}
+                                <EmergencyIcon style={{ fontSize: "small", color: "red" }} />
+                            </Typography>
+                            <DropdownCustom
+                                input={inputValue}
+                                row={row}
+                                placeholder={labels}
+                                onFocus="Select..."
+                                onBlur={labels}
+                                handleSelect={(newValue) =>
+                                    handleFilterSelect(key, newValue)
+                                }
+                                selectedValues={singleSelectedValue}
+                                onSelectedValuesChange={onSelectedValuesChange}
+                                props={props}
+                            />
+                        </Box>
+                    );
+                })}
             </Box>
         </div>
     );

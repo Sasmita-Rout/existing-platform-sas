@@ -13,7 +13,6 @@ import {
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { grey } from "@mui/material/colors";
 import { Avatar } from "@mui/material";
-import EmergencyIcon from "@mui/icons-material/Emergency";
 import Section from "./Section";
 import SectionOne from "./SectionOne";
 import SectionTwo from "./SectionTwo";
@@ -43,6 +42,7 @@ import {
   addNewProject,
   updateProject,
 } from "../../modules/FilterApiCall";
+import { fetchRecords } from "../../components/apiServices";
 import apiUrlConfig from "../../config/apiUrlConfig";
 import { useUserStore } from "../../zustand";
 
@@ -53,12 +53,11 @@ const NewProject = () => {
   const onClick = location.state?.onClick;
   const projectName = row ? row["project_name"] : null;
   const accountName = row ? row["account_name"] : null;
-  const [selectedRow, setselectedRow] = React.useState(row);
   const { setValue, watch } = useForm({
     defaultValues: {
       open: false,
       openPlatFormReport: false,
-      updatedValuesTwo:{},
+      updatedValuesTwo: {},
       updatedValuesFour: {},
       updatedValuesThree: {},
       updatedValuesFive: {},
@@ -132,13 +131,14 @@ const NewProject = () => {
       accountValue: null,
       ddValue: null,
       projectName: null,
-      errorDailogBox: false,
+      errorDialogBox: false,
       message: "",
       sowStartDate: null,
       sowEndDate: null,
       sowSelectedFile: null,
       architectureSelectedFile: null,
       onSubmit: false,
+      sowFilePath: "",
     },
   });
   const navigate = useNavigate();
@@ -216,17 +216,51 @@ const NewProject = () => {
     alerting_tools: (value) => setValue("alertingTools", value),
     dependency_analysis: (value) => setValue("dependencyAnalysis", value),
   };
+
   useEffect(() => {
-    if (onClick) {
+    if (onClick && row) {
+      console.log('NewProject useEffect - row.domains:', row["domains"]);
+      console.log('NewProject useEffect - row.application_class:', row["application_class"]);
+
+      // Helper to convert comma-separated strings to arrays and remove duplicates
+      const parseValue = (value) => {
+        if (!value || value === '') return [];
+        if (Array.isArray(value)) {
+          // Remove duplicates from array
+          return [...new Set(value)].filter(item => item && item !== '');
+        }
+        // Split by comma, trim, filter empty, and remove duplicates
+        const items = value.split(',').map(item => item.trim()).filter(item => item !== '');
+        return [...new Set(items)];
+      };
+
+      // Set basic project info
       setValue("accountValue", row["account_name"]);
       setValue("buhValue", row["buh_name"]);
       setValue("ddValue", row["dd_name"]);
       setValue("projectName", row["project_name"]);
-      setValue("domainValue", row["domains"]);
-      setValue("applicationValue", row["application_class"]);
+
+      // Set domain and application class for both storage and display
+      const domains = parseValue(row["domains"]);
+      const appClass = parseValue(row["application_class"]);
+      console.log('NewProject useEffect - parsed domains:', domains);
+      console.log('NewProject useEffect - parsed appClass:', appClass);
+
+      setValue("domainValue", domains);
+      setValue("applicationValue", appClass);
+      setValue("domain", domains);  // For dropdown display
+      setValue("app", appClass);     // For dropdown display
+      setValue("sowFilePath", row["sow_file_path"] || "");
       setChecked(row.status);
+
+      // Populate all technology fields using settersMap
+      Object.keys(settersMap).forEach((fieldName) => {
+        if (row[fieldName] !== undefined && row[fieldName] !== null) {
+          settersMap[fieldName](parseValue(row[fieldName]));
+        }
+      });
     }
-  }, [onClick]);
+  }, [onClick, row]);
 
   const handleClose = () => {
     setValue("open", false);
@@ -250,7 +284,11 @@ const NewProject = () => {
     setValue("updatedValuesFour", selectedValues);
   };
   const handleSelectedValuesChangeSectionFive = (selectedValues) => {
-    setValue("allSelectedValuesFive", selectedValues);
+    const formattedValues = {
+      AnalyticsReporting: ensureArray(selectedValues?.AnalyticsReporting),
+      SelectUserFeedbackandAnalytics: ensureArray(selectedValues?.SelectUserFeedbackandAnalytics)
+  };
+    setValue("allSelectedValuesFive", formattedValues);
   };
   const handleSelectedViewValuesChangeSectionFive = (selectedValues) => {
     setValue("updatedValuesFive", selectedValues);
@@ -268,7 +306,7 @@ const NewProject = () => {
       watch("accountValue"),
       watch("ddValue"),
       watch("projectName") && watch("projectName").trim(),
-      sectionTwoValues?.domainInput, // Check individual fields directly
+      sectionTwoValues?.domainInput,
       sectionTwoValues?.applicationInput,
       watch("domainValue"),
       watch("applicationValue"),
@@ -283,7 +321,6 @@ const NewProject = () => {
       applicationInput: "Application",
     };
 
-    // Identify missing required fields
     const nullValues = requiredFields
       .map((field, index) =>
         field === null || field === "" || field === undefined
@@ -292,26 +329,23 @@ const NewProject = () => {
       )
       .filter(Boolean);
 
-    // Map missing fields to their display names
     const formattedNullValues = nullValues.map((field) => fieldNames[field]);
 
-    // Set error display for missing fields
     setValue("errorDisplay", formattedNullValues);
 
-    // Check if there are missing fields to determine dialog display
     if (
       watch("buhValue") === null ||
       watch("accountValue") === null ||
       watch("ddValue") === null ||
       watch("projectName").trim() === "" ||
       watch("projectName").trim() === null ||
-      !sectionTwoValues || // Check if sectionTwoValues is missing
+      !sectionTwoValues ||
       sectionTwoValues.domainInput === null ||
       sectionTwoValues.domainInput === undefined ||
       sectionTwoValues.applicationInput === null ||
       sectionTwoValues.applicationInput === undefined
     ) {
-      setValue("errorDailogBox", true);
+      setValue("errorDialogBox", true);
     } else {
       setValue("openDialog", true);
     }
@@ -322,20 +356,31 @@ const NewProject = () => {
   };
 
   const handleConfirmSubmit = async () => {
-    setValue("onSubmit", true);
-    const response = await createNewProject();
-    console.log("Form submitted!", response);
-    if (response.id) {
-      setValue(
-        "message",
-        `Your Project "${watch("projectName").trim()}" Created Successfully`
-      );
-      setValue("open", true);
-      setTimeout(() => {
-        navigate("/PlatformProject");
-      }, 1500);
+    // Prevent multiple submissions
+    if (watch("onSubmit")) {
+      return;
     }
+
+    setValue("onSubmit", true);
     setValue("openDialog", false);
+
+    try {
+      const response = await createNewProject();
+      console.log("Form submitted!", response);
+      if (response.id) {
+        setValue(
+          "message",
+          `Your Project "${watch("projectName").trim()}" Created Successfully`
+        );
+        setValue("open", true);
+        setTimeout(() => {
+          navigate("/PlatformProject");
+        }, 1500);
+      }
+    } catch (error) {
+      console.error("Submission failed:", error);
+      setValue("onSubmit", false);
+    }
   };
 
   const goToPlatformPage = () => {
@@ -352,7 +397,6 @@ const NewProject = () => {
   }, []);
 
   useEffect(() => {
-    // setChecked(row.status);
     const fetchDropdownData = async () => {
       const responseData = await fetchColumnData(apiUrl, setValue);
       responseData.map(async (data) => {
@@ -364,6 +408,23 @@ const NewProject = () => {
     };
     fetchDropdownData();
   }, []);
+
+  // helper function to sanitize form data
+  const sanitizeFormData = (data) => {
+    const sanitized = {};
+    Object.entries(data).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        sanitized[key] = value.length === 0 ? null : value;
+        if (Array.isArray(value[0]) && value[0].length === 0) {
+          sanitized[key] = null;
+        }
+      } else {
+        sanitized[key] = value;
+      }
+    });
+    return sanitized;
+  };
+
   const createNewProject = async () => {
     const response = await addNewProject(
       pmoUser,
@@ -376,50 +437,101 @@ const NewProject = () => {
       watch("allSelectedValuesFour"),
       watch("allSelectedValuesFive"),
       watch("allSelectedValuesSix"),
-      checked
+      checked,
+      watch("sowFilePath")
     );
     return response;
   };
 
   const updateCurrentProject = async () => {
-    const response = await updateProject(
-      row.id,
-      pmoUser,
-      watch("accountValue"),
-      watch("projectName").trim(),
-      watch("buhValue"),
-      watch("ddValue"),
-      // watch("domainValue"),
-      // watch("applicationValue"),
-      watch("updatedValuesTwo"),
-      watch("updatedValuesFour"),
-      watch("updatedValuesThree"),
-      watch("updatedValuesFive"),
-      watch("updatedValuesSix"),
-      checked
-    );
-    if (response.project_id) {
-      setValue(
-        "message",
-        `Your Project "${watch("projectName").trim()}" Updated Successfully`
+    try {
+      // Get current values from the form sections
+      const sectionTwoValues = watch("updatedValuesTwo");
+      const sectionThreeValues = watch("updatedValuesThree");
+      const sectionFourValues = watch("updatedValuesFour");
+      const sectionFiveValues = watch("updatedValuesFive");
+      const sectionSixValues = watch("updatedValuesSix");
+
+      // Validate required fields
+      const requiredFields = {
+        accountValue: "Account",
+        projectName: "Project Name",
+        buhValue: "BUH",
+        ddValue: "DD"
+      };
+
+      const missingFields = Object.entries(requiredFields)
+        .filter(([key]) => !watch(key) || (typeof watch(key) === 'string' && !watch(key).trim()))
+        .map(([, label]) => label);
+
+      // Check if domains and application_class are provided
+      // For update mode, check both updatedValuesTwo and the initial row values
+      const hasDomain = sectionTwoValues?.domainInput || watch("domainValue") || row?.domains;
+      const hasApplication = sectionTwoValues?.applicationInput || watch("applicationValue") || row?.application_class;
+
+      if (!hasDomain) {
+        missingFields.push("Domain");
+      }
+      if (!hasApplication) {
+        missingFields.push("Application Class");
+      }
+
+      if (missingFields.length > 0) {
+        setValue("errorDisplay", missingFields);
+        setValue("errorDialogBox", true);
+        return;
+      }
+
+      // Prepare section two values - use updated values if present, otherwise keep original
+      const finalSectionTwoValues = {
+        domainInput: sectionTwoValues?.domainInput !== undefined ? sectionTwoValues.domainInput : (watch("domainValue") || row?.domains),
+        applicationInput: sectionTwoValues?.applicationInput !== undefined ? sectionTwoValues.applicationInput : (watch("applicationValue") || row?.application_class)
+      };
+
+      // Call the updateProject API function
+      const response = await updateProject(
+        row.id,
+        pmoUser,
+        watch("accountValue"),
+        watch("projectName").trim(),
+        watch("buhValue"),
+        watch("ddValue"),
+        finalSectionTwoValues,
+        sectionFourValues,
+        sectionThreeValues,
+        sectionFiveValues,
+        sectionSixValues,
+        checked,
+        watch("sowFilePath")
       );
+
+      if (response && response.project_id) {
+        setValue("message", `Your Project "${watch("projectName").trim()}" Updated Successfully`);
+        setValue("open", true);
+        setTimeout(() => {
+          navigate("/PlatformProject");
+        }, 1500);
+      }
+    } catch (error) {
+      console.error("Update failed:", error);
+      setValue("message", error.message || "Failed to update project. Please try again.");
       setValue("open", true);
-      setTimeout(() => {
-        navigate("/PlatformProject");
-      }, 1500);
     }
-    setValue("openDialog", false);
-    return response;
   };
 
   const errorMessage =
-    `Please fill up these fields as they are mandotory: ${watch("errorDisplay")}`.replace(
+    `Please fill up these fields as they are mandatory: ${watch("errorDisplay")}`.replace(
       /,/g,
       ", "
     );
 
   const toggleChecked = (prev) => {
     setChecked(prev.target.checked);
+  };
+
+  const ensureArray = (value) => {
+    if (!value) return [];
+    return Array.isArray(value) ? value : [value];
   };
 
   return (
@@ -448,8 +560,8 @@ const NewProject = () => {
       </Snackbar>
 
       <Dialog
-        open={watch("errorDailogBox")}
-        onClose={() => setValue("errorDailogBox", false)}
+        open={watch("errorDialogBox")}
+        onClose={() => setValue("errorDialogBox", false)}
         aria-labelledby="confirmation-dialog-title"
         aria-describedby="confirmation-dialog-description"
       >
@@ -469,7 +581,7 @@ const NewProject = () => {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => setValue("errorDailogBox", false)}
+            onClick={() => setValue("errorDialogBox", false)}
             sx={{
               marginTop: "10px",
               marginRight: "260px",
@@ -613,6 +725,7 @@ const NewProject = () => {
           <Button
             onClick={handleConfirmSubmit}
             variant="contained"
+            disabled={watch("onSubmit")}
             sx={{
               fontWeight: "bold",
               marginRight: "120px",
@@ -621,16 +734,16 @@ const NewProject = () => {
               marginBottom: "15px",
             }}
           >
-            Confirm
+            {watch("onSubmit") ? "Submitting..." : "Confirm"}
           </Button>
         </DialogActions>
       </Dialog>
 
       <Accordion
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
@@ -652,9 +765,9 @@ const NewProject = () => {
       <Accordion
         defaultExpanded
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
@@ -684,7 +797,6 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
-              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
               Upload SOW
             </Typography>
           </Box>
@@ -697,23 +809,23 @@ const NewProject = () => {
             projectName={watch("projectName")}
             apiUrl={apiUrl}
             viewProject={onClick}
-            // disableButton={!onClick}
             startDate={watch("sowStartDate")}
             endDate={watch("sowEndDate")}
             setValue={setValue}
             selectedFile={watch("sowSelectedFile")}
             architectureSelectedFile={watch("architectureSelectedFile")}
             onSubmit={watch("onSubmit")}
+            sowFilePath={watch("sowFilePath")}
           />
         </AccordionDetails>
       </Accordion>
-      {/* Section Two */}
+
       <Accordion
         defaultExpanded
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
@@ -752,33 +864,27 @@ const NewProject = () => {
             domainInput={watch("domain")}
             viewProject={onClick}
             applicationInput={watch("app")}
-            // domainValue={watch("domainValue")}
-            // applicationValue={watch("applicationValue")}
-            // setValue={setValue}
             row={row}
             onSelectedValuesChange={handleSelectedValuesChangeSectionTwo}
             onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionTwo}
-          // disableButton={!onClick}
           />
         </AccordionDetails>
       </Accordion>
-      {/* </Accordion> */}
       <Accordion
         defaultExpanded
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
-        {/* Section Three */}
+
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1-content"
           id="panel1-header"
         >
-          {/* <Typography>Expanded by default</Typography> */}
           <Box
             sx={{
               display: "flex",
@@ -800,7 +906,6 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
-              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
               Environment, Infrastructure, System Related Info
             </Typography>
           </Box>
@@ -809,53 +914,52 @@ const NewProject = () => {
           <SectionThree
             viewProject={onClick}
             row={row}
-            // disableButton={!onClick}
-            environmentInput={watch("env")}
-            cloudTechnologies={watch("cloudTechnologies")}
-            enterprisePlatforms={watch("enterprisePlatforms")}
-            etlAndMdmTools={watch("dataEngineeringEtlMdmTools")}
-            devops={watch("devopsInfrastructureAsCodeIac")}
-            lowCodeEnv={watch("lowCodeEnvironments")}
-            vcs={watch("versionControlSystemVcs")}
-            edgeComputing={watch("edgeComputing")}
-            relationalDb={watch("relationalDatabasesSql")}
-            nosqlDb={watch("noSqlDatabases")}
-            inMemoryDbs={watch("inMemoryDatabases")}
-            mobileCloudComputing={watch("mobileCloudComputing")}
-            systemMonitoringAndPerformance={watch(
+            environmentInput={ensureArray(watch("env"))}
+            cloudTechnologies={ensureArray(watch("cloudTechnologies"))}
+            enterprisePlatforms={ensureArray(watch("enterprisePlatforms"))}
+            etlAndMdmTools={ensureArray(watch("dataEngineeringEtlMdmTools"))}
+            devops={ensureArray(watch("devopsInfrastructureAsCodeIac"))}
+            lowCodeEnv={ensureArray(watch("lowCodeEnvironments"))}
+            vcs={ensureArray(watch("versionControlSystemVcs"))}
+            edgeComputing={ensureArray(watch("edgeComputing"))}
+            relationalDb={ensureArray(watch("relationalDatabasesSql"))}
+            nosqlDb={ensureArray(watch("noSqlDatabases"))}
+            inMemoryDbs={ensureArray(watch("inMemoryDatabases"))}
+            mobileCloudComputing={ensureArray(watch("mobileCloudComputing"))}
+            systemMonitoringAndPerformance={ensureArray(watch(
               "systemMonitoringPerformanceTools"
-            )}
-            directoryServices={watch("directoryServicesIdentityManagement")}
-            ides={watch("ides")}
-            cmsApp={watch("cmsApplications")}
-            iPaas={watch("ipaasIntegrationPlatformAsAService")}
-            frontendDevelopment={watch("frontendDevelopment")}
-            serverSide={watch("serverSideBackendFrameworks")}
-            fullStack={watch("fullStackDevelopment")}
-            mobileDevelopment={watch("mobileDevelopment")}
-            apiDevelopment={watch("apiDevelopmentDataAccessTechnologies")}
-            applicationIntegrationTools={watch("applicationIntegrationTools")}
-            unitTestingFrameworks={watch("unitTestingFrameworks")}
-            programmingLanguages={watch("programmingLanguages")}
-            codeQualityTools={watch("codeQualityTools")}
-            testCoverage={watch("testCoverage")}
-            productivityMeasurement={watch("productivityMeasurement")}
-            cybersecurityTechnologies={watch("cybersecurityTechnologies")}
-            containerizationOrchestration={watch("containerizationOrchestration")}
-            serverlessComputing={watch("serverlessComputing")}
-            headlessCms={watch("headlessCms")}
-            architectureMethodology={watch("architectureMethodology")}
-            designPatterns={watch("designPatterns")}
-            developmentMaturityAssessment={watch("developmentMaturityAssessment")}
-            softwareCompositionAnalysis={watch("softwareCompositionAnalysis")}
-            apiTestingTools={watch("apiTestingTools")}
-            behavioralTestingTools={watch("behavioralTestingTools")}
-            deploymentMethodologies={watch("deploymentMethodologies")}
-            cicdTools={watch("cicdTools")}
-            alertingTools={watch("alertingTools")}
-            dependencyAnalysis={watch("dependencyAnalysis")}
-            versionControlSystemVcs={watch("versionControlSystemVcs")}
-            tracing={watch("tracing")}
+            ))}
+            directoryServices={ensureArray(watch("directoryServicesIdentityManagement"))}
+            ides={ensureArray(watch("ides"))}
+            cmsApp={ensureArray(watch("cmsApplications"))}
+            iPaas={ensureArray(watch("ipaasIntegrationPlatformAsAService"))}
+            frontendDevelopment={ensureArray(watch("frontendDevelopment"))}
+            serverSide={ensureArray(watch("serverSideBackendFrameworks"))}
+            fullStack={ensureArray(watch("fullStackDevelopment"))}
+            mobileDevelopment={ensureArray(watch("mobileDevelopment"))}
+            apiDevelopment={ensureArray(watch("apiDevelopmentDataAccessTechnologies"))}
+            applicationIntegrationTools={ensureArray(watch("applicationIntegrationTools"))}
+            unitTestingFrameworks={ensureArray(watch("unitTestingFrameworks"))}
+            programmingLanguages={ensureArray(watch("programmingLanguages"))}
+            codeQualityTools={ensureArray(watch("codeQualityTools"))}
+            testCoverage={ensureArray(watch("testCoverage"))}
+            productivityMeasurement={ensureArray(watch("productivityMeasurement"))}
+            cybersecurityTechnologies={ensureArray(watch("cybersecurityTechnologies"))}
+            containerizationOrchestration={ensureArray(watch("containerizationOrchestration"))}
+            serverlessComputing={ensureArray(watch("serverlessComputing"))}
+            headlessCms={ensureArray(watch("headlessCms"))}
+            architectureMethodology={ensureArray(watch("architectureMethodology"))}
+            designPatterns={ensureArray(watch("designPatterns"))}
+            developmentMaturityAssessment={ensureArray(watch("developmentMaturityAssessment"))}
+            softwareCompositionAnalysis={ensureArray(watch("softwareCompositionAnalysis"))}
+            apiTestingTools={ensureArray(watch("apiTestingTools"))}
+            behavioralTestingTools={ensureArray(watch("behavioralTestingTools"))}
+            deploymentMethodologies={ensureArray(watch("deploymentMethodologies"))}
+            cicdTools={ensureArray(watch("cicdTools"))}
+            alertingTools={ensureArray(watch("alertingTools"))}
+            dependencyAnalysis={ensureArray(watch("dependencyAnalysis"))}
+            versionControlSystemVcs={ensureArray(watch("versionControlSystemVcs"))}
+            tracing={ensureArray(watch("tracing"))}
             onSelectedValuesChange={handleSelectedValuesChangeSectionThree}
             onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionThree}
           />
@@ -864,13 +968,13 @@ const NewProject = () => {
       <Accordion
         defaultExpanded
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
-        {/* Section Four */}
+
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1-content"
@@ -897,20 +1001,14 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
-              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
               QA & DevOps
             </Typography>
           </Box>
         </AccordionSummary>
         <AccordionDetails>
           <SectionFour
-            // SelectManualTestingMgmt={SelectManualTestingMgmt}
-            // FunctionalandIntegration={FunctionalandIntegration}
-            // PerformanceandLoadTest={PerformanceandLoadTest}
-            // ApplicationSecurityTesting={ApplicationSecurityTesting}
             viewProject={onClick}
             row={row}
-            // disableButton={!onClick}
             SelectManualTestingMgmt={watch("manualTestingManagementTools")}
             FunctionalandIntegration={watch("functionalIntegrationTesting")}
             PerformanceandLoadTest={watch("performanceLoadTestingTools")}
@@ -925,13 +1023,13 @@ const NewProject = () => {
           />
         </AccordionDetails>
       </Accordion>
-      {/* Section Five */}
+
       <Accordion
         defaultExpanded
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
@@ -961,7 +1059,6 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
-              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
               BI and Marketing
             </Typography>
           </Box>
@@ -970,21 +1067,20 @@ const NewProject = () => {
           <SectionFive
             viewProject={onClick}
             row={row}
-            // disableButton={!onClick}
-            AnalyticsReporting={watch("analyticsReporting")}
-            SelectUserFeedbackandAnalytics={watch("userFeedbackAnalyticsTools")}
+            AnalyticsReporting={ensureArray(watch("analyticsReporting"))}
+            SelectUserFeedbackandAnalytics={ensureArray(watch("userFeedbackAnalyticsTools"))}
             onSelectedValuesChange={handleSelectedValuesChangeSectionFive}
             onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionFive}
           />
         </AccordionDetails>
       </Accordion>
-      {/* Section Six */}
+
       <Accordion
         defaultExpanded
         sx={{
-          boxShadow: "none", // Remove shadow
+          boxShadow: "none",
           "&:before": {
-            display: "none", // Remove divider line between sections
+            display: "none",
           },
         }}
       >
@@ -1014,8 +1110,7 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
-              {/* <EmergencyIcon style={{ fontSize: "small", color: "red" }} /> */}
-              AI and Machine Learning Technologies
+              GenAI
             </Typography>
           </Box>
         </AccordionSummary>
@@ -1023,7 +1118,6 @@ const NewProject = () => {
           <SectionSix
             viewProject={onClick}
             row={row}
-            // disableButton={!onClick}
             aiAndMachineLearningTechnologies={watch(
               "aiMachineLearningTechnologies"
             )}
