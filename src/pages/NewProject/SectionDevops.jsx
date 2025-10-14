@@ -61,13 +61,7 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
   const [newTechnology, setNewTechnology] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
   const [expandedCategories, setExpandedCategories] = useState({});
-  // Safe getter for current values
-  const getCurrentValues = (key) => {
-    if (viewProject) {
-      return ensureArray(viewValues[key]);
-    }
-    return ensureArray(selectedValues[key]);
-  };
+
   const inputs = [
     { key: "devops_infrastructure_as_code_iac", labels: "Select DevOps & Infrastructure as Code (IaC)" },
     { key: "containerization_orchestration", labels: "Select Containerization & Orchestration" },
@@ -81,14 +75,14 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
 
     if (viewProject) {
       setViewValues((prev) => {
-        const arr = prev[key] || [];
+        const arr = ensureArray(prev[key]);
         const updated = { ...prev, [key]: [...arr, newTechnology.trim()] };
         onSelectedViewValuesChange?.(updated);
         return updated;
       });
     } else {
       setSelectedValues((prev) => {
-        const arr = prev[key] || [];
+        const arr = ensureArray(prev[key]);
         const updated = { ...prev, [key]: [...arr, newTechnology.trim()] };
         onSelectedValuesChange?.(updated);
         return updated;
@@ -154,7 +148,7 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
   const handleToggle = (key, item) => {
     if (viewProject) {
       setViewValues((prev) => {
-        const oldArr = prev[key] || [];
+        const oldArr = ensureArray(prev[key]);
         const newArr = oldArr.includes(item)
           ? oldArr.filter((v) => v !== item)
           : [...oldArr, item];
@@ -164,7 +158,7 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
       });
     } else {
       setSelectedValues((prev) => {
-        const oldArr = prev[key] || [];
+        const oldArr = ensureArray(prev[key]);
         const newArr = oldArr.includes(item)
           ? oldArr.filter((v) => v !== item)
           : [...oldArr, item];
