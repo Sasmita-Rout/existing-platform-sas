@@ -14,12 +14,15 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { grey } from "@mui/material/colors";
 import { Avatar } from "@mui/material";
 import Section from "./Section";
-import SectionOne from "./SectionOne";
-import SectionTwo from "./SectionTwo";
-import SectionThree from "./SectionThree";
-import SectionFour from "./SectionFour";
-import SectionFive from "./SectionFive";
-import SectionSix from "./SectionSix";
+import SectionSow from "./SectionSow";
+import SectionClasses from "./SectionClasses";
+import SectionEnv from "./SectionEnv";
+import SectionDevelopment from "./SectionDevelopment";
+import SectionTools from "./SectionTools";
+import SectionQa from "./SectionQa";
+import SectionDevops from "./SectionDevops";
+import SectionBi from "./SectionBi";
+import SectionGenai from "./SectionGenai";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -58,12 +61,18 @@ const NewProject = () => {
       open: false,
       openPlatFormReport: false,
       updatedValuesTwo: {},
-      updatedValuesFour: {},
       updatedValuesThree: {},
+      updatedValuesDevelopment: {},
+      updatedValuesTools: {},
+      updatedValuesQa: {},
+      updatedValuesFour: {},
       updatedValuesFive: {},
       updatedValuesSix: {},
       allSelectedValuesTwo: {},
       allSelectedValues: {},
+      allSelectedValuesDevelopment: {},
+      allSelectedValuesTools: {},
+      allSelectedValuesQa: {},
       allSelectedValuesFour: {},
       allSelectedValuesFive: {},
       allSelectedValuesSix: {},
@@ -265,38 +274,59 @@ const NewProject = () => {
   const handleClose = () => {
     setValue("open", false);
   };
-  const handleSelectedValuesChangeSectionTwo = (selectedValues) => {
+  const handleSelectedValuesChangeSectionClasses = (selectedValues) => {
     setValue("allSelectedValuesTwo", selectedValues);
   };
-  const handleSelectedViewValuesChangeSectionTwo = (selectedValues) => {
+  const handleSelectedViewValuesChangeSectionClasses = (selectedValues) => {
     setValue("updatedValuesTwo", selectedValues);
   };
-  const handleSelectedValuesChangeSectionThree = (selectedValues) => {
+  const handleSelectedValuesChangeSectionEnv = (selectedValues) => {
     setValue("allSelectedValues", selectedValues);
   };
-  const handleSelectedViewValuesChangeSectionThree = (selectedValues) => {
+  const handleSelectedViewValuesChangeSectionEnv = (selectedValues) => {
     setValue("updatedValuesThree", selectedValues);
   };
-  const handleSelectedValuesChangeSectionFour = (selectedValues) => {
+  const handleSelectedValuesChangeSectionDevops = (selectedValues) => {
     setValue("allSelectedValuesFour", selectedValues);
   };
-  const handleSelectedViewValuesChangeSectionFour = (selectedValues) => {
+  const handleSelectedViewValuesChangeSectionDevops = (selectedValues) => {
+    console.log('=== DEVOPS HANDLER CALLED ===');
+    console.log('Received selectedValues:', selectedValues);
     setValue("updatedValuesFour", selectedValues);
+    console.log('Set updatedValuesFour to:', selectedValues);
   };
-  const handleSelectedValuesChangeSectionFive = (selectedValues) => {
+  const handleSelectedValuesChangeSectionBi = (selectedValues) => {
     const formattedValues = {
       AnalyticsReporting: ensureArray(selectedValues?.AnalyticsReporting),
       SelectUserFeedbackandAnalytics: ensureArray(selectedValues?.SelectUserFeedbackandAnalytics)
   };
     setValue("allSelectedValuesFive", formattedValues);
   };
-  const handleSelectedViewValuesChangeSectionFive = (selectedValues) => {
+  const handleSelectedViewValuesChangeSectionBi = (selectedValues) => {
     setValue("updatedValuesFive", selectedValues);
   };
-  const handleSelectedValuesChangeSectionSix = (selectedValues) => {
+  const handleSelectedValuesChangeSectionDevelopment = (selectedValues) => {
+    setValue("allSelectedValuesDevelopment", selectedValues);
+  };
+  const handleSelectedViewValuesChangeSectionDevelopment = (selectedValues) => {
+    setValue("updatedValuesDevelopment", selectedValues);
+  };
+  const handleSelectedValuesChangeSectionTools = (selectedValues) => {
+    setValue("allSelectedValuesTools", selectedValues);
+  };
+  const handleSelectedViewValuesChangeSectionTools = (selectedValues) => {
+    setValue("updatedValuesTools", selectedValues);
+  };
+  const handleSelectedValuesChangeSectionQa = (selectedValues) => {
+    setValue("allSelectedValuesQa", selectedValues);
+  };
+  const handleSelectedViewValuesChangeSectionQa = (selectedValues) => {
+    setValue("updatedValuesQa", selectedValues);
+  };
+  const handleSelectedValuesChangeSectionGenai = (selectedValues) => {
     setValue("allSelectedValuesSix", selectedValues);
   };
-  const handleSelectedViewValuesChangeSectionSix = (selectedValues) => {
+  const handleSelectedViewValuesChangeSectionGenai = (selectedValues) => {
     setValue("updatedValuesSix", selectedValues);
   };
   const handleOpenDialog = () => {
@@ -434,6 +464,9 @@ const NewProject = () => {
       watch("ddValue"),
       watch("allSelectedValuesTwo"),
       watch("allSelectedValues"),
+      watch("allSelectedValuesDevelopment"),
+      watch("allSelectedValuesTools"),
+      watch("allSelectedValuesQa"),
       watch("allSelectedValuesFour"),
       watch("allSelectedValuesFive"),
       watch("allSelectedValuesSix"),
@@ -448,9 +481,17 @@ const NewProject = () => {
       // Get current values from the form sections
       const sectionTwoValues = watch("updatedValuesTwo");
       const sectionThreeValues = watch("updatedValuesThree");
+      const sectionDevelopmentValues = watch("updatedValuesDevelopment");
+      const sectionToolsValues = watch("updatedValuesTools");
+      const sectionQaValues = watch("updatedValuesQa");
       const sectionFourValues = watch("updatedValuesFour");
       const sectionFiveValues = watch("updatedValuesFive");
       const sectionSixValues = watch("updatedValuesSix");
+
+      // Log DevOps section values for debugging
+      console.log('=== UPDATE PROJECT DEBUG ===');
+      console.log('DevOps Section Values (sectionFourValues):', sectionFourValues);
+      console.log('DevOps Keys:', sectionFourValues ? Object.keys(sectionFourValues) : 'undefined');
 
       // Validate required fields
       const requiredFields = {
@@ -497,8 +538,11 @@ const NewProject = () => {
         watch("buhValue"),
         watch("ddValue"),
         finalSectionTwoValues,
-        sectionFourValues,
         sectionThreeValues,
+        sectionDevelopmentValues,
+        sectionToolsValues,
+        sectionQaValues,
+        sectionFourValues,
         sectionFiveValues,
         sectionSixValues,
         checked,
@@ -802,7 +846,7 @@ const NewProject = () => {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SectionOne
+          <SectionSow
             projectValue={projectName}
             accountValue={watch("accountValue")}
             accountName={accountName}
@@ -860,13 +904,13 @@ const NewProject = () => {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SectionTwo
+          <SectionClasses
             domainInput={watch("domain")}
             viewProject={onClick}
             applicationInput={watch("app")}
             row={row}
-            onSelectedValuesChange={handleSelectedValuesChangeSectionTwo}
-            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionTwo}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionClasses}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionClasses}
           />
         </AccordionDetails>
       </Accordion>
@@ -911,7 +955,7 @@ const NewProject = () => {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SectionThree
+          <SectionEnv
             viewProject={onClick}
             row={row}
             environmentInput={ensureArray(watch("env"))}
@@ -960,8 +1004,8 @@ const NewProject = () => {
             dependencyAnalysis={ensureArray(watch("dependencyAnalysis"))}
             versionControlSystemVcs={ensureArray(watch("versionControlSystemVcs"))}
             tracing={ensureArray(watch("tracing"))}
-            onSelectedValuesChange={handleSelectedValuesChangeSectionThree}
-            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionThree}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionEnv}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionEnv}
           />
         </AccordionDetails>
       </Accordion>
@@ -974,11 +1018,10 @@ const NewProject = () => {
           },
         }}
       >
-
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1-content"
-          id="panel1-header"
+          aria-controls="panel4-content"
+          id="panel4-header"
         >
           <Box
             sx={{
@@ -1001,29 +1044,19 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
-              QA & DevOps
+              Development
             </Typography>
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SectionFour
+          <SectionDevelopment
             viewProject={onClick}
             row={row}
-            SelectManualTestingMgmt={watch("manualTestingManagementTools")}
-            FunctionalandIntegration={watch("functionalIntegrationTesting")}
-            PerformanceandLoadTest={watch("performanceLoadTestingTools")}
-            ApplicationSecurityTesting={watch(
-              "applicationSecurityTestingTools"
-            )}
-            devopsInfrastructureAsCodeIac={watch(
-              "devopsInfrastructureAsCodeIac"
-            )}
-            onSelectedValuesChange={handleSelectedValuesChangeSectionFour}
-            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionFour}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionDevelopment}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionDevelopment}
           />
         </AccordionDetails>
       </Accordion>
-
       <Accordion
         defaultExpanded
         sx={{
@@ -1035,8 +1068,8 @@ const NewProject = () => {
       >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel2-content"
-          id="panel2-header"
+          aria-controls="panel5-content"
+          id="panel5-header"
         >
           <Box
             sx={{
@@ -1059,22 +1092,19 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
-              BI and Marketing
+              Tools
             </Typography>
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SectionFive
+          <SectionTools
             viewProject={onClick}
             row={row}
-            AnalyticsReporting={ensureArray(watch("analyticsReporting"))}
-            SelectUserFeedbackandAnalytics={ensureArray(watch("userFeedbackAnalyticsTools"))}
-            onSelectedValuesChange={handleSelectedValuesChangeSectionFive}
-            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionFive}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionTools}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionTools}
           />
         </AccordionDetails>
       </Accordion>
-
       <Accordion
         defaultExpanded
         sx={{
@@ -1086,8 +1116,8 @@ const NewProject = () => {
       >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel2-content"
-          id="panel2-header"
+          aria-controls="panel6-content"
+          id="panel6-header"
         >
           <Box
             sx={{
@@ -1110,19 +1140,168 @@ const NewProject = () => {
               gutterBottom
               sx={{ fontWeight: "bold", color: `${grey[600]}` }}
             >
+              QA Testing
+            </Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          <SectionQa
+            viewProject={onClick}
+            row={row}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionQa}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionQa}
+          />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion
+        defaultExpanded
+        sx={{
+          boxShadow: "none",
+          "&:before": {
+            display: "none",
+          },
+        }}
+      >
+
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel7-content"
+          id="panel7-header"
+        >
+          <Box
+            sx={{
+              display: "flex",
+              borderRadius: "5px",
+              border: `1px solid ${grey[400]}`,
+              padding: "10px",
+              gap: 1,
+              width: "100%",
+              backgroundColor: `${grey[200]}`,
+            }}
+          >
+            <Avatar sx={{ bgcolor: "grey", width: 30, height: 30 }}>
+              <Typography variant="body" color="white">
+                7
+              </Typography>
+            </Avatar>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              sx={{ fontWeight: "bold", color: `${grey[600]}` }}
+            >
+              DevOps
+            </Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          <SectionDevops
+            viewProject={onClick}
+            row={row}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionDevops}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionDevops}
+          />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion
+        defaultExpanded
+        sx={{
+          boxShadow: "none",
+          "&:before": {
+            display: "none",
+          },
+        }}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel7-content"
+          id="panel7-header"
+        >
+          <Box
+            sx={{
+              display: "flex",
+              borderRadius: "5px",
+              border: `1px solid ${grey[400]}`,
+              padding: "10px",
+              gap: 1,
+              width: "100%",
+              backgroundColor: `${grey[200]}`,
+            }}
+          >
+            <Avatar sx={{ bgcolor: "grey", width: 30, height: 30 }}>
+              <Typography variant="body" color="white">
+                7
+              </Typography>
+            </Avatar>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              sx={{ fontWeight: "bold", color: `${grey[600]}` }}
+            >
+              BI and Marketing
+            </Typography>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          <SectionBi
+            viewProject={onClick}
+            row={row}
+            AnalyticsReporting={ensureArray(watch("analyticsReporting"))}
+            SelectUserFeedbackandAnalytics={ensureArray(watch("userFeedbackAnalyticsTools"))}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionBi}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionBi}
+          />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion
+        defaultExpanded
+        sx={{
+          boxShadow: "none",
+          "&:before": {
+            display: "none",
+          },
+        }}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel8-content"
+          id="panel8-header"
+        >
+          <Box
+            sx={{
+              display: "flex",
+              borderRadius: "5px",
+              border: `1px solid ${grey[400]}`,
+              padding: "10px",
+              gap: 1,
+              width: "100%",
+              backgroundColor: `${grey[200]}`,
+            }}
+          >
+            <Avatar sx={{ bgcolor: "grey", width: 30, height: 30 }}>
+              <Typography variant="body" color="white">
+                8
+              </Typography>
+            </Avatar>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              sx={{ fontWeight: "bold", color: `${grey[600]}` }}
+            >
               GenAI
             </Typography>
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <SectionSix
+          <SectionGenai
             viewProject={onClick}
             row={row}
             aiAndMachineLearningTechnologies={watch(
               "aiMachineLearningTechnologies"
             )}
-            onSelectedValuesChange={handleSelectedValuesChangeSectionSix}
-            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionSix}
+            onSelectedValuesChange={handleSelectedValuesChangeSectionGenai}
+            onSelectedViewValuesChange={handleSelectedViewValuesChangeSectionGenai}
           />
         </AccordionDetails>
       </Accordion>
