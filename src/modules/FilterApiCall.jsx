@@ -120,7 +120,6 @@ export const addNewProject = async (
         // Environment Section (allSelectedValues)
         environment: ensureArrayAndFilter(allSelectedValues.environment || allSelectedValues.environmentInput),
         cloud_technologies: ensureArrayAndFilter(allSelectedValues.cloud_technologies || allSelectedValues.cloudTechnologies),
-        cybersecurity_technologies: ensureArrayAndFilter(allSelectedValues.cybersecurity_technologies || allSelectedValues.cybersecurityTechnologies),
         serverless_computing: ensureArrayAndFilter(allSelectedValues.serverless_computing || allSelectedValues.serverlessComputing),
         mobile_cloud_computing: ensureArrayAndFilter(allSelectedValues.mobile_cloud_computing || allSelectedValues.mobileCloudComputing),
         edge_computing: ensureArrayAndFilter(allSelectedValues.edge_computing || allSelectedValues.edgeComputing),
