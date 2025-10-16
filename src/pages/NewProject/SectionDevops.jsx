@@ -11,11 +11,14 @@ import {
   CircularProgress,
   TextField,
   Divider,
+  Button,
 } from "@mui/material";
 
 import AddIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
 import Chip from '@mui/material/Chip';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 const MAX_CHECKBOX_ITEMS = 5;
 
@@ -57,19 +60,13 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
 
   const [newTechnology, setNewTechnology] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
-  // Safe getter for current values
-  const getCurrentValues = (key) => {
-    if (viewProject) {
-      return ensureArray(viewValues[key]);
-    }
-    return ensureArray(selectedValues[key]);
-  };
+  const [expandedCategories, setExpandedCategories] = useState({});
+
   const inputs = [
-    { key: 'manual_testing_management_tools', labels: 'Select Manual Testing & Mgmt' },
-    { key: 'functional_integration_testing', labels: 'Select Functional and Integration...' },
-    { key: 'performance_load_testing_tools', labels: 'Select Performance and Load Test' },
-    { key: 'application_security_testing_tools', labels: 'Select Application Security Testing' },
-    { key: 'devops_infrastructure_as_code_iac', labels: 'Select DevOps' },
+    { key: "devops_infrastructure_as_code_iac", labels: "Select DevOps & Infrastructure as Code (IaC)" },
+    { key: "containerization_orchestration", labels: "Select Containerization & Orchestration" },
+    { key: "deployment_methodologies", labels: "Select Deployment Methodologies" },
+    { key: "cicd_tools", labels: "Select CI/CD Tools" },
   ];
 
   // Add handleAddCustomTechnology function
@@ -78,14 +75,14 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
 
     if (viewProject) {
       setViewValues((prev) => {
-        const arr = prev[key] || [];
+        const arr = ensureArray(prev[key]);
         const updated = { ...prev, [key]: [...arr, newTechnology.trim()] };
         onSelectedViewValuesChange?.(updated);
         return updated;
       });
     } else {
       setSelectedValues((prev) => {
-        const arr = prev[key] || [];
+        const arr = ensureArray(prev[key]);
         const updated = { ...prev, [key]: [...arr, newTechnology.trim()] };
         onSelectedValuesChange?.(updated);
         return updated;
@@ -151,7 +148,7 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
   const handleToggle = (key, item) => {
     if (viewProject) {
       setViewValues((prev) => {
-        const oldArr = prev[key] || [];
+        const oldArr = ensureArray(prev[key]);
         const newArr = oldArr.includes(item)
           ? oldArr.filter((v) => v !== item)
           : [...oldArr, item];
@@ -161,7 +158,7 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
       });
     } else {
       setSelectedValues((prev) => {
-        const oldArr = prev[key] || [];
+        const oldArr = ensureArray(prev[key]);
         const newArr = oldArr.includes(item)
           ? oldArr.filter((v) => v !== item)
           : [...oldArr, item];
@@ -177,18 +174,23 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
       item.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+  const toggleExpanded = (key) => {
+    setExpandedCategories((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
   const allSelected = [
     ...new Set([
-      ...(selectedValues.manual_testing_management_tools || []),
-      ...(selectedValues.functional_integration_testing || []),
-      ...(selectedValues.performance_load_testing_tools || []),
-      ...(selectedValues.application_security_testing_tools || []),
       ...(selectedValues.devops_infrastructure_as_code_iac || []),
-      ...(viewValues.manual_testing_management_tools || []),
-      ...(viewValues.functional_integration_testing || []),
-      ...(viewValues.performance_load_testing_tools || []),
-      ...(viewValues.application_security_testing_tools || []),
+      ...(selectedValues.containerization_orchestration || []),
+      ...(selectedValues.deployment_methodologies || []),
+      ...(selectedValues.cicd_tools || []),
       ...(viewValues.devops_infrastructure_as_code_iac || []),
+      ...(viewValues.containerization_orchestration || []),
+      ...(viewValues.deployment_methodologies || []),
+      ...(viewValues.cicd_tools || []),
     ]),
   ];
 
@@ -197,7 +199,7 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
     <Box sx={{ display: 'flex', flex: 1, flexWrap: 'wrap', alignItems: 'center' }}>
       <Box sx={{ width: 625 }}>
         <FormControl fullWidth>
-          <InputLabel>QA & DevOps</InputLabel>
+          <InputLabel>DevOps</InputLabel>
           {loading ? (
             <CircularProgress size={24} />
           ) : (
@@ -285,8 +287,8 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
                       </Box>
                     </CustomInputMenuItem>
 
-                    {/* Display all filtered items as checkboxes */}
-                    {filteredItems.map((item) => (
+                    {/* Display filtered items as checkboxes with expand/collapse */}
+                    {(expandedCategories[input.key] || searchTerm ? filteredItems : filteredItems.slice(0, MAX_CHECKBOX_ITEMS)).map((item) => (
                       <MenuItem
                         key={`${input.key}:${item}`}
                         value={item}
@@ -296,6 +298,26 @@ const SectionFour = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
                         <ListItemText primary={item} />
                       </MenuItem>
                     ))}
+
+                    {/* Show More/Less Button */}
+                    {!searchTerm && filteredItems.length > MAX_CHECKBOX_ITEMS && (
+                      <CustomInputMenuItem>
+                        <Button
+                          size="small"
+                          fullWidth
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleExpanded(input.key);
+                          }}
+                          endIcon={expandedCategories[input.key] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                          sx={{ justifyContent: 'center', textTransform: 'none' }}
+                        >
+                          {expandedCategories[input.key]
+                            ? 'Show Less'
+                            : `Show ${filteredItems.length - MAX_CHECKBOX_ITEMS} More`}
+                        </Button>
+                      </CustomInputMenuItem>
+                    )}
 
                     {/* Custom Added Items */}
                     {ensureArray(currentValues)

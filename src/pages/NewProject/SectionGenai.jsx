@@ -13,8 +13,11 @@ import {
   Divider,
   IconButton,
   Chip,
+  Button,
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { set } from 'lodash';
 
 
@@ -56,6 +59,7 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
   const [viewValues, setViewValues] = useState({});
   const [newTechnology, setNewTechnology] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
+  const [expandedCategories, setExpandedCategories] = useState({});
 
   const inputs = [
     { key: 'sdlc_improvement', labels: 'Select SDLC Improvement Tools' },
@@ -114,7 +118,14 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
     arr.filter((item) =>
       item.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  
+
+  const toggleExpanded = (key) => {
+    setExpandedCategories((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
   const DEFAULT_GENAI_TOOLS = {
     sdlc_improvement: [
       'GitHub Copilot',
@@ -285,8 +296,8 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
                         </Box>
                       </CustomInputMenuItem>
 
-                      {/* Display all filtered items as checkboxes */}
-                      {filteredItems.map((item) => (
+                      {/* Display filtered items as checkboxes with expand/collapse */}
+                      {(expandedCategories[input.key] || searchTerm ? filteredItems : filteredItems.slice(0, MAX_CHECKBOX_ITEMS)).map((item) => (
                         <MenuItem
                           key={`${input.key}:${item}`}
                           value={item}
@@ -296,6 +307,26 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
                           <ListItemText primary={item} />
                         </MenuItem>
                       ))}
+
+                      {/* Show More/Less Button */}
+                      {!searchTerm && filteredItems.length > MAX_CHECKBOX_ITEMS && (
+                        <CustomInputMenuItem>
+                          <Button
+                            size="small"
+                            fullWidth
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleExpanded(input.key);
+                            }}
+                            endIcon={expandedCategories[input.key] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                            sx={{ justifyContent: 'center', textTransform: 'none' }}
+                          >
+                            {expandedCategories[input.key]
+                              ? 'Show Less'
+                              : `Show ${filteredItems.length - MAX_CHECKBOX_ITEMS} More`}
+                          </Button>
+                        </CustomInputMenuItem>
+                      )}
 
                       {ensureArray(currentValues)
                         .filter(item => !options[input.key]?.includes(item))

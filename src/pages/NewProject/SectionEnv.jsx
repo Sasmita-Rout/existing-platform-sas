@@ -11,10 +11,15 @@ import {
   CircularProgress,
   TextField,
   Divider,
+  Button,
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
 import Chip from '@mui/material/Chip';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+
+const MAX_CHECKBOX_ITEMS = 5;
 const CustomInputMenuItem = React.forwardRef(({ children, ...props }, ref) => (
   <MenuItem
     {...props}
@@ -52,9 +57,9 @@ export default function SectionThree({
   const [options, setOptions] = useState({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [customInputs, setCustomInputs] = useState({});
   const [newTechnology, setNewTechnology] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
+  const [expandedCategories, setExpandedCategories] = useState({});
 
   const [selectedValues, setSelectedValues] = useState({});
   const [viewValues, setViewValues] = useState({});
@@ -62,47 +67,15 @@ export default function SectionThree({
   const inputs = [
     { key: "environment", labels: "Select Environment" },
     { key: "cloud_technologies", labels: "Select Cloud Technologies" },
-    { key: "enterprise_platforms", labels: "Select Enterprise Platforms" },
-    { key: "data_engineering_etl_mdm_tools", labels: "Select Data Engg-ETL & MDM Tools" },
-    { key: "devops_infrastructure_as_code_iac", labels: "Select DevOps" },
-    { key: "low_code_environments", labels: "Select Low Code Environments" },
-    { key: "version_control_system_vcs", labels: "Select VCS" },
+    { key: "serverless_computing", labels: "Select Serverless Computing" },
+    { key: "mobile_cloud_computing", labels: "Select Mobile Cloud Computing" },
     { key: "edge_computing", labels: "Select Edge Computing" },
+    { key: "enterprise_platforms", labels: "Select Enterprise Platforms" },
     { key: "relational_databases_sql", labels: "Select Relational Databases (SQL)" },
     { key: "nosql_databases", labels: "Select NoSQL Databases" },
     { key: "in_memory_databases", labels: "Select In-Memory Databases" },
-    { key: "mobile_cloud_computing", labels: "Select Mobile Cloud Computing" },
     { key: "system_monitoring_performance_tools", labels: "Select System Monitoring & Performance" },
-    { key: "directory_services_identity_management", labels: "Select Directory Services" },
-    { key: "ides", labels: "Select IDEs" },
-    { key: "cms_applications", labels: "Select CMS Applications" },
-    { key: "ipaas_integration_platform_as_a_service", labels: "Select iPaaS" },
-    { key: "frontend_development", labels: "Select Frontend Development" },
-    { key: "server_side_backend_frameworks", labels: "Select Server-Side & Back-End" },
-    { key: "full_stack_development", labels: "Select Full-Stack Development" },
-    { key: "mobile_development", labels: "Select Mobile Development" },
-    { key: "api_development_data_access_technologies", labels: "Select API Development & Data Access" },
-    { key: "application_integration_tools", labels: "Select Application Integration Tools" },
-    { key: "unit_testing_frameworks", labels: "Select Unit Testing Frameworks" },
-    { key: "programming_languages", labels: "Select Programming Languages" },
-    { key: "code_quality_tools", labels: "Select Code Quality Tools" },
-    { key: "test_coverage", labels: "Select Test Coverage" },
-    { key: "productivity_measurement", labels: "Select Productivity Measurement" },
-    { key: "tracing", labels: "Select Tracing" },
-    { key: "cybersecurity_technologies", labels: "Select Cybersecurity Technologies" },
-    { key: "containerization_orchestration", labels: "Select Containerization/Orchestration" },
-    { key: "serverless_computing", labels: "Select Serverless Computing" },
-    { key: "headless_cms", labels: "Select Headless CMS" },
-    { key: "architecture_methodology", labels: "Select Architecture Methodology" },
-    { key: "design_patterns", labels: "Select Design Patterns" },
-    { key: "development_maturity_assessment", labels: "Select Development Maturity Assessment" },
-    { key: "software_composition_analysis", labels: "Select Software Composition Analysis" },
-    { key: "api_testing_tools", labels: "Select API Testing Tools" },
-    { key: "behavioral_testing_tools", labels: "Select Behavioral Testing Tools" },
-    { key: "deployment_methodologies", labels: "Select Deployment Methodologies" },
-    { key: "cicd_tools", labels: "Select CI/CD Tools" },
-    { key: "alerting_tools", labels: "Select Alerting Tools" },
-    { key: "dependency_analysis", labels: "Select Dependency Analysis" },
+    { key: "directory_services_identity_management", labels: "Select Directory Services & Identity Management" },
   ];
 
   // function to handle custom technology addition
@@ -156,6 +129,13 @@ export default function SectionThree({
     arr.filter((item) =>
       item.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+  const toggleExpanded = (key) => {
+    setExpandedCategories((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -298,8 +278,6 @@ export default function SectionThree({
   //   </div>
   // );
 
-  const MAX_CHECKBOX_ITEMS = 5;
-
   // change the return if needed,
   return (
   <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", marginTop: "15px" }}>
@@ -396,8 +374,8 @@ export default function SectionThree({
                       </Box>
                     </CustomInputMenuItem>
 
-                    {/* Display all filtered items as checkboxes */}
-                    {filtered.map((item) => {
+                    {/* Display filtered items as checkboxes with expand/collapse */}
+                    {(expandedCategories[input.key] || searchTerm ? filtered : filtered.slice(0, MAX_CHECKBOX_ITEMS)).map((item) => {
                       const checked = ensureArray(currentValues).includes(item);
                       return (
                         <MenuItem
@@ -410,6 +388,26 @@ export default function SectionThree({
                         </MenuItem>
                       );
                     })}
+
+                    {/* Show More/Less Button */}
+                    {!searchTerm && filtered.length > MAX_CHECKBOX_ITEMS && (
+                      <CustomInputMenuItem>
+                        <Button
+                          size="small"
+                          fullWidth
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleExpanded(input.key);
+                          }}
+                          endIcon={expandedCategories[input.key] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                          sx={{ justifyContent: 'center', textTransform: 'none' }}
+                        >
+                          {expandedCategories[input.key]
+                            ? 'Show Less'
+                            : `Show ${filtered.length - MAX_CHECKBOX_ITEMS} More`}
+                        </Button>
+                      </CustomInputMenuItem>
+                    )}
 
                     {/* Display custom added items */}
                     {ensureArray(currentValues)
