@@ -114,7 +114,7 @@ export default function SectionOne(props) {
               label="Enter your sharepoint SOW file path"
               variant="outlined"
               InputProps={{
-                readOnly: viewProject,
+                readOnly: false,
               }}
               fullWidth
             />
