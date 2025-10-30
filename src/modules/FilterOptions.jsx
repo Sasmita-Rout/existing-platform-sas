@@ -1,99 +1,3 @@
-// import React, { useEffect } from "react";
-// import { Filter } from "../components/molecules/index";
-// import Button from "@mui/material/Button";
-// import Grid from "@mui/material/Grid2";
-
-// export default function FilterOptions({
-//   buhInput,
-//   accountInput,
-//   ddInput,
-//   projectInput,
-//   onBuhChange,
-//   onAccountChange,
-//   onDdChange,
-//   onProjectChange,
-// }) {
-//   const [buhValue, setBuhValue] = React.useState(null);
-//   const [accountValue, setAccountValue] = React.useState(null);
-//   const [ddValue, setDdValue] = React.useState(null);
-//   const [projectValue, setProjectValue] = React.useState(null);
-
-//   const buhFilterPlaceholder = "Select BUH";
-//   const accountFilterPlaceholder = "Select Account";
-//   const ddFilterPlaceholder = "Select DD";
-//   const projectFilterPlaceholder = "Select Project";
-
-//   const handleClearAll = () => {
-//     setBuhValue(null);
-//     setAccountValue(null);
-//     setDdValue(null);
-//     setProjectValue(null);
-//   };
-
-//   useEffect(() => {
-//     onDdChange(ddValue);
-//     onBuhChange(buhValue);
-//     onAccountChange(accountValue);
-//     onProjectChange(projectValue);
-//   }, [buhValue, accountValue, ddValue, projectValue]);
-
-//   return (
-//     <Grid container>
-//       <Grid size={2.7}>
-//         <Filter
-//           input={buhInput}
-//           handleOnSelect={(event, newValue) => setBuhValue(newValue)}
-//           selectedValues={buhValue}
-//           isMultiSelect={false}
-//           placeholder={buhFilterPlaceholder}
-//         />
-//       </Grid>
-
-//       <Grid size={2.7}>
-//         <Filter
-//           input={ddInput}
-//           handleOnSelect={(event, newValue) => setDdValue(newValue)}
-//           selectedValues={ddValue}
-//           isMultiSelect={false}
-//           placeholder={ddFilterPlaceholder}
-//         />
-//       </Grid>
-
-//       <Grid size={2.7}>
-//         <Filter
-//           input={accountInput}
-//           handleOnSelect={(event, newValue) => setAccountValue(newValue)}
-//           selectedValues={accountValue}
-//           isMultiSelect={false}
-//           placeholder={accountFilterPlaceholder}
-//         />
-//       </Grid>
-
-//       <Grid size={2.7}>
-//         <Filter
-//           input={projectInput}
-//           handleOnSelect={(event, newValue) => setProjectValue(newValue)}
-//           selectedValues={projectValue}
-//           isMultiSelect={false}
-//           placeholder={projectFilterPlaceholder}
-//         />
-//       </Grid>
-//       <Grid size={1}>
-//         <Button
-//           style={{
-//             backgroundColor: "grey",
-//             color: "white",
-//             height: "100%",
-//           }}
-//           onClick={handleClearAll}
-//         >
-//           Reset
-//         </Button>
-//       </Grid>
-//     </Grid>
-//   );
-// }
-
 import React, { useEffect, useState } from "react";
 import { Filter } from "../components/molecules/index";
 import Button from "@mui/material/Button";
@@ -152,7 +56,7 @@ export default function FilterOptions({
       const data = await fetchFilteredData();
       if (data?.records) {
         // Update DD options based on BUH selection
-        const uniqueDds = [...new Set(data.records.map(record => record.dd_name))].filter(Boolean);
+        const uniqueDds = [...new Set(data.records.map(record => record.dd_name))].filter(Boolean).sort();
         setFilteredDdOptions(uniqueDds);
       }
     } catch (error) {
@@ -169,7 +73,7 @@ export default function FilterOptions({
       const data = await fetchFilteredData();
       if (data?.records) {
         // Update Account options based on DD selection
-        const uniqueAccounts = [...new Set(data.records.map(record => record.account_name))].filter(Boolean);
+        const uniqueAccounts = [...new Set(data.records.map(record => record.account_name))].filter(Boolean).sort();
         setFilteredAccountOptions(uniqueAccounts);
       }
     } catch (error) {
@@ -186,7 +90,7 @@ export default function FilterOptions({
       const data = await fetchFilteredData();
       if (data?.records) {
         // Update Project options based on Account selection
-        const uniqueProjects = [...new Set(data.records.map(record => record.project_name))].filter(Boolean);
+        const uniqueProjects = [...new Set(data.records.map(record => record.project_name))].filter(Boolean).sort();
         setFilteredProjectOptions(uniqueProjects);
       }
     } catch (error) {
@@ -206,9 +110,9 @@ export default function FilterOptions({
     setAccountValue(null);
     setProjectValue(null);
     // Reset to original options
-    setFilteredDdOptions(ddInput || []);
-    setFilteredAccountOptions(accountInput || []);
-    setFilteredProjectOptions(projectInput || []);
+    setFilteredDdOptions([...(ddInput || [])].sort());
+    setFilteredAccountOptions([...(accountInput || [])].sort());
+    setFilteredProjectOptions([...(projectInput || [])].sort());
     onBuhChange(null);
     onDdChange(null);
     onAccountChange(null);
@@ -217,9 +121,9 @@ export default function FilterOptions({
 
   // Initialize filters with props
   useEffect(() => {
-    setFilteredDdOptions(ddInput || []);
-    setFilteredAccountOptions(accountInput || []);
-    setFilteredProjectOptions(projectInput || []);
+    setFilteredDdOptions([...(ddInput || [])].sort());
+    setFilteredAccountOptions([...(accountInput || [])].sort());
+    setFilteredProjectOptions([...(projectInput || [])].sort());
     setLoading(false);
   }, [ddInput, accountInput, projectInput]);
 
@@ -227,7 +131,7 @@ export default function FilterOptions({
     <Grid container spacing={2}>
       <Grid size={2.7}>
         <Filter
-          input={buhInput || []}
+          input={[...(buhInput || [])].sort()}
           handleOnSelect={handleBuhChange}
           selectedValues={buhValue}
           isMultiSelect={false}

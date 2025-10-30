@@ -28,6 +28,7 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                         isMultiSelect={false}
                         placeholder={buhFilterPlaceholder}
                         showIcon={false}
+                        disabled={false}
                     />
                 </Box>
 
@@ -43,6 +44,7 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                         selectedValues={ddValue}
                         isMultiSelect={false}
                         placeholder={ddFilterPlaceholder}
+                        disabled={false}
                     />
                 </Box>
 
@@ -59,7 +61,7 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                         isMultiSelect={false}
                         placeholder={accountFilterPlaceholder}
                         showIcon={false}
-                        disabled={!disableButton}
+                        disabled={false}
                     />
                 </Box>
 
@@ -68,7 +70,7 @@ export default function Section({ buhInput, accountInput, ddInput, setValue, buh
                         <EmergencyIcon style={{ fontSize: "small", color: "red" }} />Project Name
                     </Typography>
                     <Box component="form" sx={{ '& > :not(style)': { width: '360px' } }} noValidate autoComplete="off">
-                        <TextField id="outlined-basic" disabled={!disableButton} placeholder={projectFilterPlaceholder} variant="outlined" value={!viewProject ? null : projectName} onChange={(e) => setValue("projectName", e.target.value)} />
+                        <TextField id="outlined-basic" disabled={false} placeholder={projectFilterPlaceholder} variant="outlined" value={!viewProject ? null : projectName} onChange={(e) => setValue("projectName", e.target.value)} />
                     </Box>
                 </Box>
             </Box>

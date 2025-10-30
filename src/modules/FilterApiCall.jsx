@@ -16,13 +16,13 @@ export const fetchFilterData = async (apiUrl, typeOfDropdown, setValue) => {
         results.forEach(({ filterName, response }) => {
 
             if (filterName === "account_name") {
-                setValue("accountName", response.values);
+                setValue("accountName", response.values ? [...response.values].sort() : []);
             } else if (filterName === "project_name") {
                 setValue("projectName", response.values);
             } else if (filterName === "buh_name") {
-                setValue("buhName", response.values);
+                setValue("buhName", response.values ? [...response.values].sort() : []);
             } else if (filterName === "dd_name") {
-                setValue("ddName", response.values);
+                setValue("ddName", response.values ? [...response.values].sort() : []);
             }
         });
 
