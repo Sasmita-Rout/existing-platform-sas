@@ -187,6 +187,8 @@ export default function SectionThree({
       });
       console.log('SectionThree - Setting viewValues:', initial);
       setViewValues(initial);
+      // Initialize parent's update state with current values
+      onSelectedViewValuesChange?.(initial);
     }
   }, [viewProject, row]);
 

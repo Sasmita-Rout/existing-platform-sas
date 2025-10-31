@@ -188,6 +188,8 @@ export default function SectionDevelopment({
       });
       console.log('SectionDevelopment - Setting viewValues:', initial);
       setViewValues(initial);
+      // Initialize parent's update state with current values
+      onSelectedViewValuesChange?.(initial);
     }
   }, [viewProject, row]);
 

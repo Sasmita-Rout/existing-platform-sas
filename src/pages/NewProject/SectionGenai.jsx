@@ -198,6 +198,8 @@ const SectionSix = ({ row, viewProject, onSelectedValuesChange, onSelectedViewVa
         }
       });
       setViewValues(initial);
+      // Initialize parent's update state with current values
+      onSelectedViewValuesChange?.(initial);
     }
   }, [viewProject, row]);
 
