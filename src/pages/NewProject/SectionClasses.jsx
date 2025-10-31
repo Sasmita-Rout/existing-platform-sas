@@ -49,6 +49,8 @@ export default function SectionTwo({ onSelectedValuesChange, onSelectedViewValue
                 applicationInput: parseValue(row["application_class"]),
             };
             setViewValues(viewVals);
+            // Initialize parent's update state with current values
+            onSelectedViewValuesChange?.(viewVals);
         }
     }, [viewProject, row]);
 

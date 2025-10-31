@@ -296,11 +296,7 @@ const NewProject = () => {
     console.log('Set updatedValuesFour to:', selectedValues);
   };
   const handleSelectedValuesChangeSectionBi = (selectedValues) => {
-    const formattedValues = {
-      AnalyticsReporting: ensureArray(selectedValues?.AnalyticsReporting),
-      SelectUserFeedbackandAnalytics: ensureArray(selectedValues?.SelectUserFeedbackandAnalytics)
-  };
-    setValue("allSelectedValuesFive", formattedValues);
+    setValue("allSelectedValuesFive", selectedValues);
   };
   const handleSelectedViewValuesChangeSectionBi = (selectedValues) => {
     setValue("updatedValuesFive", selectedValues);
@@ -488,10 +484,17 @@ const NewProject = () => {
       const sectionFiveValues = watch("updatedValuesFive");
       const sectionSixValues = watch("updatedValuesSix");
 
-      // Log DevOps section values for debugging
+      // Log all section values for debugging
       console.log('=== UPDATE PROJECT DEBUG ===');
-      console.log('DevOps Section Values (sectionFourValues):', sectionFourValues);
-      console.log('DevOps Keys:', sectionFourValues ? Object.keys(sectionFourValues) : 'undefined');
+      console.log('Environment Section (sectionThreeValues):', sectionThreeValues);
+      console.log('  - environment:', sectionThreeValues?.environment);
+      console.log('  - cloud_technologies:', sectionThreeValues?.cloud_technologies);
+      console.log('Development Section (sectionDevelopmentValues):', sectionDevelopmentValues);
+      console.log('Tools Section (sectionToolsValues):', sectionToolsValues);
+      console.log('QA Section (sectionQaValues):', sectionQaValues);
+      console.log('DevOps Section (sectionFourValues):', sectionFourValues);
+      console.log('BI Section (sectionFiveValues):', sectionFiveValues);
+      console.log('GenAI Section (sectionSixValues):', sectionSixValues);
 
       // Validate required fields
       const requiredFields = {
@@ -1230,7 +1233,7 @@ const NewProject = () => {
           >
             <Avatar sx={{ bgcolor: "grey", width: 30, height: 30 }}>
               <Typography variant="body" color="white">
-                7
+                8
               </Typography>
             </Avatar>
             <Typography
@@ -1281,7 +1284,7 @@ const NewProject = () => {
           >
             <Avatar sx={{ bgcolor: "grey", width: 30, height: 30 }}>
               <Typography variant="body" color="white">
-                8
+                9
               </Typography>
             </Avatar>
             <Typography

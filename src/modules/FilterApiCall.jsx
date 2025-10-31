@@ -324,6 +324,16 @@ export const updateProject = async (
         status: checked === true ? "Active" : "Inactive"
     };
 
+    console.log('=== UPDATE PROJECT PAYLOAD ===');
+    console.log('URL:', url);
+    console.log('Full payload being sent to backend:', JSON.stringify(data, null, 2));
+    console.log('Empty arrays in payload:');
+    Object.entries(data).forEach(([key, value]) => {
+        if (Array.isArray(value) && value.length === 0) {
+            console.log(`  - ${key}: []`);
+        }
+    });
+
     try {
         const response = await createUpdateRecord(null, url, data, "PUT");
         return response;

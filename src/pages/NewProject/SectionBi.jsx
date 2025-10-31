@@ -138,6 +138,8 @@ const SectionFive = ({ row, viewProject, onSelectedValuesChange, onSelectedViewV
       });
       console.log('SectionFive - Setting viewValues:', initial);
       setViewValues(initial);
+      // Initialize parent's update state with current values
+      onSelectedViewValuesChange?.(initial);
     }
   }, [viewProject, row]);
 
