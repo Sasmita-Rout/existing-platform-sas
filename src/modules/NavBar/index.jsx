@@ -34,7 +34,7 @@ const NAVIGATION = [
   // { title: "PMO Dashboard", icon: <DashboardIcon />, path: "/pmo-dashboard" },
   // { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
   { title: "Platform Data", icon: <LayersIcon />, path: "/PlatformProject" },
-  { title: "Portfolio", icon: <LayersIcon />, path: 'https://intranet.accionlabs.com/pmo_portfolio/#/login' },
+  { title: "Portfolio", icon: <LayersIcon />, path: 'https://sasmita-rout.github.io/pmo-frontend-sas/' },
   // { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" },
 ];
 
