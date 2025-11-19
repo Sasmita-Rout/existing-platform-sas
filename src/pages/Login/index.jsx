@@ -8,8 +8,7 @@ const LoginPage = () => {
     navigate("/PlatformProject");
   }, [navigate]);
 
-  // Render nothing
-  return null;
+  return null; // no UI
 };
 
 export default LoginPage;
