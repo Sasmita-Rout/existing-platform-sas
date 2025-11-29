@@ -39,39 +39,24 @@ const NAVIGATION = [
 ];
 
 const NavBar = ({ setIsExpanded, isExpanded }) => {
-  const [openPlatFormReport, setPlatFormReport] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const userEmail = sessionStorage.getItem("userEmail")
-  const { pmoUser, logout } = useUserStore();
-  const handleLogout = async () => {
-    try {
-      sessionStorage.removeItem("userEmail"); // ✅ Clear on logout
-      navigate("/login"); // or wherever your login page is
-      logout();
-    } catch (err) {
-      console.error("Logout error:", err);
-    }
-    
-    
-  };
 
+  const userEmail = sessionStorage.getItem("userEmail");
+  const { pmoUser } = useUserStore();
+
+  // 👉 toggle drawer clean fix
   const toggleDrawer = () => {
-    setIsExpanded(!isExpanded);
-    isExpanded(!isExpanded);
+    setIsExpanded((prev) => !prev);
   };
 
+  // 👉 Navigation handling (internal & external)
   const handleNavItemClick = (path) => {
-    if (path.startsWith('http')) {
-      // External navigation
-      window.location.href = path;
+    if (path.startsWith("http")) {
+      window.location.href = path; // external link
     } else {
-      // Internal route using react-router
-      navigate(path);
+      navigate(path); // internal route
     }
-  };
-  const handleLogoutClick = () => {
-    setPlatFormReport(true);
   };
 
   return (
@@ -88,6 +73,7 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
           },
         }}
       >
+        {/* Logo + Menu */}
         <Box
           sx={{
             display: "flex",
@@ -107,6 +93,7 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
               transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
             }}
           />
+
           <IconButton onClick={toggleDrawer}>
             {isExpanded ? (
               <MenuOpenIcon style={{ color: theme.palette.black.main }} />
@@ -116,6 +103,7 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
           </IconButton>
         </Box>
 
+        {/* Navigation */}
         <List>
           {NAVIGATION.map((item) => (
             <NavItem
@@ -124,20 +112,17 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
               title={item.title}
               path={item.path}
               isExpanded={isExpanded}
-              isActive={!item.path.startsWith('http') && location.pathname === item.path}
+              isActive={!item.path.startsWith("http") && location.pathname === item.path}
               onClick={() => handleNavItemClick(item.path)}
             />
           ))}
         </List>
+
         <Divider />
+
+        {/* User Info */}
         <List sx={{ marginTop: "auto" }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             <Avatar
               src={pmoUser?.picture || "default-avatar-url.png"}
               alt="User Avatar"
@@ -149,6 +134,7 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
               }}
             />
           </Box>
+
           <Typography
             variant="body2"
             sx={{
@@ -159,7 +145,7 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
               textOverflow: "ellipsis",
             }}
           >
-            { userEmail ? pmoUser?.name || userEmail : "Guest"}
+            {userEmail ? pmoUser?.name || userEmail : "Guest"}
           </Typography>
 
           <NavItem
@@ -168,55 +154,12 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
             path="#notifications"
             isExpanded={isExpanded}
             isActive={false}
-            onClick={() => { }}
-          />
-
-          <NavItem
-            icon={<LogoutIcon />}
-            title="Logout"
-            path="#logout"
-            isExpanded={isExpanded}
-            isActive={false}
-            onClick={handleLogoutClick}
+            onClick={() => {}}
           />
         </List>
       </Drawer>
-      <DialogBox
-        size="xs"
-        actions={true}
-        buttonAlignment="center"
-        openDialog={openPlatFormReport}
-        closeDialog={() => setPlatFormReport(false)}
-      >
-        <DialogTitle sx={{ textAlign: "center", color: "#D94A56" }}>
-          Logout Confirmation
-        </DialogTitle>
-        <DialogContent sx={{ textAlign: "center", alignItems: "center" }}>
-          Are you sure you want to logout?
-        </DialogContent>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Button
-            variant="outlined"
-            sx={{
-              color: `${grey[600]}`,
-              borderColor: `${grey[400]}`,
-              fontWeight: "bold",
-              textTransform: "none",
-              alignItems: "center",
-            }}
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
-        </Box>
-      </DialogBox>
     </Box>
   );
 };
+
 export default NavBar;

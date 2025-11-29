@@ -5,10 +5,10 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate("/PlatformProject");
+    navigate("/PlatformProject", { replace: true });
   }, [navigate]);
 
-  return null; // no UI
+  return null;
 };
 
 export default LoginPage;

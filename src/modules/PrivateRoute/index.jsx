@@ -16,9 +16,7 @@ const PrivateRoute = () => {
   const value = Cookies.get("pmoUser");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!value) {
-    return <Navigate to="/login" replace />;
-  }
+ 
 
   return (
     <Box sx={{ width: "100%" }}>
