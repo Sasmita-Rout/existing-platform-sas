@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import Cookies from "js-cookie";
+import { Outlet } from "react-router-dom";
 import NavBar from "../NavBar";
 import { Box, styled } from "@mui/material";
 
@@ -13,12 +12,12 @@ const StyledBox = styled(Box)(({ theme, isExpanded }) => ({
 }));
 
 const PrivateRoute = () => {
-  const value = Cookies.get("pmoUser");
+  // const value = Cookies.get("pmoUser"); // Removed cookie check
   const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!value) {
-    return <Navigate to="/login" replace />;
-  }
+  // if (!value) {
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return (
     <Box sx={{ width: "100%" }}>

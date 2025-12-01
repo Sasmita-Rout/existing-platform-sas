@@ -33,9 +33,9 @@ const NAVIGATION = [
   // { title: "Home", icon: <HomeIcon />, path: "/home" },
   // { title: "PMO Dashboard", icon: <DashboardIcon />, path: "/pmo-dashboard" },
   // { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
-  { title: "Platform Data", icon: <LayersIcon />, path: "/PlatformProject" },
+  { title: "Platform", icon: <LayersIcon />, path: "/PlatformProject" },
   { title: "Portfolio", icon: <LayersIcon />, path: 'https://intranet.accionlabs.com/pmo_portfolio/#/login' },
-  // { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" },
+  // { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" }
 ];
 
 const NavBar = ({ setIsExpanded, isExpanded }) => {
@@ -52,8 +52,8 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
     } catch (err) {
       console.error("Logout error:", err);
     }
-    
-    
+
+
   };
 
   const toggleDrawer = () => {
@@ -159,7 +159,7 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
               textOverflow: "ellipsis",
             }}
           >
-            { userEmail ? pmoUser?.name || userEmail : "Guest"}
+            {userEmail ? pmoUser?.name || userEmail : "Guest"}
           </Typography>
 
           <NavItem
@@ -171,14 +171,14 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
             onClick={() => { }}
           />
 
-          <NavItem
+          {/* <NavItem
             icon={<LogoutIcon />}
             title="Logout"
             path="#logout"
             isExpanded={isExpanded}
             isActive={false}
             onClick={handleLogoutClick}
-          />
+          /> */}
         </List>
       </Drawer>
       <DialogBox

@@ -1,20 +1,18 @@
 import PrivateRoute from "../modules/PrivateRoute";
 import {
   HomePage,
-  LoginPage,
   PMODashboard,
   Reports,
   PlatformProject,
   ValueBoard,
   NewProject,
-  PageNotFound,
 } from "../pages";
+import { Navigate } from "react-router-dom";
 
 export const appRoutes = [
   {
-    path: "/login",
-    element: <LoginPage />,
-    index: true,
+    path: "/",
+    element: <Navigate to="/home" replace />,
   },
   {
     element: <PrivateRoute />,
@@ -47,6 +45,6 @@ export const appRoutes = [
   },
   {
     path: "*",
-    element: <PageNotFound />,
+    element: <Navigate to="/home" replace />,
   },
 ];
