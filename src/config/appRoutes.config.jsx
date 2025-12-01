@@ -47,6 +47,6 @@ export const appRoutes = [
   },
   {
     path: "*",
-    element: <PageNotFound />,
+    element: <Home />,
   },
 ];
