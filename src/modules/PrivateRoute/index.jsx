@@ -15,9 +15,13 @@ const PrivateRoute = () => {
   // const value = Cookies.get("pmoUser"); // Removed cookie check
   const [isExpanded, setIsExpanded] = useState(false);
 
+<<<<<<< HEAD
   // if (!value) {
   //   return <Navigate to="/login" replace />;
   // }
+=======
+ 
+>>>>>>> 6fc2c7fcdf1f428fd3097c095639ba823d16c895
 
   return (
     <Box sx={{ width: "100%" }}>

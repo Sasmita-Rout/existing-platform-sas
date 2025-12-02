@@ -34,7 +34,11 @@ const NAVIGATION = [
   // { title: "PMO Dashboard", icon: <DashboardIcon />, path: "/pmo-dashboard" },
   // { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
   { title: "Platform", icon: <LayersIcon />, path: "/PlatformProject" },
+<<<<<<< HEAD
   { title: "Portfolio", icon: <LayersIcon />, path: 'https://intranet.accionlabs.com/pmo_portfolio/#/login' },
+=======
+  { title: "Portfolio", icon: <LayersIcon />, path: 'https://sasmita-rout.github.io/portfolio/' },
+>>>>>>> 6fc2c7fcdf1f428fd3097c095639ba823d16c895
   // { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" }
 ];
 

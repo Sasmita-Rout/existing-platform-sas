@@ -1,6 +1,10 @@
 {
   "name": "pmo-react",
+<<<<<<< HEAD
   "homepage": "http://sasmita-rout.github.io/existing-platform-sas/",
+=======
+  "homepage": "https://sasmita-rout.github.io/existing-platform-sas/",
+>>>>>>> 6fc2c7fcdf1f428fd3097c095639ba823d16c895
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,8 +13,13 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+<<<<<<< HEAD
     "deploy": "gh-pages -d build",
     "predeploy": "npm run build"
+=======
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+>>>>>>> 6fc2c7fcdf1f428fd3097c095639ba823d16c895
   },
   "dependencies": {
     "@azure/msal-browser": "^4.12.0",
@@ -50,6 +59,6 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "gh-pages": "^6.3.0",
     "globals": "^15.9.0",
-    "vite": "^5.4.1"
+    "vite": "^5.4.21"
   }
 }
