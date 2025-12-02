@@ -33,30 +33,45 @@ const NAVIGATION = [
   // { title: "Home", icon: <HomeIcon />, path: "/home" },
   // { title: "PMO Dashboard", icon: <DashboardIcon />, path: "/pmo-dashboard" },
   // { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
-  { title: "Platform Data", icon: <LayersIcon />, path: "/PlatformProject" },
-  { title: "Portfolio", icon: <LayersIcon />, path: 'https://sasmita-rout.github.io/portfolio/' }, //portfolio link 
-  // { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" },
+  { title: "Platform", icon: <LayersIcon />, path: "/PlatformProject" },
+  { title: "Portfolio", icon: <LayersIcon />, path: 'https://sasmita-rout.github.io/portfolio/' },
+  // { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" }
 ];
 
 const NavBar = ({ setIsExpanded, isExpanded }) => {
+  const [openPlatFormReport, setPlatFormReport] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const userEmail = sessionStorage.getItem("userEmail")
+  const { pmoUser, logout } = useUserStore();
+  const handleLogout = async () => {
+    try {
+      sessionStorage.removeItem("userEmail"); // ✅ Clear on logout
+      navigate("/login"); // or wherever your login page is
+      logout();
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
 
-  const userEmail = sessionStorage.getItem("userEmail");
-  const { pmoUser } = useUserStore();
 
-  // 👉 toggle drawer clean fix
-  const toggleDrawer = () => {
-    setIsExpanded((prev) => !prev);
   };
 
-  // 👉 Navigation handling (internal & external)
+  const toggleDrawer = () => {
+    setIsExpanded(!isExpanded);
+    isExpanded(!isExpanded);
+  };
+
   const handleNavItemClick = (path) => {
-    if (path.startsWith("http")) {
-      window.location.href = path; // external link
+    if (path.startsWith('http')) {
+      // External navigation
+      window.location.href = path;
     } else {
-      navigate(path); // internal route
+      // Internal route using react-router
+      navigate(path);
     }
+  };
+  const handleLogoutClick = () => {
+    setPlatFormReport(true);
   };
 
   return (
@@ -73,7 +88,6 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
           },
         }}
       >
-        {/* Logo + Menu */}
         <Box
           sx={{
             display: "flex",
@@ -93,7 +107,6 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
               transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
             }}
           />
-
           <IconButton onClick={toggleDrawer}>
             {isExpanded ? (
               <MenuOpenIcon style={{ color: theme.palette.black.main }} />
@@ -103,7 +116,6 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
           </IconButton>
         </Box>
 
-        {/* Navigation */}
         <List>
           {NAVIGATION.map((item) => (
             <NavItem
@@ -112,17 +124,20 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
               title={item.title}
               path={item.path}
               isExpanded={isExpanded}
-              isActive={!item.path.startsWith("http") && location.pathname === item.path}
+              isActive={!item.path.startsWith('http') && location.pathname === item.path}
               onClick={() => handleNavItemClick(item.path)}
             />
           ))}
         </List>
-
         <Divider />
-
-        {/* User Info */}
         <List sx={{ marginTop: "auto" }}>
-          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <Avatar
               src={pmoUser?.picture || "default-avatar-url.png"}
               alt="User Avatar"
@@ -130,11 +145,10 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
                 width: isExpanded ? 56 : 32,
                 height: isExpanded ? 56 : 32,
                 borderRadius: "50%",
-                transition: "width 0.3s ease-in-out,height 0.3s ease-in-out",
+                transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
               }}
             />
           </Box>
-
           <Typography
             variant="body2"
             sx={{
@@ -154,12 +168,55 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
             path="#notifications"
             isExpanded={isExpanded}
             isActive={false}
-            onClick={() => {}}
+            onClick={() => { }}
           />
+
+          {/* <NavItem
+            icon={<LogoutIcon />}
+            title="Logout"
+            path="#logout"
+            isExpanded={isExpanded}
+            isActive={false}
+            onClick={handleLogoutClick}
+          /> */}
         </List>
       </Drawer>
+      <DialogBox
+        size="xs"
+        actions={true}
+        buttonAlignment="center"
+        openDialog={openPlatFormReport}
+        closeDialog={() => setPlatFormReport(false)}
+      >
+        <DialogTitle sx={{ textAlign: "center", color: "#D94A56" }}>
+          Logout Confirmation
+        </DialogTitle>
+        <DialogContent sx={{ textAlign: "center", alignItems: "center" }}>
+          Are you sure you want to logout?
+        </DialogContent>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            variant="outlined"
+            sx={{
+              color: `${grey[600]}`,
+              borderColor: `${grey[400]}`,
+              fontWeight: "bold",
+              textTransform: "none",
+              alignItems: "center",
+            }}
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
+        </Box>
+      </DialogBox>
     </Box>
   );
 };
-
 export default NavBar;
