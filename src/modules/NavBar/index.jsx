@@ -34,7 +34,7 @@ const NAVIGATION = [
   // { title: "PMO Dashboard", icon: <DashboardIcon />, path: "/pmo-dashboard" },
   // { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
   { title: "Platform Data", icon: <LayersIcon />, path: "/PlatformProject" },
-  { title: "Portfolio", icon: <LayersIcon />, path: 'https://sasmita-rout.github.io/pmo-frontend-sas/' },
+  { title: "Portfolio", icon: <LayersIcon />, path: 'https://sasmita-rout.github.io/pmo-frontend-sas/' }, //portfolio link 
   // { title: "Value Board", icon: <ErrorOutlineIcon />, path: "/value-board" },
 ];
 
@@ -130,7 +130,7 @@ const NavBar = ({ setIsExpanded, isExpanded }) => {
                 width: isExpanded ? 56 : 32,
                 height: isExpanded ? 56 : 32,
                 borderRadius: "50%",
-                transition: "width 0.3s ease-in-out, height 0.3s ease-in-out",
+                transition: "width 0.3s ease-in-out,height 0.3s ease-in-out",
               }}
             />
           </Box>
