@@ -12,7 +12,7 @@ import { Navigate } from "react-router-dom";
 export const appRoutes = [
   {
     path: "/",
-    element: <Navigate to="/home" replace />,
+    element: <Navigate to="/PlatformProject" replace />,
   },
   {
     element: <PrivateRoute />,
